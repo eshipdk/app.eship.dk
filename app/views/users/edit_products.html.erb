@@ -1,0 +1,29 @@
+<h1>Edit products for user: <%= @current_user.email %></h1>
+
+
+<div class='model-list'>
+  <table>
+    <tr>
+      <th>Product_code</th>
+      <th>-</th>
+    </tr>
+    <% @products.each do |product| %>
+    <tr>
+      <td><%= product.product_code %></td>
+      <td>
+        <% if @user.holds_product(product) %>
+        Activated
+        <% else %>
+        <%= form_for @user, :url => {:controller => "users", :action => "add_product"}, method: :post  do |f| %>
+        <input type='hidden' name='product_id' value='<%= product.id %>'/>
+        
+        <p>
+          <input type="submit" value="Add product"/>
+        </p>
+        <% end %>
+        <% end %>
+      </td>
+    </tr>
+    <% end %>
+  </table>
+</div>

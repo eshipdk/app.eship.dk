@@ -1,0 +1,35 @@
+<h1>My address book</h1>
+
+
+<h3>My default address</h3>
+<% if @current_user.default_address %>
+	<%= link_to "To default address", edit_address_path(@current_user.default_address) %>
+<% else %>
+<div class="error">
+	No default address assigned.
+</div>
+<% end %>
+<br/><br/>
+<h3>All contacts</h3>
+<%= link_to 'New address', new_address_path %>
+<%= will_paginate @addresses %>
+<div class="model-list">
+  <table>
+    <tr>
+		<th>Company</th>
+		<th>Attention</th>
+		<th>Street</th> 
+		<th>New shipment</th>
+		<th>Edit</th>
+    </tr>
+    <% @addresses.each do |address| %>
+    <tr>
+		<td><%= address.company_name %></td>
+		<td><%= address.attention%></td>
+		<td><%= address.address_line1 %></td>
+		<td><%= link_to 'New shipment', send_to_address_path(address) %></td>
+		<td><%= link_to 'Edit', edit_address_path(address) %></td>
+    </tr>
+    <% end %>
+  </table>
+</div>

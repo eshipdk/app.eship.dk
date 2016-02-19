@@ -1,0 +1,50 @@
+<%= form_for @user do |f| %>
+ 
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2>
+        <%= pluralize(@user.errors.count, "error") %> prohibited
+        this user from being saved:
+      </h2>
+      <ul>
+        <% @user.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+ 
+  <p>E-mail:<br/>
+    <%= f.text_field :email %>
+  </p>
+
+  <p>Privilege:<br/>
+    <%= f.select :role, User.roles.keys.to_a %>
+  </p>
+
+  <p>Cargoflux API key<br/>
+    <%= f.text_field :cargoflux_api_key %>
+  </p>
+
+ 
+ 
+  <% if @user.new_record? %>
+  <p>Password:<br/>
+    <%= f.password_field :password %>
+  </p>
+
+  <p>Repeat password:<br/>
+    <%= f.password_field :password_confirmation %>
+  </p>
+  <% else %>
+  <p>eShip API key<br/>
+    <%= f.text_field :eship_api_key, :disabled => true %>
+  </p>
+
+  <% end %>
+
+  <p>
+    <%= f.submit %>
+  </p>
+ 
+<% end %>

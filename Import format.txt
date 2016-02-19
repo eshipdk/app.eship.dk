@@ -1,0 +1,3 @@
+Import format:
+
+return, product_code, height, length, width, weight, from_company, from_attention, from_address_1, from_address_2, from_zip_code, from_city, from_country_code, from_phone, from_email, to_company, to_attention, to_address_1, to_address_2, to_zip_code, to_city, to_country_code, to_phone, to_email  

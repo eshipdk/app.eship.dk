@@ -1,0 +1,19 @@
+<h1>Bulk import</h1>
+<p>Bulk import allows you to generate multiple shipments using data contained in a single file.</p>
+<% if @current_user.import_format.complete? %>
+
+<div class='import-csv'>
+	<p>Please make sure that your file comforms to the predefined import format.</p>
+	
+  <%= form_tag '/shipments/upload_csv', :multipart=>true do %>
+  <%= label_tag(:file, "Import csv") %>
+  <%= file_field_tag :file %>
+  <%= submit_tag "Upload" %>
+  <% end %>
+</div>
+
+<% else %>
+<div class='error'>
+	This functionality requires you to define an import format. Please contact the eShip administration.
+</div>
+<% end %>

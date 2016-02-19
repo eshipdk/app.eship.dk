@@ -1,0 +1,28 @@
+<h1>My shipments</h1>
+<%= link_to 'New shipment', new_shipment_path %>
+<%= link_to 'Bulk import', '/bulk_import' %>
+
+
+<%= will_paginate @shipments %>
+<div class="model-list">
+  <table>
+    <tr>
+      <th>Shipment</th>
+      <th>Timestamp</th>
+      <th>Product code</th>
+      <th>Dimensions</th>
+      <th>Weight (g)</th>
+      <th>Status</th>
+    </tr>
+    <% @shipments.each do |shipment| %>
+    <tr>
+      <td><%= link_to "#{shipment.pretty_id}", shipment_path(shipment) %>
+      <td><%= shipment.created_at %></td>
+      <td><%= shipment.product.product_code %></td>
+      <td><%= shipment.package_length %> x <%= shipment.package_width %> x <%= shipment.package_height %></td>
+      <td><%= shipment.package_weight %></td>
+      <td><%= shipment.status %></td>
+    </tr>
+    <% end %>
+  </table>
+</div>

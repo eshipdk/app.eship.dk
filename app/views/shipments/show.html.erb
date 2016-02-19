@@ -1,0 +1,93 @@
+<div class='shipment-show'>
+  <h2>Shipment #<%= @shipment.pretty_id %></h2>
+  <% if @shipment.can_edit %>
+  <%= link_to 'Edit', edit_shipment_path(@shipment) %>
+  <br/>
+  <% end %>
+  <% if @shipment.can_submit %>
+  <%= link_to 'Submit request', submit_shipment_path(@shipment), method: :post %> <br/>
+  <% end %>
+
+  <% if @shipment.status == 'failed' %>
+  <div class='error'>
+    <div class='title'>Error: <%= @shipment.api_response_error_msg %></div>
+  </div>
+  <% end %>
+
+
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Status</th>
+      <th>Timestamp</th>
+      <th>Product</th>
+      <th>AWB</th>
+      <th>Document</th>
+      <th>Print status</th>
+    </tr>
+    <tr>
+      <td>#<%= @shipment.pretty_id %></td>
+      <td><%= @shipment.status.capitalize %></td>
+      <td><%= @shipment.created_at %></td>
+      <td><%= @shipment.product.product_code %></td>
+      <td>
+        <% if @shipment.can_print %>
+        <%= link_to @shipment.awb, "http://www.tracktrace.dk/index.php?stregkode=#{@shipment.awb}", :target => '_blank' %>
+        <% else %>
+        -
+        <% end %>
+      </td>
+      <td>
+        <% if @shipment.can_print %>
+        <%= link_to "Print label", @shipment.document_url, :target => '_blank' %>
+        <% else %>
+        -
+        <% end %>
+      </td>
+      <td>
+        <% if @shipment.can_print %>
+        	<% if @shipment.recent_label_pending? %>
+        	Pending..
+        	<% else %>
+    	 	<%= link_to 'Reprint', reprint_shipment_path(@shipment), method: :post %>
+        	<% end %>
+        <% else %>
+        -
+        <% end %>
+      </td>
+    </tr>
+  </table>
+  <br/><br/>
+  <h4>Package</h4>
+  	<table>
+  		<tr>
+  			<th>Length</th>
+  			<th>Width</th>
+  			<th>Height</th>
+  			<th>Weight</th>
+  		</tr>
+  		<tr>
+  			<td><%= @shipment.package_length %></td>
+  			<td><%= @shipment.package_width %></td>
+  			<td><%= @shipment.package_height %></td>
+  			<td><%= @shipment.package_weight %></td>
+  		</tr>
+	</table>
+  <br/><br/>
+  <table class='addresses'>
+    <tr>
+      <th>Sender</th>
+      <th>Recipient</th>
+    </tr>
+    <tr/>
+    <td>
+    <%= render :partial => 'address_show', :locals => {:address => @shipment.sender } %>
+    </td>
+    <td>
+    <%= render :partial => 'address_show', :locals => {:address => @shipment.recipient } %>
+    </td>
+   
+  </table>
+
+ 
+</div>

@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 
+  product_id: 
+  request_id: MyString
+  awb: MyString
+  cargoflux_shipment_id: 
+  document_url: MyString
+  status: 
+
+two:
+  user_id: 
+  product_id: 
+  request_id: MyString
+  awb: MyString
+  cargoflux_shipment_id: 
+  document_url: MyString
+  status: 

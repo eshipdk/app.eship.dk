@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>eShip</title>
+  <%= stylesheet_link_tag    'application', 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<div class="page">
+  <%= render 'layouts/header' %>
+  <div class='content-container'>
+	  <%= render 'layouts/left' %>
+	  <div class="content">
+	    <% if flash[:error] %>
+	    <div class="error"><%= flash[:error] %></div>
+	    <% end %>
+	    <%= yield %>
+	  </div>
+  </div>
+  <%= render 'layouts/footer' %>
+</div>
+
+</body>
+</html>

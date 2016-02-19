@@ -1,0 +1,40 @@
+<div class="model-list">
+  <h1>Users</h1>
+  <%= link_to 'Create user', new_user_path %>
+  <table>
+    <tr>
+      <th>User</th>
+      <th>Role</th>
+      <th>Edit</th>
+      <th>Delete</th>
+      <th>Products</th>
+      <th>Import format</th>
+    </tr>
+    
+    <% @users.each do |user| %>
+    <tr>
+      <td><%= user.email %></td>
+      <td><%= user.role %></td>
+      <td>
+        <%= link_to 'Edit', edit_user_path(user) %>
+      </td>
+      <td>
+        <% if user != @current_user %>
+        <%= link_to 'Delete', user_path(user),
+              method: :delete,
+              data: { confirm: 'Are you sure?' } %>
+        <% end %>
+      </td>
+      <td>
+        <%= link_to 'Products', edit_products_user_path(user) %>
+      </td>
+      <td>
+        <% if !user.import_format.complete? %>
+        <span class='warning'>Format is incomplete!</span>
+        <% end %>
+        <%= link_to 'Edit format', edit_for_user_import_format_path(user) %>
+      </td>
+    </tr>
+    <% end %>
+  </table>
+</div>

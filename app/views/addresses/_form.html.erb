@@ -1,0 +1,59 @@
+<%= form_for @address do |f| %>
+<div class='address-form'>
+	
+	<p>
+	 	<%= check_box_tag 'default_address', "1", @current_user.default_address == @address %> <label for='default_address'>Make default address</label><br/>
+	</p>
+  <p>
+    Company<br/>
+    <%= f.text_field :company_name %>
+  </p>
+  
+   <p>
+    Attention<br/>
+    <%= f.text_field :attention %>
+  </p>
+
+  <p>
+    Address line 1<br/>
+    <%= f.text_field :address_line1 %>
+  </p>
+
+  <p>
+    Address line 2<br/>
+    <%= f.text_field :address_line2  %>
+  </p>
+
+  <p>
+    Zip code<br/>
+    <%= f.text_field :zip_code %>
+  </p>
+
+  <p>
+    City<br/>
+    <%= f.text_field :city %>
+  </p>
+
+  <p>
+    Country<br/>
+    <%= country_select('address', 'country_code', selected: @address.country_code
+ )%>
+ </p>
+
+
+  <p>
+    Phone<br/>
+    <%= f.text_field :phone_number %>
+  </p>
+
+  <p>
+    Email<br/>
+    <%= f.text_field :email %>
+  </p>
+
+	<p>
+		<%= f.submit %>
+	</p>
+ 
+</div>
+<% end %>

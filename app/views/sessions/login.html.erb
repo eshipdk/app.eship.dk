@@ -1,0 +1,10 @@
+<% @page_title = "UserAuth | Login" -%>
+<div class= "login_form">
+	<h1>Welcome to eShip.dk!</h1>
+  	<h3>Please sign in..</h3>
+  	<%= form_tag(:action => 'login_attempt') do %>
+  	<p>Email:</br> <%= text_field_tag(:email) %></p> 
+  	<p>Password:</br> <%= password_field_tag :login_password %></p> 
+  	<%= submit_tag("Log in") %>
+  	<% end %>
+</div>

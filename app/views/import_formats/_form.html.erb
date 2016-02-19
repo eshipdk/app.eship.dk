@@ -1,0 +1,92 @@
+<%= form_for @format do |f| %>
+
+
+<p>Return<br/>
+  <%= f.number_field :return %>
+</p>
+
+<p>Product code<br/>
+  <%= f.number_field :product_code %>
+</p>
+
+<p>Package height<br/>
+  <%= f.number_field :package_height %>
+</p>
+
+<p>Package length<br/>
+  <%= f.number_field :package_length %>
+</p>
+
+<p>Package width<br/>
+  <%= f.number_field :package_width %>
+</p>
+
+<p>Package weight<br/>
+  <%= f.number_field :package_weight%>
+</p>
+
+<h3>Sender address</h3>
+<p>Company name<br/>
+  <%= f.number_field :sender_company_name %>
+</p>
+<p>Attention<br/>
+  <%= f.number_field :sender_attention %>
+</p>
+<p>Street address line 1<br/>
+  <%= f.number_field :sender_address_line1 %>
+</p>
+<p>Street address line 2<br/>
+  <%= f.number_field :sender_address_line2 %>
+</p>
+<p>Zip code<br/>
+  <%= f.number_field :sender_zip_code %>
+</p>
+<p>City<br/>
+  <%= f.number_field :sender_city %>
+</p>
+<p>Country code<br/>
+  <%= f.number_field :sender_country_code %>
+</p>
+<p>Telephone<br/>
+  <%= f.number_field :sender_phone_number %>
+</p>
+<p>Email<br/>
+  <%= f.number_field :sender_email %>
+</p>
+
+
+<h3>Recipient address</h3>
+<p>Company name<br/>
+  <%= f.number_field :recipient_company_name %>
+</p>
+<p>Attention<br/>
+  <%= f.number_field :recipient_attention %>
+</p>
+<p>Street address line 1<br/>
+  <%= f.number_field :recipient_address_line1 %>
+</p>
+<p>Street address line 2<br/>
+  <%= f.number_field :recipient_address_line2 %>
+</p>
+<p>Zip code<br/>
+  <%= f.number_field :recipient_zip_code %>
+</p>
+<p>City<br/>
+  <%= f.number_field :recipient_city %>
+</p>
+<p>Country code<br/>
+  <%= f.number_field :recipient_country_code %>
+</p>
+<p>Telephone<br/>
+  <%= f.number_field :recipient_phone_number %>
+</p>
+<p>Email<br/>
+  <%= f.number_field :recipient_email %>
+</p>
+
+
+<p>
+  <%= f.submit %>
+</p>
+
+<% end %>
