@@ -14,13 +14,17 @@
   <% end %>
  
  	<div class='product-type form-part'>
- 		<h2>Product type</h2>
-		<p>Product<br/>
+ 		<h2>Product</h2>
+		<p>Product code<br/>
 		  <%= f.select :product_id, products_option_hash(@current_user.products) %>
 		</p>
 		
 		<p>Return<br/>
 		<%= f.select :return, {'No'=>0,'Yes'=>1}%>
+		</p>
+		
+		<p>Description<br/>
+			<%= f.text_field :description %>
 		</p>
 	</div>
 	<div class='package form-part'>
@@ -37,8 +41,8 @@
 		<%= f.number_field :package_height %>
 		</p>
 		
-		<p>Weight (g)<br/>
-		<%= f.number_field :package_weight %>
+		<p>Weight (kg)<br/>
+		<%= f.number_field :package_weight, :step=>'any' %>
 		</p>
 	</div>
 

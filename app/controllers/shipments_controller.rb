@@ -125,7 +125,8 @@ class ShipmentsController < ApplicationController
   def shipment_params
     params.require(:shipment).permit(:product_id, :return,
                                      :package_length, :package_width,
-                                     :package_height, :package_weight)
+                                     :package_height, :package_weight,
+                                     :description)
   end
 
   def address_params(prefix)

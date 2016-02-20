@@ -121,10 +121,11 @@ class Shipment < ActiveRecord::Base
            "amount" => "1",
            "height" => package_height.to_s,
            "length" => package_length.to_s,
-           "weight" => (package_weight * 0.01).to_s,
+           "weight" => (package_weight).to_s,
            "width" => package_width.to_s
          }
         ],
+        'description' => self.description,
         'reference' => pretty_id,
         'shipping_date' => Time.now.strftime("%F"),
       },
@@ -141,7 +142,8 @@ class Shipment < ActiveRecord::Base
 
 
   def self.import_csv content, user
-    values = CSV.parse content
+    #values = CSV.parse (content.gsub ';', ',') Both comma and semicolon. Issue: Weight described with comma
+    values = CSV.parse content, {:col_sep => ';'}
     validation = validate_csv_values values, user
     if !validation['error']
       values.each do |row|
@@ -149,10 +151,11 @@ class Shipment < ActiveRecord::Base
         shipment = Shipment.new
         shipment.product = Product.find_by_product_code hash['product_code']
         shipment.user = user
-        shipment.package_weight = hash['package_weight']
+        shipment.package_weight = hash['package_weight'].gsub ',', '.'
         shipment.package_length = hash['package_length']
         shipment.package_width = hash['package_width']
         shipment.package_height = hash['package_height']
+        shipment.description = hash['description']
 
         sender = Address.new hash['sender']
         shipment.sender = sender
@@ -214,6 +217,7 @@ private
       'package_length'=>(  row_val user, row, 'package_length'),
       'package_width'=>( row_val user, row, 'package_width'),
       'package_weight'=>( row_val user, row, 'package_weight'),
+      'description' => ( row_val user, row, 'description' ),
       'sender'=>{
         'company_name'=>(  row_val user, row, 'sender_company_name'),
         'attention'=>( row_val user, row, 'sender_attention'),
@@ -240,7 +244,11 @@ private
   end
 
   def self.row_val user, row, key
-    row[user.import_format.attributes[key]].strip
+    v = row[user.import_format.attributes[key] - 1]
+    if v == nil
+      v = ""
+    end
+    return v.strip
   end
 
 

@@ -13,7 +13,7 @@ class ImportFormat < ActiveRecord::Base
 
 
   def min_cols
-    return cols.values.max + 1
+    return cols.values.max
   end
 
   def cols
