@@ -38,7 +38,9 @@ class ApiController < ApplicationController
       shipment.save
     end
 
-    render :text => {'labels' => recently_registered.map(&:document_url)}.to_json
+    render :text => {'labels' => recently_registered.map(&:document_url), 
+                      'awbs' => recently_registered.map(&:awb),
+                      'ids' => recently_registered.map(&:cargoflux_shipment_id)}.to_json
   end
 
   def recent_failures
