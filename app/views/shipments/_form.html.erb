@@ -26,6 +26,10 @@
 		<p>Description<br/>
 			<%= f.text_field :description %>
 		</p>
+		
+		<p>Reference<br/>
+			<%= f.text_field :reference %>
+		</p>
 	</div>
 	<div class='package form-part'>
 		<h2>Package dimensions</h2>
@@ -43,6 +47,10 @@
 		
 		<p>Weight (kg)<br/>
 		<%= f.number_field :package_weight, :step=>'any' %>
+		</p>
+		
+		<p>Amount<br/>
+		<%= f.number_field :amount %>
 		</p>
 	</div>
 

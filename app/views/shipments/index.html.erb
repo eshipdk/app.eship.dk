@@ -12,6 +12,7 @@
       <th>Product code</th>
       <th>Dimensions</th>
       <th>Weight (kg)</th>
+      <th>Amount</th>
       <th>Status</th>
     </tr>
     <% @shipments.each do |shipment| %>
@@ -21,6 +22,7 @@
       <td><%= shipment.product.product_code %></td>
       <td><%= shipment.package_length %> x <%= shipment.package_width %> x <%= shipment.package_height %></td>
       <td><%= shipment.package_weight %></td>
+      <td><%= shipment.amount %></td>
       <td><%= shipment.status %></td>
     </tr>
     <% end %>

@@ -118,7 +118,7 @@ class Shipment < ActiveRecord::Base
         "package_dimensions" =>
         [
          {
-           "amount" => "1",
+           "amount" => amount,
            "height" => package_height.to_s,
            "length" => package_length.to_s,
            "weight" => (package_weight).to_s,
@@ -126,7 +126,7 @@ class Shipment < ActiveRecord::Base
          }
         ],
         'description' => self.description,
-        'reference' => pretty_id,
+        'reference' => reference,
         'shipping_date' => Time.now.strftime("%F"),
       },
       'sender' => sender.attributes,
@@ -156,6 +156,9 @@ class Shipment < ActiveRecord::Base
         shipment.package_width = hash['package_width']
         shipment.package_height = hash['package_height']
         shipment.description = hash['description']
+        shipment.amount = hash['amount']
+        shipment.reference = hash['reference']
+        
 
         sender = Address.new hash['sender']
         shipment.sender = sender
@@ -218,6 +221,8 @@ private
       'package_width'=>( row_val user, row, 'package_width'),
       'package_weight'=>( row_val user, row, 'package_weight'),
       'description' => ( row_val user, row, 'description' ),
+      'amount' => ( row_val user, row, 'amount' ),
+      'reference' => ( row_val user, row, 'reference' ),
       'sender'=>{
         'company_name'=>(  row_val user, row, 'sender_company_name'),
         'attention'=>( row_val user, row, 'sender_attention'),
