@@ -1,5 +1,5 @@
 class ApiController < ApplicationController
-  before_filter :authenticate_api
+  before_filter :authenticate_api, :except => :validate_key
   skip_before_filter :verify_authenticity_token
 
 
@@ -60,6 +60,13 @@ class ApiController < ApplicationController
 
     render :text => {'shipments'=>shipments}.to_json
 
+  end
+  
+  def validate_key
+    
+    
+    render :text => {'valid' => (authenticate_api true)}.to_json
+    
   end
 
 

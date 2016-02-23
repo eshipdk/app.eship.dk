@@ -47,7 +47,7 @@ Rails.application.routes.draw do
   post 'api/fresh_labels', to: 'api#fresh_labels'
   post 'api/recent_failures', to: 'api#recent_failures'
   post 'api/import', to: 'api#upload_csv'
-
+  post 'api/validate_key', to: 'api#validate_key'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

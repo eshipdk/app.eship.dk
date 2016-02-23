@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authenticate_api
+  def authenticate_api silent = false
     information = request.raw_post
     @api_params = JSON.parse(information)
 
@@ -40,10 +40,14 @@ class ApplicationController < ActionController::Base
     if @current_user
       return true
     else
-      api_error('Invalid/missing API-key', 401)
+      if !silent
+        api_error('Invalid/missing API-key', 401)
+      end
       return false
     end
   end
+  
+  
 
   def api_error(msg, status = 400)
     render :text => {'error' => msg}.to_json, :status => status
