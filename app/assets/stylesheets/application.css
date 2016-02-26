@@ -93,12 +93,25 @@ body{
 	border-top: 1px solid #CCC;
 	width: 100%;
 	float: left;
+	padding-bottom: 50px;
+}
+
+.footer .about{
+	padding-top: 15px;
+	width: 100%;
+	text-align: center
+}
+
+.footer .about div{
+	display: inline;
+	padding-right: 50px;
 }
 
 .footer .copyright{
-	float: right;
-	padding: 15px;
+	position: absolute;
+	right: 0;
 }
+
 
 .content-container{
 	background-color: #F1F1F1;

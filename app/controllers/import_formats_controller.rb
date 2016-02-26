@@ -20,7 +20,10 @@ class ImportFormatsController < ApplicationController
 
   def update
     format = ImportFormat.find params[:id]
-    format.update format_params
+    
+    format.is_interline = (params[:is_interline])
+    format.update format_params    
+
     redirect_to '/users'
   end
 
@@ -29,7 +32,7 @@ class ImportFormatsController < ApplicationController
   def format_params
     params.require(:import_format)
       .permit(
-              :return, :product_code, :package_height,
+              :is_interline, :return, :product_code, :package_height,
               :package_length, :package_width, :package_weight,
               :sender_company_name, :sender_attention,
               :sender_address_line1, :sender_address_line2,
@@ -39,7 +42,7 @@ class ImportFormatsController < ApplicationController
               :recipient_address_line1, :recipient_address_line2,
               :recipient_zip_code, :recipient_city, :recipient_country_code,
               :recipient_phone_number, :recipient_email, :description,
-              :amount, :reference
+              :amount, :reference, :parcelshop_id
               )
   end
 

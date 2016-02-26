@@ -128,6 +128,7 @@ class Shipment < ActiveRecord::Base
         'description' => self.description,
         'reference' => reference,
         'shipping_date' => Time.now.strftime("%F"),
+        'parcelshop_id' => parcelshop_id
       },
       'sender' => sender.attributes,
       'recipient' => recipient.attributes
@@ -143,10 +144,15 @@ class Shipment < ActiveRecord::Base
 
   def self.import_csv content, user
     #values = CSV.parse (content.gsub ';', ',') Both comma and semicolon. Issue: Weight described with comma
-    values = CSV.parse content, {:col_sep => ';'}
-    validation = validate_csv_values values, user
+    
+    if user.import_format.is_interline
+      arrHash = user.import_format.parse_interline content
+    end
+    lines = CSV.parse content, {:col_sep => ';'}
+    
+    validation = validate_csv_values lines, user
     if !validation['error']
-      values.each do |row|
+      lines.each do |row|
         hash = csv_row_hash user, row
         shipment = Shipment.new
         shipment.product = Product.find_by_product_code hash['product_code']
@@ -158,6 +164,7 @@ class Shipment < ActiveRecord::Base
         shipment.description = hash['description']
         shipment.amount = hash['amount']
         shipment.reference = hash['reference']
+        shipment.parcelshop_id = hash['parcelshop_id']
         
 
         sender = Address.new hash['sender']
@@ -223,6 +230,7 @@ private
       'description' => ( row_val user, row, 'description' ),
       'amount' => ( row_val user, row, 'amount' ),
       'reference' => ( row_val user, row, 'reference' ),
+      'parcelshop_id' => ( row_val user, row, 'parcelshop_id' ),
       'sender'=>{
         'company_name'=>(  row_val user, row, 'sender_company_name'),
         'attention'=>( row_val user, row, 'sender_attention'),

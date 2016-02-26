@@ -1,6 +1,10 @@
 <%= form_for @format do |f| %>
 
 
+<p>
+	<%= check_box_tag 'is_interline', "1",  @format.is_interline %> <label for='is_interline'>Is interline</label><br/>
+</p>
+
 <p>Return<br/>
   <%= f.number_field :return %>
 </p>
@@ -94,6 +98,10 @@
 
 <p>Reference<br/>
 	<%= f.number_field :reference %>
+</p>
+
+<p>Parcelshop id<br/>
+	<%= f.number_field :parcelshop_id %>
 </p>
 
 <p>
