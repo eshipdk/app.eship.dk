@@ -1,3 +1,5 @@
+include Cargoflux
+include CsvImporter
 class ShipmentsController < ApplicationController
   before_filter :authenticate_user, :except => ['callback']
   skip_before_action :verify_authenticity_token, :only => ['callback']
@@ -43,7 +45,7 @@ class ShipmentsController < ApplicationController
     @shipment.user_id = @current_user.id
 
     if @shipment.save
-      @shipment.submit
+      Cargoflux.submit @shipment
       redirect_to :action => 'index'
     else
       render 'new'
@@ -57,7 +59,7 @@ class ShipmentsController < ApplicationController
   def upload_csv
     uploaded_file = params[:file]
     file_content = uploaded_file.read
-    res = Shipment.import_csv file_content, @current_user
+    res = CsvImporter.import_csv file_content, @current_user
 
     if res['error']
       flash[:error] = res['msg']
@@ -82,9 +84,10 @@ class ShipmentsController < ApplicationController
       return
     end
 
+
   #  render :text => shipment.request_data.to_json
   #  return
-    response = shipment.submit
+    response = Cargoflux.submit shipment
     #render :text => "Response #{response}. Shipment status: #{shipment.status}"
     redirect_to :action => 'show'
   end

@@ -1,3 +1,4 @@
+include CsvImporter
 class ApiController < ApplicationController
   before_filter :authenticate_api, :except => :validate_key
   skip_before_filter :verify_authenticity_token
@@ -77,7 +78,7 @@ class ApiController < ApplicationController
       return
     end
 
-    res = Shipment.import_csv csv, @current_user
+    res = CsvImporter.import_csv csv, @current_user
     if res['error']
       api_error res['msg']
       return

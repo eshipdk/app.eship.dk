@@ -33,12 +33,13 @@ class ImportFormat < ActiveRecord::Base
   
   def parse_interline content
     
-    rows = CSV.parse content, {:col_sep => ','}
+    rows = CSV.parse content
     
     arrHash = []
     line = 0
     rows.each do |row|
       line += 1
+      raise row.to_s
       if row.length != 28
         raise "Row " + line.to_s + " contains " + row.length.to_s + " cells but should contain 28 (InterLine format). Separator: ','"
       end
