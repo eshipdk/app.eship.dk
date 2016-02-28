@@ -195,6 +195,20 @@ input[type='checkbox']{
 	float: left;
 }
 
+input[type='radio']{
+	width: 30px;
+	margin-top: -5px;
+	float: left;	
+}
+
+table input{
+	width: auto;
+}
+
+.edit_import_format table input{
+	width: 60px;
+}
+
 .login_form{
 	float: left;
 	margin-left: 30%;

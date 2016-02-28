@@ -1,111 +1,159 @@
 <%= form_for @format do |f| %>
 
+<table>
+	<tr>
+		<th><label for='importer_default'>Default</label></th><th><label for='importer_interline'>Interline</label></th>
+	</tr>
+	<tr>
+		<td><%= radio_button_tag 'importer', 'default', @format.importer == 'default' %></td>
+		<td><%= radio_button_tag 'importer', 'interline', @format.importer == 'interline' %></td>
+	</tr>
+</table>
 
-<p>
-	<%= check_box_tag 'is_interline', "1",  @format.is_interline %> <label for='is_interline'>Is interline</label><br/>
-</p>
+<div id='default' class='conf-specific'>
+	
+	<h4>Product</h4>
+	<table>
+		<tr>
+			<th>Return</th>
+			<th>Product code</th>
+			<th>Parcelshop id</th>
+			<th>Reference</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><%= f.number_field :return %></td>
+			<td><%= f.number_field :product_code %></td>
+			<td><%= f.number_field :parcelshop_id %></td>
+			<td><%= f.number_field :reference %></td>
+			<td><%= f.number_field :description %></td>
+		</tr>
+	</table>
+	
+	<h4>Package</h4>
+	<table>
+		<tr>
+			<th>Amount</th><th>Weight</th><th>Height</th><th>Length</th><th>Width</th>
+		</tr>
+		<tr>
+			<td><%= f.number_field :amount %></td>
+			<td><%= f.number_field :package_weight%></td>
+			<td><%= f.number_field :package_height %></td>
+			<td><%= f.number_field :package_length %></td>
+			<td><%= f.number_field :package_width %></td>
+		</tr>
+	</table>
+	
+</div>
 
-<p>Return<br/>
-  <%= f.number_field :return %>
-</p>
-
-<p>Product code<br/>
-  <%= f.number_field :product_code %>
-</p>
-
-<p>Package height<br/>
-  <%= f.number_field :package_height %>
-</p>
-
-<p>Package length<br/>
-  <%= f.number_field :package_length %>
-</p>
-
-<p>Package width<br/>
-  <%= f.number_field :package_width %>
-</p>
-
-<p>Package weight<br/>
-  <%= f.number_field :package_weight%>
-</p>
-
-<h3>Sender address</h3>
-<p>Company name<br/>
-  <%= f.number_field :sender_company_name %>
-</p>
-<p>Attention<br/>
-  <%= f.number_field :sender_attention %>
-</p>
-<p>Street address line 1<br/>
-  <%= f.number_field :sender_address_line1 %>
-</p>
-<p>Street address line 2<br/>
-  <%= f.number_field :sender_address_line2 %>
-</p>
-<p>Zip code<br/>
-  <%= f.number_field :sender_zip_code %>
-</p>
-<p>City<br/>
-  <%= f.number_field :sender_city %>
-</p>
-<p>Country code<br/>
-  <%= f.number_field :sender_country_code %>
-</p>
-<p>Telephone<br/>
-  <%= f.number_field :sender_phone_number %>
-</p>
-<p>Email<br/>
-  <%= f.number_field :sender_email %>
-</p>
+<div id='interline' class='conf-specific'>
+	<h4>Product</h4>
+	<table>
+		<tr>
+			<th>Order number</th>
+			<th>Shipment type</th>
+			<th>Comment</th>
+			<th>Parcelshop id</th>
+		</tr>
+		<tr>
+			<td><%= f.number_field :reference%></td>
+			<td><%= f.number_field :product_code %></td>
+			<td><%= f.number_field :description %></td>
+			<td><%= f.number_field :parcelshop_id %></td>
+		</tr>
+	</table>
+	
+	<h4>Package</h4>
+	<table>
+		<tr>
+			<th>Amount</th><th>Weight</th>
+		</tr>
+		<tr>
+			<td><%= f.number_field :amount %></td>
+			<td><%= f.number_field :package_weight %></td>
+		</tr>
+	</table>
+	
 
 
-<h3>Recipient address</h3>
-<p>Company name<br/>
-  <%= f.number_field :recipient_company_name %>
-</p>
-<p>Attention<br/>
-  <%= f.number_field :recipient_attention %>
-</p>
-<p>Street address line 1<br/>
-  <%= f.number_field :recipient_address_line1 %>
-</p>
-<p>Street address line 2<br/>
-  <%= f.number_field :recipient_address_line2 %>
-</p>
-<p>Zip code<br/>
-  <%= f.number_field :recipient_zip_code %>
-</p>
-<p>City<br/>
-  <%= f.number_field :recipient_city %>
-</p>
-<p>Country code<br/>
-  <%= f.number_field :recipient_country_code %>
-</p>
-<p>Telephone<br/>
-  <%= f.number_field :recipient_phone_number %>
-</p>
-<p>Email<br/>
-  <%= f.number_field :recipient_email %>
-</p>
+	<% if false %>
+	<p>
+		<%= check_box_tag 'interline_default_mail_advertising', "1",  @format.interline_default_mail_advertising %> <label for='interline_default_mail_advertising'>Default mail advertising (Interline setting)</label><br/>
+	</p>
+	<% end %>
+</div>
 
-<p>Description<br/>
-	<%= f.number_field :description %>
-</p>
+<h4>Sender</h4>
+<table>
+	<tr>
+		<th>Name</th><th>Attention</th><th>Address 1</th><th>Address 2</th><th>Zip code</th>
+	</tr>
+	<tr>
+		<td><%= f.number_field :sender_company_name %></td>
+		<td><%= f.number_field :sender_attention %></td>
+		<td><%= f.number_field :sender_address_line1 %></td>
+		<td><%= f.number_field :sender_address_line2 %></td>
+		<td><%= f.number_field :sender_zip_code %></td>
+	</tr>
+	<tr>
+		<th>City</th><th>Country</th>
+		<th>Phone</th><th>e-mail</th>
+	</tr>
+	<tr>
+		<td><%= f.number_field :sender_city %></td>
+		<td><%= f.number_field :sender_country_code %></td>
+		<td><%= f.number_field :sender_phone_number %></td>
+		<td><%= f.number_field :sender_email %></td>
+	</tr>
+</table>
 
-<p>Amount<br/>
-	<%= f.number_field :amount %>
-</p>
+<h4>Recipient</h4>
+<table>
+	<tr>
+		<th>Name</th><th>Attention</th><th>Address 1</th><th>Address 2</th><th>Zip code</th>
+	</tr>
+	<tr>
+		<td><%= f.number_field :recipient_company_name %></td>
+		<td><%= f.number_field :recipient_attention %></td>
+		<td><%= f.number_field :recipient_address_line1 %></td>
+		<td><%= f.number_field :recipient_address_line2 %></td>
+		<td><%= f.number_field :recipient_zip_code %></td>
+	</tr>
+	<tr>
+		<th>City</th><th>Country</th>
+		<th>Phone</th><th>e-mail</th>
+	</tr>
+	<tr>
+		<td><%= f.number_field :recipient_city %></td>
+		<td><%= f.number_field :recipient_country_code %></td>
+		<td><%= f.number_field :recipient_phone_number %></td>
+		<td><%= f.number_field :recipient_email %></td>
+	</tr>
+</table>
 
-<p>Reference<br/>
-	<%= f.number_field :reference %>
-</p>
-
-<p>Parcelshop id<br/>
-	<%= f.number_field :parcelshop_id %>
-</p>
 
 <p>
   <%= f.submit %>
 </p>
 
 <% end %>
+
+<script>
+	var rad = document.getElementsByName('importer');
+	function showSpecifics(importer){
+		var specifics = document.getElementsByClassName('conf-specific');
+		for(var i = 0; i < specifics.length; i++){
+			specifics[i].style.display = specifics[i].id === importer ? 'block' : 'none';
+		}
+	}
+	
+	for(var i = 0; i < rad.length; i++) {
+	    rad[i].onclick = function() {
+	    	if(this.checked){
+	    		showSpecifics(this.value);
+	    	}
+	    };
+	}
+	showSpecifics('<%= @format.importer %>');
+
+</script>
