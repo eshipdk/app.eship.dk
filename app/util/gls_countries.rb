@@ -2,6 +2,7 @@
 module GlsCountries
   
   def get_country_code id
+    id = id.to_i.to_s
     hash = {
       '1' => 'FR',
       '2' => 'BE',

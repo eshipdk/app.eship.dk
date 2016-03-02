@@ -77,8 +77,12 @@ class ApiController < ApplicationController
       api_error "Missing attribute: csv"
       return
     end
-
+    begin
     res = CsvImporter.import_csv csv, @current_user
+    rescue Exception => e
+      render :text => e
+      return
+    end
     if res['error']
       api_error res['msg']
       return
