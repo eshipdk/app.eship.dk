@@ -1,4 +1,4 @@
-<div class='link <%= 'current' if controller_name == area %>' onclick="window.location=this.children[0];">
-<%= link_to title, path %>
-</div>
-                    
+<li class='<%= 'active' if controller_name == area %>'>
+	<a href='<%= url_for path %>'><%= title %><% if controller_name == area %><span class="sr-only">(current)</span><% end %>
+	</a>
+	</li>

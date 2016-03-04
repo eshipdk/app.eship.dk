@@ -1,6 +1,7 @@
 <%= form_for @format do |f| %>
 
-<table>
+<div class='table-responsive'>
+<table class='table table-striped'>
 	<tr>
 		<th><label for='importer_default'>Default</label></th><th><label for='importer_interline'>Interline</label></th>
 	</tr>
@@ -12,26 +13,26 @@
 
 <div id='default' class='conf-specific'>
 	
-	<h4>Product</h4>
-	<table>
+	<h4 class='sub-header'>Product</h4>
+	<table class='table table-striped'>
 		<tr>
-			<th>Return</th>
 			<th>Product code</th>
 			<th>Parcelshop id</th>
+			<th>Return</th>
 			<th>Reference</th>
 			<th>Description</th>
 		</tr>
 		<tr>
-			<td><%= f.number_field :return %></td>
 			<td><%= f.number_field :product_code %></td>
 			<td><%= f.number_field :parcelshop_id %></td>
+			<td><%= f.number_field :return %></td>
 			<td><%= f.number_field :reference %></td>
 			<td><%= f.number_field :description %></td>
 		</tr>
 	</table>
 	
-	<h4>Package</h4>
-	<table>
+	<h4 class='sub-header'>Package</h4>
+	<table class='table table-striped'>
 		<tr>
 			<th>Amount</th><th>Weight</th><th>Height</th><th>Length</th><th>Width</th>
 		</tr>
@@ -47,8 +48,8 @@
 </div>
 
 <div id='interline' class='conf-specific'>
-	<h4>Product</h4>
-	<table>
+	<h4 class='sub-header'>Product</h4>
+	<table class='table table-striped'>
 		<tr>
 			<th>Order number</th>
 			<th>Shipment type</th>
@@ -63,8 +64,8 @@
 		</tr>
 	</table>
 	
-	<h4>Package</h4>
-	<table>
+	<h4 class='sub-header'>Package</h4>
+	<table class='table table-striped'>
 		<tr>
 			<th>Amount</th><th>Weight</th>
 		</tr>
@@ -83,8 +84,8 @@
 	<% end %>
 </div>
 
-<h4>Sender</h4>
-<table>
+<h4 class='sub-header'>Sender</h4>
+<table class='table table-striped'>
 	<tr>
 		<th>Name</th><th>Attention</th><th>Address 1</th><th>Address 2</th><th>Zip code</th>
 	</tr>
@@ -95,6 +96,8 @@
 		<td><%= f.number_field :sender_address_line2 %></td>
 		<td><%= f.number_field :sender_zip_code %></td>
 	</tr>
+</table>
+<table class='table table-striped'>
 	<tr>
 		<th>City</th><th>Country</th>
 		<th>Phone</th><th>e-mail</th>
@@ -107,8 +110,8 @@
 	</tr>
 </table>
 
-<h4>Recipient</h4>
-<table>
+<h4 class='sub-header'>Recipient</h4>
+<table class='table table-striped'>
 	<tr>
 		<th>Name</th><th>Attention</th><th>Address 1</th><th>Address 2</th><th>Zip code</th>
 	</tr>
@@ -119,6 +122,8 @@
 		<td><%= f.number_field :recipient_address_line2 %></td>
 		<td><%= f.number_field :recipient_zip_code %></td>
 	</tr>
+</table>
+<table class='table table-striped'>
 	<tr>
 		<th>City</th><th>Country</th>
 		<th>Phone</th><th>e-mail</th>
@@ -132,18 +137,22 @@
 </table>
 
 
-<p>
-  <%= f.submit %>
-</p>
-
+<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 <% end %>
 
+</div>
 <script>
 	var rad = document.getElementsByName('importer');
 	function showSpecifics(importer){
 		var specifics = document.getElementsByClassName('conf-specific');
 		for(var i = 0; i < specifics.length; i++){
-			specifics[i].style.display = specifics[i].id === importer ? 'block' : 'none';
+			var active = specifics[i].id === importer;
+			specifics[i].style.display = active ? 'block' : 'none';
+			var fields = specifics[i].getElementsByTagName('input');
+			for(var j = 0; j < fields.length; j++){
+				fields[j].disabled = !active;
+				console.log(fields[i] +" = " + active);
+			}
 		}
 	}
 	

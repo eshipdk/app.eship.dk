@@ -1,5 +1,5 @@
 <div class='shipment-show'>
-  <h2>Shipment #<%= @shipment.pretty_id %></h2>
+  <h2 class='page-header'>Shipment #<%= @shipment.pretty_id %></h2>
   <% if @shipment.can_edit %>
   <%= link_to 'Edit', edit_shipment_path(@shipment) %>
   <br/>
@@ -14,8 +14,8 @@
   </div>
   <% end %>
 
-
-  <table>
+<div class='table-responsive'>
+  <table class='table table-striped'>
     <tr>
       <th>ID</th>
       <th>Status</th>
@@ -57,10 +57,21 @@
       </td>
     </tr>
   </table>
-  <br/><br/>
-  <h4>Package</h4>
-  	<table>
+  <table class='table table-striped'>
+  	<tr>
+  		<th>Description</th>
+  		<th>Reference</th>
+  		<th>Parcelshop id</th>
+  	</tr>
+  	<tr>
+  		<td><%= @shipment.description %></td>
+  		<td><%= @shipment.reference %></td>
+  		<td><%= @shipment.parcelshop_id %></td>
+  	</tr>
+  </table>
+	<table class='table table-striped'>
   		<tr>
+  			<th>Package:</th>
   			<th>Length</th>
   			<th>Width</th>
   			<th>Height</th>
@@ -68,6 +79,7 @@
   			<th>Amount</th>
   		</tr>
   		<tr>
+			<td></td>
   			<td><%= @shipment.package_length %></td>
   			<td><%= @shipment.package_width %></td>
   			<td><%= @shipment.package_height %></td>
@@ -75,17 +87,10 @@
   			<td><%= @shipment.amount %></td>
   		</tr>
 	</table>
-  <br/><br/>
-  <h4>Description</h4>
-  <p><%= @shipment.description %></p>
-  <br/><br/>
-  <h4>Reference</h4>
-  <p><%= @shipment.reference %></p>
-  <br/><br/>
-  <h4>Parcelshop id</h4>
-  <p><%= @shipment.parcelshop_id %></p>
-  <br/><br/>
-  <table class='addresses'>
+
+  
+  
+  <table  class='table table-striped'>
     <tr>
       <th>Sender</th>
       <th>Recipient</th>
@@ -99,6 +104,6 @@
     </td>
    
   </table>
-
+</div>
  
 </div>

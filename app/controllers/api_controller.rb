@@ -22,7 +22,52 @@ class ApiController < ApplicationController
 
     product = Product.find_by_product_code shipment_params['product_code']
 
-    render :text => product.id
+    sender = Address.new(shipment_params['sender'])
+    
+    recipient = Address.new(shipment_params['recipient'])
+    
+    if !sender.valid?
+      api_error 'Invalid sender information: ' + sender.to_json
+      return
+    end
+    
+    if !recipient.valid?
+      api_error 'Invalid recipient information: ' + recipient.to_json
+      return
+    end
+    
+    sender.save
+    recipient.save
+    
+    
+    shipment = Shipment.new
+    shipment.user = @current_user
+    shipment.product = product
+    shipment.sender = sender
+    shipment.recipient = recipient
+    
+    shipment.return = shipment_params['return']
+    shipment.package_height = shipment_params['package_height']
+    shipment.package_length = shipment_params['package_length']
+    shipment.package_width = shipment_params['package_width']
+    shipment.package_weight = shipment_params['package_weight']
+    shipment.amount = shipment_params['amount']
+    shipment.reference = shipment_params['reference']
+    shipment.description = shipment_params['description']
+    shipment.parcelshop_id = shipment_params['parcelshop_id']
+    shipment.callback_url = shipment_params['callback_url']
+   
+    shipment.save
+    
+    Cargoflux.submit shipment
+    
+    shipment.reload
+
+    response = {'shipment' => shipment.pretty_id, 'status' => shipment.status}
+    if shipment.status == 'failed'
+      response['errors'] = shipment.api_response_error_msg
+    end
+    render :text => response.to_json
   end
 
 

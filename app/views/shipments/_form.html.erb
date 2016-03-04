@@ -14,7 +14,7 @@
   <% end %>
  
  	<div class='product-type form-part'>
- 		<h2>Product</h2>
+ 		<h2 class='sub-header'>Product</h2>
 		<p>Product code<br/>
 		  <%= f.select :product_id, products_option_hash(@current_user.products) %>
 		</p>
@@ -35,7 +35,7 @@
 		</p>
 	</div>
 	<div class='package form-part'>
-		<h2>Package dimensions</h2>
+		<h2 class='sub-header'>Package dimensions</h2>
 		<p>Length (cm)<br/>
 		<%= f.number_field :package_length %>
 		</p>
@@ -63,8 +63,7 @@
 
 
 
+<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 
-<div class='form-part'>&nbsp;</div>
-<div class='form-part'><%= f.submit %></div>
 
 <% end %>

@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
 
-  layout 'application'
+  layout 'login'
   before_filter :authenticate_user, :only => [:home]
   before_filter :save_login_state, :only => [:index, :login_attempt]
 

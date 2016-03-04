@@ -3,7 +3,7 @@ class UsersController < ApplicationController
 
 
   def index
-    @users = User.all
+    @users = User.all.paginate(:page => params[:page], :per_page => 5)
   end
 
   def show
@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      redirect_to @user
+      redirect_to :action => 'index'
     else
       render 'new'
     end

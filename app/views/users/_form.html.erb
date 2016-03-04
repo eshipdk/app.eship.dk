@@ -14,37 +14,37 @@
     </div>
   <% end %>
  
-  <p>E-mail:<br/>
-    <%= f.text_field :email %>
-  </p>
-
-  <p>Privilege:<br/>
-    <%= f.select :role, User.roles.keys.to_a %>
-  </p>
-
-  <p>Cargoflux API key<br/>
-    <%= f.text_field :cargoflux_api_key %>
-  </p>
+ <div class='table-responsive'>
+ 	<table class='table table-striped'>
+ 		<tr>
+ 			<th>Email</th>
+ 			<th>Privilege</th>
+ 			<th>Cargoflux API key</th>
+ 			<th>eShip API key</th>
+ 		</tr>
+ 		<tr>
+ 			<td><%= f.text_field :email %></td>
+ 			<td><%= f.select :role, User.roles.keys.to_a %></td>
+ 			<td><%= f.text_field :cargoflux_api_key %></td>
+ 			<td><% if !@user.new_record? %><%= f.text_field :eship_api_key, :disabled => true %><% end %></td>
+ 		</tr>
+	</table>
 
  
  
   <% if @user.new_record? %>
-  <p>Password:<br/>
-    <%= f.password_field :password %>
-  </p>
-
-  <p>Repeat password:<br/>
-    <%= f.password_field :password_confirmation %>
-  </p>
-  <% else %>
-  <p>eShip API key<br/>
-    <%= f.text_field :eship_api_key, :disabled => true %>
-  </p>
-
+  	<table class='table table-striped'>
+		<tr>
+			<th>Password</th>
+			<th>Repeat password</th>
+		</tr>
+		<tr>
+			<td><%= f.password_field :password %></td>
+			<td><%= f.password_field :password_confirmation %></td>
+		</tr>
+	</table>
   <% end %>
-
-  <p>
-    <%= f.submit %>
-  </p>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+  </div>	
  
 <% end %>

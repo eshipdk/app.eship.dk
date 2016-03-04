@@ -1,11 +1,11 @@
-<h1>My shipments</h1>
+<h1 class='page-header'>My shipments</h1>
 <%= link_to 'New shipment', new_shipment_path %>
 <%= link_to 'Bulk import', '/bulk_import' %>
 
 
 <%= will_paginate @shipments %>
-<div class="model-list">
-  <table>
+<div class="table-responsive">
+  <table class='table table-striped'>
     <tr>
       <th>Shipment</th>
       <th>Timestamp</th>
