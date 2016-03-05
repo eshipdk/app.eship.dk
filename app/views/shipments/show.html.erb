@@ -39,7 +39,7 @@
       </td>
       <td>
         <% if @shipment.can_print %>
-        <%= link_to "Print label", @shipment.document_url, :target => '_blank' %>
+        <%= link_to "Download label", @shipment.document_url, :target => '_blank' %>
         <% else %>
         -
         <% end %>
@@ -48,8 +48,9 @@
         <% if @shipment.can_print %>
         	<% if @shipment.recent_label_pending? %>
         	Pending..
+        	<div id='printing-pending'></div>
         	<% else %>
-    	 	<%= link_to 'Reprint', reprint_shipment_path(@shipment), method: :post %>
+    	 	<%= link_to 'Send to printer', reprint_shipment_path(@shipment), method: :post %>
         	<% end %>
         <% else %>
         -
@@ -107,3 +108,12 @@
 </div>
  
 </div>
+
+<script type='text/javascript'>
+	setInterval(
+	     function(){   
+      		if($('#printing-pending').length){
+      			location.reload();
+      		}
+	     },5000 );
+</script>

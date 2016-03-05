@@ -1,15 +1,19 @@
 <div class="col-sm-3 col-md-2 sidebar">
  	
 	<ul class='nav nav-sidebar'>
+		<li><h4>Shipping</h4></li>
 			<%= render :partial => 'layouts/left_link', :locals => {:area => 'shipments', :title => 'Shipments', :path => shipments_path} %>
 			<%= render :partial => 'layouts/left_link', :locals => {:area => 'addresses', :title => 'Address book', :path => addresses_path}%>
-			<% if @current_user.role=='admin' %>
-				<%= render :partial => 'layouts/left_link', :locals => {:area => 'products', :title => 'Products', :path => products_path} %>
-				<%= render :partial => 'layouts/left_link', :locals => {:area => 'users', :title => 'Users', :path => users_path} %>
-			<% end %>
-			<%= render :partial => 'layouts/left_link', :locals => {:area => '', :title => 'Log out', :path => logout_path} %>
 	</ul>
- 	
+	
+	<% if @current_user.role=='admin' %>
+	<ul class='nav nav-sidebar'>
+		<li><h4>Admin</h4></li>
+		<%= render :partial => 'layouts/left_link', :locals => {:area => 'products', :title => 'Products', :path => products_path} %>
+		<%= render :partial => 'layouts/left_link', :locals => {:area => 'users', :title => 'Users', :path => users_path} %>
+	</ul>
+	<% end %>
+
 </div>
 
 	

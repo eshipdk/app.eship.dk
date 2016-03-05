@@ -6,7 +6,15 @@ class ShipmentsController < ApplicationController
 
   def index
     #@shipments = @current_user.shipments.order(id: :desc)
-    @shipments = @current_user.shipments.order(id: :desc).paginate(:page => params[:page], :per_page => 5)
+    
+    @shipments = @current_user.shipments
+    if params[:id]
+       @shipments = @shipments.filter_pretty_id(params[:id]) 
+    end
+    if params[:reference] != nil and params[:reference] != ''
+      @shipments = @shipments.where('reference LIKE :prefix', prefix: "#{params[:reference]}%")
+    end
+    @shipments = @shipments.order(id: :desc).paginate(:page => params[:page], :per_page => 5)
   end
 
   def show
@@ -50,6 +58,13 @@ class ShipmentsController < ApplicationController
     else
       render 'new'
     end
+  end
+  
+  def destroy
+    @shipment = Shipment.find(params[:id])
+    @shipment.destroy
+
+    redirect_to :action => 'index'
   end
   
   def bulk_import
