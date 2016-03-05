@@ -20,6 +20,10 @@ class ApplicationController < ActionController::Base
     if user_authenticated  and not @current_user.role=='admin'
       redirect_to home_path
       return false
+    else
+      if @current_user.role=='admin'
+        @admin = true
+      end
     end
       return user_authenticated
   end
