@@ -8,11 +8,11 @@ class User < ActiveRecord::Base
   enum role: [:admin, :customer]
 
   has_many :products, :through => :user_products
-  has_many :user_products
+  has_many :user_products, :dependent => :destroy
   has_many :addresses, :through => :address_book_records
-  has_many :address_book_records
-  has_many :shipments
-  has_one :import_format
+  has_many :address_book_records, :dependent => :destroy
+  has_many :shipments, :dependent => :destroy
+  has_one :import_format, :dependent => :destroy
   belongs_to :default_address, :class_name => 'Address' , :foreign_key => 'address_id'
 
   before_create :create_unique_api_key

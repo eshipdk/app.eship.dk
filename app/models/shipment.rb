@@ -3,8 +3,8 @@ class Shipment < ActiveRecord::Base
   belongs_to :user
   belongs_to :product
 
-  belongs_to :sender, :class_name => 'Address', :foreign_key => 'sender_address_id'
-  belongs_to :recipient, :class_name => 'Address', :foreign_key => 'recipient_address_id'
+  belongs_to :sender, :class_name => 'Address', :foreign_key => 'sender_address_id', :dependent => :destroy
+  belongs_to :recipient, :class_name => 'Address', :foreign_key => 'recipient_address_id', :dependent => :destroy
 
   #status label_ready has been deprecated. See label_pending bool
   enum status: [:initiated, :response_pending, :label_ready, :complete, :failed]
@@ -19,6 +19,17 @@ class Shipment < ActiveRecord::Base
     end
     return 'e' + id.to_s
   end
+  
+  scope :filter_pretty_id, ->(str){
+    if(str == '' || str == nil) 
+      return self.all
+    end
+    if str[0,1] == 'e'
+      id = str[1..-1].to_i
+      return self.where(id: id)
+    end
+    return self.where('cargoflux_shipment_id LIKE :prefix', prefix: "#{str}%")
+  }
 
   def address(type)
     if new_record?
