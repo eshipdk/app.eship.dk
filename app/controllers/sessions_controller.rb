@@ -9,6 +9,7 @@ class SessionsController < ApplicationController
   end
 
   def home
+    redirect_to '/shipments'
   end
 
   def login_attempt
