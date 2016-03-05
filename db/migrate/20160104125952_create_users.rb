@@ -4,8 +4,9 @@ class CreateUsers < ActiveRecord::Migration
       t.string :email
       t.string :encrypted_password
       t.string :salt
-      t.column :privilege, :integer, default: 0
+      t.column :role, :integer, default: 0
       t.string :cargoflux_api_key
+      t.string :eship_api_key
 
       t.timestamps null: false
     end
