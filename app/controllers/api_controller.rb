@@ -63,13 +63,37 @@ class ApiController < ApplicationController
     
     shipment.reload
 
-    response = {'shipment' => shipment.pretty_id, 'status' => shipment.status}
+    response = {'shipment_id' => shipment.pretty_id, 'status' => shipment.status}
     if shipment.status == 'failed'
       response['errors'] = shipment.api_response_error_msg
     end
     render :text => response.to_json
   end
 
+  def shipment_info
+    
+    pretty_id = @api_params['shipment_id']
+    shipment = Shipment.find_by_pretty_id pretty_id
+    
+    if shipment == nil || shipment.user != @current_user
+      result = {'found' => false}
+    else
+      result = {
+          'found' => true,
+          'id'  => pretty_id,
+          'status' => shipment.status
+        }
+
+      case shipment.status
+      when 'failed'
+        result['error'] = shipment.api_response_error_msg
+      when 'complete'
+        result['document_url'] = shipment.document_url
+        result['tracking_url'] = shipment.tracking_url
+      end
+    end
+    render :text => result.to_json
+  end
 
   def fresh_labels
 

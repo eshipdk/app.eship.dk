@@ -20,16 +20,27 @@ class Shipment < ActiveRecord::Base
     return 'e' + id.to_s
   end
   
-  scope :filter_pretty_id, ->(str){
-    if(str == '' || str == nil) 
+  scope :filter_pretty_id, ->(pretty_id){
+    if(pretty_id == '' || pretty_id == nil) 
       return self.all
     end
-    if str[0,1] == 'e'
-      id = str[1..-1].to_i
+    if pretty_id[0,1] == 'e'
+      id = pretty_id[1..-1].to_i
       return self.where(id: id)
     end
-    return self.where('cargoflux_shipment_id LIKE :prefix', prefix: "#{str}%")
+    return self.where('cargoflux_shipment_id LIKE :prefix', prefix: "#{pretty_id}%")
   }
+  
+  def self.find_by_pretty_id pretty_id
+    if(pretty_id == '' || pretty_id == nil) 
+      return nil
+    end
+    if pretty_id[0,1] == 'e'
+      id = pretty_id[1..-1].to_i
+      return self.find(id)
+    end
+    return find_by_cargoflux_shipment_id(pretty_id)
+  end
 
   def address(type)
     if new_record?
@@ -112,5 +123,14 @@ class Shipment < ActiveRecord::Base
   end
 
     
-
+  def tracking_url
+    return case product_code
+    when 'daod'
+      'http://www.tracktrace.dk/index.php?stregkode=' + awb
+    when 'glsb', 'glsp'
+      'https://gls-group.eu/DK/da/find-pakke?match=' + awb
+    else
+      'about:blank'
+    end
+  end
 end
