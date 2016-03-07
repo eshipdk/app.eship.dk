@@ -9,6 +9,7 @@ class CreateShipments < ActiveRecord::Migration
       t.string :document_url
       t.column :status, :integer, default: 0
       t.column :label_pending, :boolean, default: false
+      t.column :label_pending_time, :datetime
       t.column :sender_address_id, :integer
       t.column :recipient_address_id, :integer
       t.text :api_response
@@ -17,6 +18,7 @@ class CreateShipments < ActiveRecord::Migration
       t.column :package_width, :integer
       t.column :package_height, :integer
       t.column :package_weight, :integer
+      
 
       t.timestamps null: false
     end
