@@ -62,6 +62,17 @@ class UsersController < ApplicationController
     user.save
     redirect_to :action => :edit_products
   end
+  
+  def remove_product
+    
+    product = Product.find(params[:product_id])
+    user = User.find(params[:id])
+    
+    user.remove_product(product)
+    user.save
+    redirect_to :action => :edit_products
+    
+  end
 
     private
 

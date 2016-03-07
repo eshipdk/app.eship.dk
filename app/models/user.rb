@@ -45,6 +45,10 @@ class User < ActiveRecord::Base
   def add_product(product)
     self.user_products.build(:product => product)
   end
+  
+  def remove_product product
+    self.products.delete product
+  end
 
   def holds_product(product)
    for p in products

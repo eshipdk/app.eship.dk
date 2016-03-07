@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :users do
     member do
       post :add_product
+      post :remove_product
       get :edit_products
     end
   end
