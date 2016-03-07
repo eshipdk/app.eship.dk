@@ -13,7 +13,6 @@
     <div class='title'>Error: <%= @shipment.api_response_error_msg %></div>
   </div>
   <% end %>
-
 <div class='table-responsive'>
   <table class='table table-striped'>
     <tr>
@@ -28,11 +27,14 @@
     <tr>
       <td>#<%= @shipment.pretty_id %></td>
       <td><%= @shipment.status.capitalize %></td>
+      <% if @shipment.status == 'response_pending'%>
+      <script type='text/javascript'>var autoReload = true;</script>
+      <% end %>
       <td><%= @shipment.created_at %></td>
       <td><%= @shipment.product.product_code %></td>
       <td>
         <% if @shipment.can_print %>
-        <%= link_to @shipment.awb, "http://www.tracktrace.dk/index.php?stregkode=#{@shipment.awb}", :target => '_blank' %>
+        <%= link_to @shipment.awb, @shipment.tracking_url, :target => '_blank' %>
         <% else %>
         -
         <% end %>
@@ -48,7 +50,7 @@
         <% if @shipment.can_print %>
         	<% if @shipment.recent_label_pending? %>
         	Pending..
-        	<div id='printing-pending'></div>
+        	<script type='text/javascript'>var autoReload = true;</script>
         	<% else %>
     	 	<%= link_to 'Send to printer', reprint_shipment_path(@shipment), method: :post %>
         	<% end %>
@@ -110,10 +112,11 @@
 </div>
 
 <script type='text/javascript'>
-	setInterval(
-	     function(){   
-      		if($('#printing-pending').length){
+	if(autoReload === true){
+		setInterval(
+	    	function(){   
       			location.reload();
-      		}
-	     },5000 );
+		     },5000 );
+	}
 </script>
+
