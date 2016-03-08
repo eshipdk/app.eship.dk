@@ -1,0 +1,25 @@
+<h1 class='page-header'>My account</h1>
+
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>Account email</th>
+			<th>eShip API key</th>
+			<th>Cargoflux API key</th>
+		</tr>
+		<tr>
+			<td>
+				<%= @current_user.email %>
+			</td>
+			<td>
+				<input type='text' disabled value="<%= @current_user.eship_api_key %>"/>
+			</td>
+			<td>
+				<input type='text' disabled value="<%= @current_user.cargoflux_api_key %>"/>
+			</td>
+		</tr>
+	</table>	
+</div>	
+
+<h2 class='sub-header'>Contact information</h2>
+<%= render :partial => '/addresses/display', :locals => {:address => @current_user.contact_address} %>

@@ -1,0 +1,12 @@
+<h1 class='page-header'>Edit contact address for user: <%= @user.email %></h1>
+
+
+<%= form_for @address, :url => { :action => 'update_contact_address', :controler => 'users'} do |f| %>
+
+
+<%= render :partial => '/addresses/form_fields', :locals => {:f => f} %>
+
+<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+ 
+
+<% end %>

@@ -5,6 +5,8 @@ Rails.application.routes.draw do
       post :add_product
       post :remove_product
       get :edit_products
+      get :edit_contact_address
+      patch :update_contact_address
     end
   end
 
@@ -51,6 +53,9 @@ Rails.application.routes.draw do
   post 'api/validate_key', to: 'api#validate_key'
   post 'api/shipment_info', to: 'api#shipment_info'
 
+
+  #User account
+  get 'account', to: 'account#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

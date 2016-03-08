@@ -20,10 +20,14 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-
+    contact_address = Address.new
+    contact_address.save
+    @user.contact_address = contact_address
     if @user.save
+      @user.contact_address = contact_address
       redirect_to :action => 'index'
     else
+      contact_address.destroy
       render 'new'
     end
   end
@@ -52,9 +56,28 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @products = Product.all
   end
+  
+  def edit_contact_address
+    @user = User.find(params[:id])
+    @address = @user.contact_address
+    if @address == nil
+      @address = Address.new
+      @address.save
+      @user.contact_address = @address
+      @user.save
+    end
+  end
+
+  def update_contact_address
+    user = User.find(params[:id])
+    address = user.contact_address
+    address.update address_params
+    address.save
+    
+    redirect_to :action => :index
+  end
 
   def add_product
-
     product = Product.find(params[:product_id])
     user = User.find(params[:id])
 
@@ -64,22 +87,27 @@ class UsersController < ApplicationController
   end
   
   def remove_product
-    
     product = Product.find(params[:product_id])
     user = User.find(params[:id])
     
     user.remove_product(product)
     user.save
     redirect_to :action => :edit_products
-    
   end
 
-    private
+  private
 
-    def user_params
-      params.require(:user).permit(:email,:cargoflux_api_key,
+  def user_params
+    params.require(:user).permit(:email,:cargoflux_api_key,
                                    :password,:password_confirmation,
                                    :role)
-    end
+  end
+    
+  def address_params
+    params.require(:address).permit(:company_name, :attention, :address_line1,
+                                  :address_line2,:zip_code,
+                                  :city, :phone_number,
+                                  :email, :country_code)
+  end
 
 end

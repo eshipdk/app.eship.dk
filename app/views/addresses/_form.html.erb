@@ -2,39 +2,8 @@
 <p>
  	<%= check_box_tag 'default_address', "1", @current_user.default_address == @address %> <label for='default_address'>Make default address</label><br/>
 </p>
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>Company</th>
-			<th>Attention</th>
-			<th>Address line 1</th>
-			<th>Address line 2</th>
-			<th>Zip code</th>
-		</tr>
-		<tr>
-			<td><%= f.text_field :company_name %></td>
-			<td><%= f.text_field :attention %></td>
-			<td><%= f.text_field :address_line1 %></td>
-			<td><%= f.text_field :address_line2 %></td>
-			<td><%= f.text_field :zip_code %></td>
-		</tr>
-	</table>
-	<table class='table table-striped'>
-		<tr>
-			<th>City</th>
-			<th>Country</th>
-			<th>Phone</th>
-			<th>Email</th>
-		</tr>
-		<tr>
-			<td><%= f.text_field :city %></td>
-			<td><%= country_select('address', 'country_code', selected: @address.country_code) %></td>
-			<td><%= f.text_field :phone_number %></td>
-			<td><%= f.text_field :email %></td>
-		</tr>
-	</table>
-</div>
 
+<%= render :partial => 'form_fields', :locals => {:f => f}%>
  
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
  

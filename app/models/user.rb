@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   has_many :shipments, :dependent => :destroy
   has_one :import_format, :dependent => :destroy
   belongs_to :default_address, :class_name => 'Address' , :foreign_key => 'address_id'
+  belongs_to :contact_address, :class_name => 'Address', :foreign_key => 'contact_address_id'
 
   before_create :create_unique_api_key
   before_save :encrypt_password
