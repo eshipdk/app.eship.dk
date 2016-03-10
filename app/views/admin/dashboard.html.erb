@@ -1,0 +1,78 @@
+<h1 class='page-header'>Dashboard</h1>
+
+
+<%= form_tag admin_dashboard_path, method: 'get' do %>
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>From</th>
+			<th>To</th>
+			<th></th>
+		</tr>
+		<tr>
+			<td>
+				<%= select_date(@dateFrom, :prefix => 'from', :order => [:day, :month, :year]) %>
+			</td>
+			<td>
+				<%= select_date(@dateTo, :prefix => 'to', :order => [:day, :month, :year]) %>
+			</td>
+			<td>
+				<button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button>
+			</td>
+		</tr>
+	</table>
+</div>
+
+	
+<% end %>
+
+
+<h2 class='sub-header'>Turnover in period</h2>
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>User</th>
+			<th>Completed shipment bookings</th>
+			<th>Value of bookings</th>
+			<th>Number of invoices</th>
+			<th>Total amount invoiced</th>
+		</tr>
+		<tr>
+			<th>
+				TOTAL
+			</th>
+			<th>
+				<%= @nShipments %>
+			</th>
+			<th>
+				<%= @value %>
+			</th>
+			<th>
+				<%= @nInvoices %>
+			</th>
+			<th>
+				<%= @totalInvoiced %>
+			</th>
+		</tr>
+		<% @customerData.each do |row| %>
+		<tr>
+			<td>
+				<%= row['email'] %>
+			</td>
+			<td>
+				<%= row['booked'] %>
+			</td>
+			<td>
+				<%= row['value'] %>
+			</td>
+			<td>
+				<%= row['invoices'] %>
+			</td>
+			<td>
+				<%= row['invoiced'] %>
+			</td>
+		</tr>
+		<% end %>
+	</table>
+</div>
+

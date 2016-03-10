@@ -6,12 +6,14 @@ class User < ActiveRecord::Base
   validates_length_of :password, :in => 6..20, :on => :create
   validates_length_of :password, :in => 6..20, :on => :update, :allow_blank => true
   enum role: [:admin, :customer]
+  enum billing_type: [:free, :flat_price] #flat_price: Pays a flat fee per label ordered
 
   has_many :products, :through => :user_products
   has_many :user_products, :dependent => :destroy
   has_many :addresses, :through => :address_book_records
   has_many :address_book_records, :dependent => :destroy
   has_many :shipments, :dependent => :destroy
+  has_many :invoices
   has_one :import_format, :dependent => :destroy
   belongs_to :default_address, :class_name => 'Address' , :foreign_key => 'address_id'
   belongs_to :contact_address, :class_name => 'Address', :foreign_key => 'contact_address_id'
@@ -42,6 +44,41 @@ class User < ActiveRecord::Base
   def roles
     [["Admin", :admin], ["Customer", :customer]]
   end
+  
+  def self.role_options
+    {'Admin' => :admin, 'Customer' => :customer}
+  end
+  
+  def self.billing_type_options
+    {(self.billing_type_title :free) => :free, (self.billing_type_title :flat_price) => :flat_price}
+  end
+  
+  def self.billing_type_title code
+    case code.to_s
+    when 'free'
+        'Free'
+    when 'flat_price'
+        'Flat price'
+    end
+  end
+
+  def billing_type_title
+    return User.billing_type_title billing_type
+  end
+  
+  
+  def balance
+    calc_value uninvoiced_shipments
+  end
+  
+  def calc_value shipments
+    case billing_type
+    when 'free'
+      0
+    when 'flat_price'
+      shipments.count * unit_price
+    end
+  end
 
   def add_product(product)
     self.user_products.build(:product => product)
@@ -58,6 +95,42 @@ class User < ActiveRecord::Base
      end
    end
     return false
+  end
+
+  def uninvoiced_shipments
+    shipments.filter_uninvoiced
+  end
+
+  def n_uninvoiced_shipments
+    uninvoiced_shipments.count
+  end
+
+  def do_invoice
+    shipments = uninvoiced_shipments
+    n = shipments.count
+    if n < 1
+      raise 'No shipments to invoice.'
+    end
+    value = calc_value shipments
+    invoice = Invoice.new()
+    invoice.amount = value
+    invoice.user = self
+    invoice.n_shipments = n
+    invoice.save()
+    
+    for shipment in shipments do
+      shipment.invoiced = true
+      shipment.invoice = invoice
+      shipment.save()
+    end
+  end
+  
+  def total_shipments_invoiced
+    invoices.sum(:n_shipments)
+  end
+  
+  def total_amount_invoiced
+    invoices.sum(:amount)
   end
 
   private

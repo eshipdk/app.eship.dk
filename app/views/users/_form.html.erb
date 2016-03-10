@@ -15,6 +15,7 @@
   <% end %>
  
  <div class='table-responsive'>
+ 	<h2 class='sub-header'>Profile</h2>
  	<table class='table table-striped'>
  		<tr>
  			<th>Email</th>
@@ -24,13 +25,13 @@
  		</tr>
  		<tr>
  			<td><%= f.text_field :email %></td>
- 			<td><%= f.select :role, User.roles.keys.to_a %></td>
+ 			<td><%= f.select :role, User.role_options %></td>
  			<td><%= f.text_field :cargoflux_api_key %></td>
  			<td><% if !@user.new_record? %><%= f.text_field :eship_api_key, :disabled => true %><% end %></td>
  		</tr>
 	</table>
 
- 
+	
  
   <% if @user.new_record? %>
   	<table class='table table-striped'>
@@ -44,6 +45,27 @@
 		</tr>
 	</table>
   <% end %>
+  
+  
+  	<h2 class='sub-header'>Billing</h2>
+  	<table class='table table-striped'>
+  		<tr>
+  			<th>
+  				Billing type
+  			</th>
+  			<th>Unit price (for flat rate pricing)</th>
+  		</tr>
+  		<tr>
+  			<td>
+  				<%= f.select :billing_type, User.billing_type_options %>
+  			</td>
+  			<td>
+  				<%= f.number_field :unit_price, :step=>'any' %>
+  			</td>
+  		</tr>
+	</table>
+  
+  
   <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
   </div>	
  

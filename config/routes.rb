@@ -36,6 +36,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :invoices do
+  end
   
 
   #Session handling
@@ -56,6 +58,13 @@ Rails.application.routes.draw do
 
   #User account
   get 'account', to: 'account#index'
+
+  #Billing
+  get 'billing/user/:id', to: 'billing#user', as: 'user_billing'
+  post 'billing/invoice', to: 'billing#invoice', as: 'invoice_all'
+
+  #Admin dashboard
+  get 'admin/dashboard', to: 'admin#dashboard', as: 'admin_dashboard'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

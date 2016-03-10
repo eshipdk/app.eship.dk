@@ -10,6 +10,7 @@
       <th>Edit</th>
       <th>Contacts</th>
       <th>Products</th>
+      <th>Billing</th>
       <th>Import format</th>
       <th>Delete</th>
     </tr>
@@ -26,6 +27,9 @@
       </td>
       <td>
         <%= link_to 'Products', edit_products_user_path(user) %>
+      </td>
+      <td>
+      	<%= link_to 'Billing', user_billing_path(user) %>
       </td>
       <td>
         <% if !user.import_format || !user.import_format.complete? %>

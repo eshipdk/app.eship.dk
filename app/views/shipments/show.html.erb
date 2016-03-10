@@ -18,6 +18,7 @@
     <tr>
       <th>ID</th>
       <th>Status</th>
+      <th>Invoiced</th>
       <th>Timestamp</th>
       <th>Product</th>
       <th>AWB</th>
@@ -27,6 +28,7 @@
     <tr>
       <td>#<%= @shipment.pretty_id %></td>
       <td><%= @shipment.status.capitalize %></td>
+      <td><%= @shipment.invoiced ? "Yes" : "No" %></td>
       <% if @shipment.status == 'response_pending'%>
       <script type='text/javascript'>var autoReload = true;</script>
       <% end %>

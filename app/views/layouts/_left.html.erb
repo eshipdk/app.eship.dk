@@ -10,6 +10,7 @@
 	<% if @current_user.role=='admin' %>
 	<ul class='nav nav-sidebar'>
 		<li><h4>Admin</h4></li>
+		<%= render :partial => 'layouts/left_link', :locals => {:area => 'admin', :title => 'Dashboard', :path => admin_dashboard_path}%>
 		<%= render :partial => 'layouts/left_link', :locals => {:area => 'products', :title => 'Products', :path => products_path} %>
 		<%= render :partial => 'layouts/left_link', :locals => {:area => 'users', :title => 'Users', :path => users_path} %>
 	</ul>

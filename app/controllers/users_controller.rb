@@ -100,7 +100,7 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(:email,:cargoflux_api_key,
                                    :password,:password_confirmation,
-                                   :role)
+                                   :role,:billing_type,:unit_price)
   end
     
   def address_params

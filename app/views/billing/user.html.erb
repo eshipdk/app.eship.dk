@@ -1,0 +1,70 @@
+<h1 class='page-header'>User billing: <%= @user.email %></h1>
+
+
+<h3 class='sub-header'>Current balance</h3>
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>Uninvoiced shipments</th>
+			<th>Billing type</th>
+			<th>Balance</th>
+			<th>Invoice</th>
+		</tr>
+		<tr>
+			<td><%= @user.n_uninvoiced_shipments %></td>
+			<td><%= @user.billing_type_title %></td>
+			<td><%= @user.balance %></td>
+			<td>
+				<% if @user.n_uninvoiced_shipments > 0 %>
+				<%= form_tag invoice_all_path, method: :post do %>
+					<%= hidden_field_tag :user_id, @user.id %>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Create invoice</button>
+				<% end %>
+				<% end %>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+<h2 class='sub-header'>History</h2>
+<h3 class='sub-header'>Totals</h3>
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>Total number of labels invoiced</th>
+			<th>Total amount invoiced</th>
+		</tr>
+		<tr>
+			<td><%= @user.total_shipments_invoiced %></td>
+			<td><%= @user.total_amount_invoiced %></td>
+		</tr>
+	</table>
+</div>
+
+<h3 class='sub-header'>Invoices</h3>
+<div class='table-responsive'>
+	<%= will_paginate @invoices %>
+	<table class='table table-striped'>
+		<tr>
+			<th>ID</th><th>Timestamp</th><th>Number of labels</th><th>Amount</th><th>Undo invoice</th>
+		</tr>	
+		<% @invoices.each do |invoice| %>
+		<tr>
+			<td><%= invoice.id %></td>
+			<td><%= invoice.created_at %></td>
+			<td><%= invoice.n_shipments %></td>
+			<td><%= invoice.amount %></td>
+			<td>
+				<%= link_to 'Undo', invoice_path(invoice),
+		              method: :delete,
+		              data: { confirm: 'Do you want to delete this invoice? Assoicated shipments will be marked as uninvoiced.' } %>
+			</td>
+		</tr>
+		<% end %>
+	</table>
+</div>
+
+
+
+

@@ -2,7 +2,7 @@ class Shipment < ActiveRecord::Base
   
   belongs_to :user
   belongs_to :product
-
+  belongs_to :invoice
   belongs_to :sender, :class_name => 'Address', :foreign_key => 'sender_address_id', :dependent => :destroy
   belongs_to :recipient, :class_name => 'Address', :foreign_key => 'recipient_address_id', :dependent => :destroy
 
@@ -29,6 +29,10 @@ class Shipment < ActiveRecord::Base
       return self.where(id: id)
     end
     return self.where('cargoflux_shipment_id LIKE :prefix', prefix: "#{pretty_id}%")
+  }
+  
+  scope :filter_uninvoiced, ->(){
+    return self.complete.where(invoiced: false)
   }
   
   def self.find_by_pretty_id pretty_id
@@ -124,7 +128,7 @@ class Shipment < ActiveRecord::Base
 
     
   def tracking_url
-    return case product_code
+    case product.product_code
     when 'daod'
       'http://www.tracktrace.dk/index.php?stregkode=' + awb
     when 'glsb', 'glsp'
