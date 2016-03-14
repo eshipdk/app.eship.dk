@@ -4,7 +4,7 @@ class BillingController < ApplicationController
   
   def user
     @user = User.find(params[:id])
-    @invoices = @user.invoices.order(id: :desc).paginate(:page => params[:page], :per_page => 5)
+    @invoices = @user.invoices.order(id: :desc).paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
   end
   
   def invoice

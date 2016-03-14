@@ -2,7 +2,7 @@ class AddressesController < ApplicationController
   before_filter :authenticate_user
   
   def index
-    @addresses = @current_user.addresses.order(id: :desc).paginate(:page => params[:page], :per_page => 5)
+    @addresses = @current_user.addresses.order(id: :desc).paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
   end
   
   def new

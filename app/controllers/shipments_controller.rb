@@ -14,7 +14,7 @@ class ShipmentsController < ApplicationController
     if params[:reference] != nil and params[:reference] != ''
       @shipments = @shipments.where('reference LIKE :prefix', prefix: "#{params[:reference]}%")
     end
-    @shipments = @shipments.order(id: :desc).paginate(:page => params[:page], :per_page => 5)
+    @shipments = @shipments.order(id: :desc).paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
   end
 
   def show
