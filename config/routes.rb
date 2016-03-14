@@ -59,6 +59,8 @@ Rails.application.routes.draw do
 
   #User account
   get 'account', to: 'account#index'
+  get 'account/change_password', to: 'account#change_password', as: 'change_password'
+  post 'account/do_change_password', to: 'account#do_change_password', as: 'do_change_password'
 
   #Billing
   get 'billing/user/:id', to: 'billing#user', as: 'user_billing'

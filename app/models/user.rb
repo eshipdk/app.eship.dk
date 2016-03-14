@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   validates :email, :presence => true, :uniqueness => true, :format => EMAIL_REGEX
   validates :password, :confirmation => true #password_confirmation attr
   validates_length_of :password, :in => 6..20, :on => :create
-  validates_length_of :password, :in => 6..20, :on => :update, :allow_blank => true
+  validates_length_of :password, :in => 6..20, :on => :update
   enum role: [:admin, :customer]
   enum billing_type: [:free, :flat_price] #flat_price: Pays a flat fee per label ordered
 

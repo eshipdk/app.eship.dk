@@ -6,6 +6,7 @@
 			<th>Account email</th>
 			<th>eShip API key</th>
 			<th>Cargoflux API key</th>
+			<th>Password</th>
 		</tr>
 		<tr>
 			<td>
@@ -16,6 +17,9 @@
 			</td>
 			<td>
 				<input type='text' disabled value="<%= @current_user.cargoflux_api_key %>"/>
+			</td>
+			<td>
+				<%= link_to "Change password", change_password_path %>
 			</td>
 		</tr>
 	</table>	
