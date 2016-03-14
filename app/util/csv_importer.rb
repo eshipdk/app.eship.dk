@@ -52,6 +52,7 @@ module CsvImporter
   
   def interline_csv_row_hash user, row
     shipment_type = row_val user, row, 'product_code'
+    is_return = 0
     case shipment_type
     when 'A'
       product_code = 'glsb'
@@ -62,7 +63,8 @@ module CsvImporter
     when '2'
       raise 'ShopReturnService mail not supported.'
     when 'B'
-      raise 'ShopReturnService label not supported.'
+      product_code = 'glsb'
+      is_return = 1
     when '4'
       raise 'Express10Service not supported.'
     when '5'
@@ -72,7 +74,7 @@ module CsvImporter
     end
     
     hash = default_csv_row_hash user, row
-    hash['return'] = '0'
+    hash['return'] = is_return
     hash['product_code'] = product_code
     if product_code == 'glsp'
       hash['parcelshop_id'] = hash['recipient']['address_line2']
