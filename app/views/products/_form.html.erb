@@ -13,12 +13,24 @@
       </ul>
     </div>
   <% end %>
- <div class='form-part'>
-  <p>Product code:<br/>
-    <%= f.text_field :product_code %>
-  </p>
+  
+<div class='table-responsive'>
+	<table class='table table-striped'>
+	<tr>
+		<th>Name</th><th>Code</th><th></th>
+	</tr>
+	<tr>
+		<td>
+			<%= f.text_field :name%>
+		</td>
+		<td>
+			<%= f.text_field :product_code%>
+		</td>
+		<td>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+		</td>
+	</tr>
+	</table>
+</div>
 
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
- 
- </div>
 <% end %>

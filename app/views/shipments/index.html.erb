@@ -13,7 +13,7 @@
       <th>Shipment</th>
       <th>Reference</th>
       <th>Timestamp</th>
-      <th>Product code</th>
+      <th>Product</th>
       <th>Dimensions</th>
       <th>Weight (kg)</th>
       <th>Amount</th>
@@ -41,7 +41,7 @@
       <td><%= link_to "#{shipment.pretty_id}", shipment_path(shipment) %>
   	  <td><%= shipment.reference %></td>
       <td><%= shipment.created_at %></td>
-      <td><%= shipment.product.product_code %></td>
+      <td><%= shipment.product.name %></td>
       <td><%= shipment.package_length %> x <%= shipment.package_width %> x <%= shipment.package_height %></td>
       <td><%= shipment.package_weight %></td>
       <td><%= shipment.amount %></td>

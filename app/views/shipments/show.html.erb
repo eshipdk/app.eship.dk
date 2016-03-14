@@ -33,7 +33,7 @@
       <script type='text/javascript'>var autoReload = true;</script>
       <% end %>
       <td><%= @shipment.created_at %></td>
-      <td><%= @shipment.product.product_code %></td>
+      <td><%= @shipment.product.name %></td>
       <td>
         <% if @shipment.can_print %>
         <%= link_to @shipment.awb, @shipment.tracking_url, :target => '_blank' %>

@@ -18,18 +18,27 @@ class ProductsController < ApplicationController
     @product = Product.new(product_params)
 
     if @product.save
-      redirect_to @product
+      redirect_to :action => :index
     else
       render 'new'
     end
   end
 
 
+  def edit
+    @product = Product.find(params[:id])
+  end
+
+  def update
+    product = Product.find(params[:id])
+    product.update(product_params)
+    redirect_to :action => :index
+  end
 
   private
 
   def product_params
-    params.require(:product).permit(:product_code)
+    params.require(:product).permit(:product_code, :name)
   end
 
 end

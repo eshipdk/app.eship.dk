@@ -5,11 +5,15 @@
 <div class='table-responsive'>
 	<table class='table table-striped'>
 		<tr>
-			<th>Product code</th>
+			<th>Name</th>
+			<th>Code</th>
+			<th></th>
 		</tr>
 		<% @products.each do |product| %>
 		<tr>
+			<td><%= product.name %></td>
 			<td><%= product.product_code %></td>
+			<td><%= link_to 'Edit', edit_product_path(product) %></td>
 		</tr>
 		<% end %>
 	</table>
