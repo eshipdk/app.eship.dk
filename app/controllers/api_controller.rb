@@ -15,12 +15,13 @@ class ApiController < ApplicationController
   def create_shipment
 
     shipment_params = @api_params['shipment']
-    if !@current_user.products.map(&:product_code).include? shipment_params['product_code']
+    
+    begin
+      product = @current_user.find_product shipment_params['product_code']
+    rescue => ex
       api_error 'Invalid product code: ' + shipment_params['product_code']
       return false
     end
-
-    product = Product.find_by_product_code shipment_params['product_code']
 
     sender = Address.new(shipment_params['sender'])
     

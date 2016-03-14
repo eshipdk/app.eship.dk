@@ -4,14 +4,15 @@
 <div class='table-responsive'>
   <table class='table table-striped'>
     <tr>
-      <th>Product_code</th>
+      <th>Product</th>
       <th>Status</th>
       <th>Action</th>
+      <th>Alias</th>
     </tr>
     <% @products.each do |product| %>
     <tr>
-      <td><%= product.product_code %></td>
-        <% if @user.holds_product(product) %>
+      <td><%= product.name %></td>
+        <% if @user.holds_product product %>
         	<td>Activated</td>
         	<td>
         		<%= form_for @user, :url => {:controller => "users", :action => "remove_product"}, method: :post  do |f| %>
@@ -33,6 +34,14 @@
          		<% end %>
     		</td>
         <% end %>
+      </td>
+      <td>
+      	<% if @user.holds_product product %>      	
+      	<%= form_for @user, :url => {:controller => 'users', :action => 'set_product_alias'}, method: :post do |f| %>
+      	<input type='hidden' name='product_id' value=<%= product.id %>/>
+      	<input type='text' name='alias' value='<%= @user.product_alias product %>'/>
+      	<% end %>
+      	<% end %>
       </td>
     </tr>
     <% end %>

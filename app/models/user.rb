@@ -132,6 +132,26 @@ class User < ActiveRecord::Base
   def total_amount_invoiced
     invoices.sum(:amount)
   end
+  
+  def product_alias product
+    link = user_products.find_by_product_id product.id
+    if link == nil
+      return nil
+    end
+    return link.alias
+  end
+  
+  def find_product product_code
+    link = user_products.find_by_alias product_code
+    if link != nil
+      return link.product
+    end
+    product = products.find_by_product_code product_code
+    if product != nil
+      return product
+    end
+    raise 'Invalid product code: ' + product_code;
+  end
 
   private
 
@@ -150,5 +170,7 @@ class User < ActiveRecord::Base
   def clear_password
     self.password = nil
   end
+  
+  
 end
 

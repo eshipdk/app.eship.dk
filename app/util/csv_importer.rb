@@ -94,7 +94,7 @@ module CsvImporter
   def default_csv_row_hash user, row
     {
       'return'=>( row_val user, row, 'return'),
-      'product_code' =>( row_val user, row, 'product_code'),
+      'product_code' => user.find_product( row_val user, row, 'product_code').product_code,
       'package_height'=>( row_val user, row, 'package_height'),
       'package_length'=>(  row_val user, row, 'package_length'),
       'package_width'=>( row_val user, row, 'package_width'),

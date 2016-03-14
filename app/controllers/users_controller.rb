@@ -94,6 +94,15 @@ class UsersController < ApplicationController
     user.save
     redirect_to :action => :edit_products
   end
+  
+  def set_product_alias
+    user = User.find(params[:id])
+    link = user.user_products.find_by_product_id(params[:product_id])
+    link.alias = params[:alias]
+    link.save
+    
+    redirect_to :action => :edit_products
+  end
 
   private
 
