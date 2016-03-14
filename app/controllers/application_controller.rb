@@ -61,5 +61,20 @@ class ApplicationController < ActionController::Base
   def api_success
     render :text => {'success' => true}.to_json
   end
+  
+  def filter_dates
+    from = params[:from]
+    to = params[:to]
+    
+    if from
+      @dateFrom = DateTime.now.change(day: from[:day].to_i, month: from[:month].to_i, year: from[:year].to_i)
+      @dateTo = DateTime.now.change(day: to[:day].to_i, month: to[:month].to_i, year: to[:year].to_i)
+    else
+      @dateFrom = DateTime.now
+      @dateTo = DateTime.now
+    end
+    @dateFrom = @dateFrom.beginning_of_day
+    @dateTo = @dateTo.end_of_day
+  end
 
 end

@@ -3,11 +3,12 @@ include CsvImporter
 class ShipmentsController < ApplicationController
   before_filter :authenticate_user, :except => ['callback']
   skip_before_action :verify_authenticity_token, :only => ['callback']
+  before_filter :filter_dates, :only => :index
 
   def index
     #@shipments = @current_user.shipments.order(id: :desc)
     
-    @shipments = @current_user.shipments
+    @shipments = @current_user.shipments.where('created_at > ?', @dateFrom).where('created_at < ?', @dateTo)
     if params[:id]
        @shipments = @shipments.filter_pretty_id(params[:id]) 
     end

@@ -23,14 +23,15 @@
     <tr>
     	<td><input type='text' name='id' value='<%= params[:id] %>'/></td>
     	<td><input type='text' name='reference' value='<%= params[:reference] %>' /></td>
+    	<td>
+    		<%= select_date(@dateFrom, :prefix => 'from', :order => [:day, :month, :year]) %><br/>
+    		<%= select_date(@dateTo, :prefix => 'to', :order => [:day, :month, :year]) %>
+    	</td>
     	<td></td>
     	<td></td>
     	<td></td>
     	<td></td>
-    	<td></td>
-    	<td></td>
-    	<td></td>
-    	<td style='display:none'><button class="btn btn-lg btn-primary btn-block" type="submit">Search</button></td>
+    	<td><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></td>
     </tr>
     
     <tr>

@@ -1,0 +1,22 @@
+<%= form_tag request.env['PATH_INFO'], method: 'get' do %>
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>From</th>
+			<th>To</th>
+			<th></th>
+		</tr>
+		<tr>
+			<td>
+				<%= select_date(@dateFrom, :prefix => 'from', :order => [:day, :month, :year]) %>
+			</td>
+			<td>
+				<%= select_date(@dateTo, :prefix => 'to', :order => [:day, :month, :year]) %>
+			</td>
+			<td>
+				<button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button>
+			</td>
+		</tr>
+	</table>
+</div>
+<% end %>
