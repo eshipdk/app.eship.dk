@@ -8,6 +8,7 @@ Bundler.require(*Rails.groups)
 
 module EShip
   HOST_ADDRESS = 'http://app.eship.dk/'
+
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -23,6 +24,22 @@ module EShip
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+    
+    
+    
+    # mail settings
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.perform_deliveries = true
+    config.action_mailer.smtp_settings = {
+     :address              => "smpt.mailgun.org",
+     :port                 => 587,
+     :domain               => 'sandboxaf5ad80c18054824bd892c6f9996da95.mailgun.org',
+     :user_name            => 'postmaster@sandboxaf5ad80c18054824bd892c6f9996da95.mailgun.org',
+     :password             => '83919ca39fdde76fe1d89c5b1f738a44',
+     :authentication       => "plain",
+     :enable_starttls_auto => true
+    }
+
 
     config.assets.paths << Rails.root.join('vendor', 'assets')
   end

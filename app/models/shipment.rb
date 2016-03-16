@@ -8,6 +8,7 @@ class Shipment < ActiveRecord::Base
 
   #status label_ready has been deprecated. See label_pending bool
   enum status: [:initiated, :response_pending, :label_ready, :complete, :failed]
+  enum label_action: [:print, :email]
 
 
   
@@ -100,16 +101,26 @@ class Shipment < ActiveRecord::Base
   end
 
   
-
-
+  def self.label_action_options
+    {(self.label_action_title :print) => :print, (self.label_action_title :email) => :email}
+  end
+  
+  def self.label_action_title code
+    case code.to_s
+    when 'print'
+        'Print label'
+    when 'email'
+        'Send email'
+    end
+  end
+  
+  def label_action_title
+    Shipment.label_action_title label_action
+  end
 
   def must_retry?
     return cargoflux_shipment_id != nil && cargoflux_shipment_id != ''
   end
-
- 
-
-
 
 
   def api_response_error_msg

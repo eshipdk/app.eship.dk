@@ -21,6 +21,7 @@
       <th>Invoiced</th>
       <th>Timestamp</th>
       <th>Product</th>
+      <th>Label action</th>
       <th>AWB</th>
       <th>Document</th>
       <th>Print status</th>
@@ -34,6 +35,7 @@
       <% end %>
       <td><%= @shipment.created_at %></td>
       <td><%= @shipment.product.name %></td>
+      <td><%= @shipment.label_action_title %></td>
       <td>
         <% if @shipment.can_print %>
         <%= link_to @shipment.awb, @shipment.tracking_url, :target => '_blank' %>

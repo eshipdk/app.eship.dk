@@ -13,48 +13,67 @@
     </div>
   <% end %>
  
- 	<div class='product-type form-part'>
+ 	<div class='table'>
  		<h2 class='sub-header'>Product</h2>
-		<p>Product<br/>
-		  <%= f.select :product_id, products_option_hash(@current_user.products) %>
-		</p>
-		
-		<p>Return<br/>
-		<%= f.select :return, {'No'=>0,'Yes'=>1}%>
-		</p>
-		
-		<p>Description<br/>
-			<%= f.text_field :description %>
-		</p>
-		
-		<p>Reference<br/>
-			<%= f.text_field :reference %>
-		</p>
-		<p>Parcelshop id (if applicable)<br/>
-			<%= f.text_field :parcelshop_id %>
-		</p>
+ 		<table class='table table-striped'>
+ 			<tr>
+ 				<th>Product</th>
+ 				<th>Return service (if applicable)</th>
+ 				<th>Label action</th>
+ 				<th>Description</th>
+ 				<th>Reference</th>
+ 				<th>Parcelshop id (if applicable)</th>
+ 			</tr>
+ 			<tr>
+ 				<td>
+ 					<%= f.select :product_id, products_option_hash(@current_user.products) %>
+ 				</td>
+ 				<td>
+ 					<%= f.select :return, {'No'=>0,'Yes'=>1}%>
+ 				</td>
+ 				<td>
+ 					<%= f.select :label_action, Shipment.label_action_options %>
+ 				</td>
+ 				<td>
+ 					<%= f.text_field :description %>
+ 				</td>
+ 				<td>
+ 					<%= f.text_field :reference %>
+ 				</td>
+ 				<td>
+ 					<%= f.text_field :parcelshop_id %>
+ 				</td>
+ 			</tr>
+ 		</table>
 	</div>
-	<div class='package form-part'>
+	<div class='table-responsive'>
 		<h2 class='sub-header'>Package dimensions</h2>
-		<p>Length (cm)<br/>
-		<%= f.number_field :package_length %>
-		</p>
-		
-		<p>Width (cm)<br/>
-		<%= f.number_field :package_width %>
-		</p>
-		
-		<p>Height (cm)<br/>
-		<%= f.number_field :package_height %>
-		</p>
-		
-		<p>Weight (kg)<br/>
-		<%= f.number_field :package_weight, :step=>'any' %>
-		</p>
-		
-		<p>Amount<br/>
-		<%= f.number_field :amount %>
-		</p>
+		<table class='table table-striped'>
+			<tr>
+				<th>Length (cm)</th>
+				<th>Width (cm)</th>
+				<th>Height (cm)</th>
+				<th>Weight (kg)</th>
+				<th>Amount</th>
+			</tr>
+			<tr>
+				<td>
+					<%= f.number_field :package_length %>
+				</td>
+				<td>
+					<%= f.number_field :package_width %>
+				</td>
+				<td>
+					<%= f.number_field :package_height %>
+				</td>
+				<td>
+					<%= f.number_field :package_weight, :step=>'any' %>
+				</td>
+				<td>
+					<%= f.number_field :amount %>
+				</td>
+			</tr>
+		</table>
 	</div>
 
 <%= render :partial => 'address_form', :locals => {:prefix => 'sender', :address => (form_address @shipment, 'sender')} %>

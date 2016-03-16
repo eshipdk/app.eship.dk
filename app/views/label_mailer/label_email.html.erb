@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h3>Shipment label <%= @email_shipment.awb %></h3>
+    <p>
+    	Your label can be downloaded from the link below.
+    </p>
+ 	<p>
+ 		<a href='<%= @email_shipment.document_url %>'><%= @email_shipment.document_url %></a>
+ 	</p>
+ 	<p>
+ 		You may track your shipment's progress by visiting the link below.
+ 	</p>
+ 	<p>
+ 		<a href='<%= @email_shipment.tracking_url %>''><%= @email_shipment.tracking_url %></a>
+ 	</p>
+  </body>
+</html>

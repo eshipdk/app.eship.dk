@@ -19,7 +19,7 @@ class ShipmentsController < ApplicationController
   end
 
   def show
-    @shipment = Shipment.find(params[:id])
+    @shipment = Shipment.find params[:id]
   end
 
   def new
@@ -121,8 +121,14 @@ class ShipmentsController < ApplicationController
     end
 
     shipment.api_response = params.to_json
-    shipment.register_label_pending
-
+    if shipment.label_action == 'print' || shipment.status != 'complete'
+      logger.debug 'Autoprint'
+      shipment.register_label_pending
+    elsif shipment.label_action == 'email'
+      logger.debug 'Send email'
+      LabelMailer.label_email(shipment).deliver_now
+    end
+    
     shipment.save
     redirect_to '/'
   end
@@ -146,7 +152,7 @@ class ShipmentsController < ApplicationController
                                      :package_length, :package_width,
                                      :package_height, :package_weight,
                                      :description, :amount, :reference,
-                                     :parcelshop_id)
+                                     :parcelshop_id, :label_action)
   end
 
   def address_params(prefix)
