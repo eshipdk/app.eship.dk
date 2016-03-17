@@ -20,12 +20,12 @@
       <th>Status</th>
     </tr>
    
-    <tr>
-    	<td><input type='text' name='id' value='<%= params[:id] %>'/></td>
-    	<td><input type='text' name='reference' value='<%= params[:reference] %>' /></td>
-    	<td>
-    		<%= select_date(@dateFrom, :prefix => 'from', :order => [:day, :month, :year]) %><br/>
-    		<%= select_date(@dateTo, :prefix => 'to', :order => [:day, :month, :year]) %>
+    <tr class='model-filters'>
+    	<td><input class='form-control' type='text' name='id' value='<%= params[:id] %>'/></td>
+    	<td><input class='form-control' type='text' name='reference' value='<%= params[:reference] %>' /></td>
+    	<td class='date-filter'>
+    		<%= select_date(@dateFrom, {:prefix => 'from', :order => [:day, :month, :year]}, {:class =>'form-control'}) %><br/>
+    		<%= select_date(@dateTo, {:prefix => 'to', :order => [:day, :month, :year]}, {:class => 'form-control'}) %>
     	</td>
     	<td></td>
     	<td></td>

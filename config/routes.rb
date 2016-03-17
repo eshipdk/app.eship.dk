@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       post :submit
       post :callback
       post :reprint
+      post :email
     end
   end
   

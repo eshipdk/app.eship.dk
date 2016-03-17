@@ -19,15 +19,19 @@
 			<th>Product code</th>
 			<th>Parcelshop id</th>
 			<th>Return</th>
+			<th>Label action</th>
 			<th>Reference</th>
 			<th>Description</th>
 		</tr>
 		<tr>
-			<td><%= f.number_field :product_code %></td>
-			<td><%= f.number_field :parcelshop_id %></td>
-			<td><%= f.number_field :return %></td>
-			<td><%= f.number_field :reference %></td>
-			<td><%= f.number_field :description %></td>
+			<td class='<%= input_field_class :product_code %>'>
+				<%= f.bstxt_field :product_code, :class => 'form-control' %>
+			</td>
+			<td  class='<%= input_field_class :parcelshop_id %>'><%= f.bstxt_field :parcelshop_id, :class => 'form-control'  %></td>
+			<td class='<%= input_field_class :return %>'><%= f.bstxt_field :return , :class => 'form-control' %></td>
+			<td class='<%= input_field_class :label_action %>'><%= f.bstxt_field :label_action , :class => 'form-control' %></td>
+			<td class='<%= input_field_class :reference %>'><%= f.bstxt_field :reference , :class => 'form-control' %></td>
+			<td class='<%= input_field_class :description %>'><%= f.bstxt_field :description, :class => 'form-control' %></td>
 		</tr>
 	</table>
 	
@@ -37,11 +41,11 @@
 			<th>Amount</th><th>Weight</th><th>Height</th><th>Length</th><th>Width</th>
 		</tr>
 		<tr>
-			<td><%= f.number_field :amount %></td>
-			<td><%= f.number_field :package_weight%></td>
-			<td><%= f.number_field :package_height %></td>
-			<td><%= f.number_field :package_length %></td>
-			<td><%= f.number_field :package_width %></td>
+			<td class='<%= input_field_class :amount %>'><%= f.bstxt_field :amount, :class => 'form-control'  %></td>
+			<td class='<%= input_field_class :package_weight %>'><%= f.bstxt_field :package_weight, :class => 'form-control' %></td>
+			<td class='<%= input_field_class :package_height %>'><%= f.bstxt_field :package_height, :class => 'form-control'  %></td>
+			<td class='<%= input_field_class :package_length %>'><%= f.bstxt_field :package_length, :class => 'form-control'  %></td>
+			<td class='<%= input_field_class :package_width%>'><%= f.bstxt_field :package_width, :class => 'form-control'  %></td>
 		</tr>
 	</table>
 	
@@ -57,10 +61,10 @@
 			<th>Parcelshop id</th>
 		</tr>
 		<tr>
-			<td><%= f.number_field :reference%></td>
-			<td><%= f.number_field :product_code %></td>
-			<td><%= f.number_field :description %></td>
-			<td><%= f.number_field :parcelshop_id %></td>
+			<td class='<%= input_field_class :reference %>'><%= f.bstxt_field :reference, :class => 'form-control' %></td>
+			<td class='<%= input_field_class :product_code %>'><%= f.bstxt_field :product_code , :class => 'form-control' %></td>
+			<td class='<%= input_field_class :description %>'><%= f.bstxt_field :description, :class => 'form-control'  %></td>
+			<td class='<%= input_field_class :parcelshop_id %>'><%= f.bstxt_field :parcelshop_id , :class => 'form-control' %></td>
 		</tr>
 	</table>
 	
@@ -70,8 +74,8 @@
 			<th>Amount</th><th>Weight</th>
 		</tr>
 		<tr>
-			<td><%= f.number_field :amount %></td>
-			<td><%= f.number_field :package_weight %></td>
+			<td class='<%= input_field_class :amount %>'><%= f.bstxt_field :amount, :class => 'form-control'  %></td>
+			<td class='<%= input_field_class :package_weight %>'><%= f.bstxt_field :package_weight , :class => 'form-control' %></td>
 		</tr>
 	</table>
 	
@@ -90,11 +94,11 @@
 		<th>Name</th><th>Attention</th><th>Address 1</th><th>Address 2</th><th>Zip code</th>
 	</tr>
 	<tr>
-		<td><%= f.number_field :sender_company_name %></td>
-		<td><%= f.number_field :sender_attention %></td>
-		<td><%= f.number_field :sender_address_line1 %></td>
-		<td><%= f.number_field :sender_address_line2 %></td>
-		<td><%= f.number_field :sender_zip_code %></td>
+		<td class='<%= input_field_class :sender_company_name %>'><%= f.bstxt_field :sender_company_name, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :sender_attention %>'><%= f.bstxt_field :sender_attention, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :sender_address_line1 %>'><%= f.bstxt_field :sender_address_line1 , :class => 'form-control' %></td>
+		<td class='<%= input_field_class :sender_address_line2 %>'><%= f.bstxt_field :sender_address_line2 , :class => 'form-control' %></td>
+		<td class='<%= input_field_class :sender_zip_code %>'><%= f.bstxt_field :sender_zip_code, :class => 'form-control'  %></td>
 	</tr>
 </table>
 <table class='table table-striped'>
@@ -103,10 +107,10 @@
 		<th>Phone</th><th>e-mail</th>
 	</tr>
 	<tr>
-		<td><%= f.number_field :sender_city %></td>
-		<td><%= f.number_field :sender_country_code %></td>
-		<td><%= f.number_field :sender_phone_number %></td>
-		<td><%= f.number_field :sender_email %></td>
+		<td class='<%= input_field_class :sender_city %>'><%= f.bstxt_field :sender_city, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :sender_country_code %>'><%= f.bstxt_field :sender_country_code, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :sender_phone_number %>'><%= f.bstxt_field :sender_phone_number, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :sender_email %>'><%= f.bstxt_field :sender_email, :class => 'form-control'  %></td>
 	</tr>
 </table>
 
@@ -116,11 +120,11 @@
 		<th>Name</th><th>Attention</th><th>Address 1</th><th>Address 2</th><th>Zip code</th>
 	</tr>
 	<tr>
-		<td><%= f.number_field :recipient_company_name %></td>
-		<td><%= f.number_field :recipient_attention %></td>
-		<td><%= f.number_field :recipient_address_line1 %></td>
-		<td><%= f.number_field :recipient_address_line2 %></td>
-		<td><%= f.number_field :recipient_zip_code %></td>
+		<td class='<%= input_field_class :recipient_company_name %>'><%= f.bstxt_field :recipient_company_name, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :recipient_attention %>'><%= f.bstxt_field :recipient_attention, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :recipient_address_line1 %>'><%= f.bstxt_field :recipient_address_line1, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :recipient_address_line2 %>'><%= f.bstxt_field :recipient_address_line2, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :recipient_zip_code %>'><%= f.bstxt_field :recipient_zip_code, :class => 'form-control'  %></td>
 	</tr>
 </table>
 <table class='table table-striped'>
@@ -129,10 +133,10 @@
 		<th>Phone</th><th>e-mail</th>
 	</tr>
 	<tr>
-		<td><%= f.number_field :recipient_city %></td>
-		<td><%= f.number_field :recipient_country_code %></td>
-		<td><%= f.number_field :recipient_phone_number %></td>
-		<td><%= f.number_field :recipient_email %></td>
+		<td class='<%= input_field_class :recipient_city %>'><%= f.bstxt_field :recipient_city, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :recipient_country_code %>'><%= f.bstxt_field :recipient_country_code, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :recipient_phone_number %>'><%= f.bstxt_field :recipient_phone_number, :class => 'form-control'  %></td>
+		<td class='<%= input_field_class :recipient_email %>'><%= f.bstxt_field :recipient_email, :class => 'form-control'  %></td>
 	</tr>
 </table>
 

@@ -108,9 +108,9 @@ class Shipment < ActiveRecord::Base
   def self.label_action_title code
     case code.to_s
     when 'print'
-        'Print label'
+        'Print'
     when 'email'
-        'Send email'
+        'Email'
     end
   end
   

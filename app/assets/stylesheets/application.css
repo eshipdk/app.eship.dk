@@ -151,3 +151,19 @@ table button.btn{
 	padding-left: 20px;
 	border-bottom: 1px solid #eee;
 }
+
+.date-filter{
+	min-width: 220px;
+}
+
+.date-filter .form-control{
+	display: inline;
+	padding: 0;
+	width: 30%;
+}
+
+.model-filters .form-control{
+	display: inline;
+	width: auto;
+	padding: 0;
+}

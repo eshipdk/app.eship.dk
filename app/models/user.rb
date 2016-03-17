@@ -142,6 +142,10 @@ class User < ActiveRecord::Base
   end
   
   def find_product product_code
+    
+    if product_code == nil
+      raise 'No product code given!'
+    end
     link = user_products.find_by_alias product_code
     if link != nil
       return link.product

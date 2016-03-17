@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "postmaster@sandboxaf5ad80c18054824bd892c6f9996da95.mailgun.org"
+  default from: "eShip <no-reply@eship.dk>"
   layout 'mailer'
 end

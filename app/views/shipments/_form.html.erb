@@ -26,22 +26,22 @@
  			</tr>
  			<tr>
  				<td>
- 					<%= f.select :product_id, products_option_hash(@current_user.products) %>
+ 					<%= f.bssel :product_id, products_option_hash(@current_user.products) %>
  				</td>
  				<td>
- 					<%= f.select :return, {'No'=>0,'Yes'=>1}%>
+ 					<%= f.bssel :return, {'No'=>0,'Yes'=>1}%>
  				</td>
  				<td>
- 					<%= f.select :label_action, Shipment.label_action_options %>
+ 					<%= f.bssel :label_action, Shipment.label_action_options %>
  				</td>
  				<td>
- 					<%= f.text_field :description %>
+ 					<%= f.bstxt_field :description %>
  				</td>
  				<td>
- 					<%= f.text_field :reference %>
+ 					<%= f.bstxt_field :reference %>
  				</td>
  				<td>
- 					<%= f.text_field :parcelshop_id %>
+ 					<%= f.bstxt_field :parcelshop_id %>
  				</td>
  			</tr>
  		</table>
@@ -58,19 +58,19 @@
 			</tr>
 			<tr>
 				<td>
-					<%= f.number_field :package_length %>
+					<%= f.bsnum_field :package_length %>
 				</td>
 				<td>
-					<%= f.number_field :package_width %>
+					<%= f.bsnum_field :package_width %>
 				</td>
 				<td>
-					<%= f.number_field :package_height %>
+					<%= f.bsnum_field :package_height %>
 				</td>
 				<td>
-					<%= f.number_field :package_weight, :step=>'any' %>
+					<%= f.bsnum_field :package_weight, :step=>'any' %>
 				</td>
 				<td>
-					<%= f.number_field :amount %>
+					<%= f.bsnum_field :amount %>
 				</td>
 			</tr>
 		</table>

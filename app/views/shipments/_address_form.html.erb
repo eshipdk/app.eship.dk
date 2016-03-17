@@ -2,49 +2,49 @@
   <h2 class='sub-header'><%= prefix.capitalize %></h2>
   <p>
     Company<br/>
-    <%= text_field(prefix, :company_name, :value => address.company_name) %>
+    <%= bstxt_field(prefix, :company_name, :value => address.company_name) %>
   </p>
 
   <p>
     Attention<br/>
-    <%= text_field(prefix, :attention, :value => address.attention ) %>
+    <%= bstxt_field(prefix, :attention, :value => address.attention ) %>
   </p>
 
   <p>
     Address line 1<br/>
-    <%= text_field(prefix, :address_line1, :value => address.address_line1) %>
+    <%= bstxt_field(prefix, :address_line1, :value => address.address_line1) %>
   </p>
 
   <p>
     Address line 2<br/>
-    <%= text_field(prefix, :address_line2, :value => address.address_line2) %>
+    <%= bstxt_field(prefix, :address_line2, :value => address.address_line2) %>
   </p>
 
   <p>
     Zip code<br/>
-    <%= text_field(prefix, :zip_code, :value => address.zip_code ) %>
+    <%= bstxt_field(prefix, :zip_code, :value => address.zip_code ) %>
   </p>
 
   <p>
     City<br/>
-    <%= text_field(prefix, :city, :value => address.city ) %>
+    <%= bstxt_field(prefix, :city, :value => address.city ) %>
   </p>
 
   <p>
     Country<br/>
-    <%= country_select(prefix, 'country_code', selected: address.country_code
+    <%= bscountry_select(prefix, 'country_code', selected: address.country_code
  )%>
  </p>
 
 
   <p>
     Phone<br/>
-    <%= text_field(prefix, :phone_number, :value => address.phone_number) %>
+    <%= bstxt_field(prefix, :phone_number, :value => address.phone_number) %>
   </p>
 
   <p>
     Email<br/>
-    <%= text_field(prefix, :email, :value => address.email) %>
+    <%= bstxt_field(prefix, :email, :value => address.email) %>
   </p>
 
 </div>

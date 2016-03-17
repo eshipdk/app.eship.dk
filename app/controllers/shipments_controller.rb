@@ -144,6 +144,16 @@ class ShipmentsController < ApplicationController
     end
     redirect_to :action => 'show'
   end
+  
+  def email
+    shipment = Shipment.find(params[:id])
+    
+    if shipment.can_print
+      LabelMailer.label_email(shipment).deliver_now
+    end
+    
+    redirect_to :action => 'show'
+  end
 
   private
 

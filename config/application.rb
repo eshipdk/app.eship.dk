@@ -33,12 +33,13 @@ module EShip
     config.action_mailer.smtp_settings = {
      :address              => "smpt.mailgun.org",
      :port                 => 587,
-     :domain               => 'sandboxaf5ad80c18054824bd892c6f9996da95.mailgun.org',
-     :user_name            => 'postmaster@sandboxaf5ad80c18054824bd892c6f9996da95.mailgun.org',
-     :password             => '83919ca39fdde76fe1d89c5b1f738a44',
+     :domain               => 'mail.eship.dk',
+     :user_name            => 'postmaster@mail.eship.dk',
+     :password             => '4c8c07d8aa479c9f38f1ec1c63090074',
      :authentication       => "plain",
      :enable_starttls_auto => true
     }
+    
 
 
     config.assets.paths << Rails.root.join('vendor', 'assets')

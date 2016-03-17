@@ -6,12 +6,12 @@
 			<th>To</th>
 			<th></th>
 		</tr>
-		<tr>
+		<tr class='date-filter'>
 			<td>
-				<%= select_date(@dateFrom, :prefix => 'from', :order => [:day, :month, :year]) %>
+				<%= select_date(@dateFrom, {:prefix => 'from', :order => [:day, :month, :year]}, {:class =>'form-control'}) %>
 			</td>
 			<td>
-				<%= select_date(@dateTo, :prefix => 'to', :order => [:day, :month, :year]) %>
+				<%= select_date(@dateTo, {:prefix => 'to', :order => [:day, :month, :year]}, {:class => 'form-control'}) %>
 			</td>
 			<td>
 				<button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button>

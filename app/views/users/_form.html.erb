@@ -24,10 +24,10 @@
  			<th>eShip API key</th>
  		</tr>
  		<tr>
- 			<td><%= f.text_field :email %></td>
- 			<td><%= f.select :role, User.role_options %></td>
- 			<td><%= f.text_field :cargoflux_api_key %></td>
- 			<td><% if !@user.new_record? %><%= f.text_field :eship_api_key, :disabled => true %><% end %></td>
+ 			<td><%= f.bstxt_field :email %></td>
+ 			<td><%= f.bssel :role, User.role_options %></td>
+ 			<td><%= f.bstxt_field :cargoflux_api_key %></td>
+ 			<td><% if !@user.new_record? %><%= f.bstxt_field :eship_api_key, :disabled => true %><% end %></td>
  		</tr>
 	</table>
 
@@ -57,10 +57,10 @@
   		</tr>
   		<tr>
   			<td>
-  				<%= f.select :billing_type, User.billing_type_options %>
+  				<%= f.bssel :billing_type, User.billing_type_options %>
   			</td>
   			<td>
-  				<%= f.number_field :unit_price, :step=>'any' %>
+  				<%= f.bsnum_field :unit_price, :step=>'any' %>
   			</td>
   		</tr>
 	</table>

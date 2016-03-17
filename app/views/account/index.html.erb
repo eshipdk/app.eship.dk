@@ -13,10 +13,10 @@
 				<%= @current_user.email %>
 			</td>
 			<td>
-				<input type='text' disabled value="<%= @current_user.eship_api_key %>"/>
+				<input class='form-control' type='text' disabled value="<%= @current_user.eship_api_key %>"/>
 			</td>
 			<td>
-				<input type='text' disabled value="<%= @current_user.cargoflux_api_key %>"/>
+				<input clasS='form-control' type='text' disabled value="<%= @current_user.cargoflux_api_key %>"/>
 			</td>
 			<td>
 				<%= link_to "Change password", change_password_path %>

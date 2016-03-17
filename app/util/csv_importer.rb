@@ -53,6 +53,7 @@ module CsvImporter
   def interline_csv_row_hash user, row
     shipment_type = row_val user, row, 'product_code'
     is_return = 0
+    label_action = 'print'
     case shipment_type
     when 'A'
       product_code = 'glsb'
@@ -61,7 +62,9 @@ module CsvImporter
     when 'Z'
       product_code = 'glsp'
     when '2'
-      raise 'ShopReturnService mail not supported.'
+      product_code = 'glsb'
+      is_return = 1
+      label_action = 'email'
     when 'B'
       product_code = 'glsb'
       is_return = 1
@@ -76,6 +79,7 @@ module CsvImporter
     hash = default_csv_row_hash user, row
     hash['return'] = is_return
     hash['product_code'] = product_code
+    hash['label_action'] = label_action
     if product_code == 'glsp'
       hash['parcelshop_id'] = hash['recipient']['address_line2']
       hash['recipient']['address_line2'] = ''
@@ -96,12 +100,13 @@ module CsvImporter
   def default_csv_row_hash user, row
     {
       'return'=>( row_val user, row, 'return'),
-      'product_code' => user.find_product( row_val user, row, 'product_code').product_code,
+      'product_code' => ( row_val user, row, 'product_code'),
       'package_height'=>( row_val user, row, 'package_height'),
       'package_length'=>(  row_val user, row, 'package_length'),
       'package_width'=>( row_val user, row, 'package_width'),
       'package_weight'=>( row_val user, row, 'package_weight'),
       'description' => ( row_val user, row, 'description' ),
+      'label_action' => ( row_val user, row, 'label_action' ),
       'amount' => ( row_val user, row, 'amount' ),
       'reference' => ( row_val user, row, 'reference' ),
       'parcelshop_id' => ( row_val user, row, 'parcelshop_id' ),
@@ -131,10 +136,13 @@ module CsvImporter
   end
 
   def row_val user, row, key
-    if user.import_format.attributes[key] < 0 
-      return '';
+    
+    key = user.import_format.attributes[key]
+    if ImportFormat.is_const_format key
+      return ImportFormat.const_val key
     end
-    v = row[user.import_format.attributes[key] - 1]
+    
+    v = row[Integer(key) - 1]
     if v == nil
       v = ""
     end
@@ -148,7 +156,7 @@ module CsvImporter
   def create_shipment hash, user
     
     shipment = Shipment.new
-    shipment.product = Product.find_by_product_code hash['product_code']
+    shipment.product = user.find_product hash['product_code']
     shipment.user = user
     shipment.package_weight = hash['package_weight'].gsub ',', '.'
     shipment.package_length = hash['package_length']
@@ -159,6 +167,7 @@ module CsvImporter
     shipment.reference = hash['reference']
     shipment.parcelshop_id = hash['parcelshop_id']
     shipment.return = hash['return'] == 1 || hash['return'] == '1'
+    shipment.label_action = hash['label_action']
     
   
     sender = Address.new hash['sender']

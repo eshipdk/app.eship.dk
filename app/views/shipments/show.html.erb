@@ -21,10 +21,10 @@
       <th>Invoiced</th>
       <th>Timestamp</th>
       <th>Product</th>
-      <th>Label action</th>
       <th>AWB</th>
       <th>Document</th>
-      <th>Print status</th>
+   	  <th>Label action</th>
+      <th>Action</th>
     </tr>
     <tr>
       <td>#<%= @shipment.pretty_id %></td>
@@ -35,7 +35,6 @@
       <% end %>
       <td><%= @shipment.created_at %></td>
       <td><%= @shipment.product.name %></td>
-      <td><%= @shipment.label_action_title %></td>
       <td>
         <% if @shipment.can_print %>
         <%= link_to @shipment.awb, @shipment.tracking_url, :target => '_blank' %>
@@ -50,13 +49,18 @@
         -
         <% end %>
       </td>
+      <td><%= @shipment.label_action_title %></td>
       <td>
         <% if @shipment.can_print %>
-        	<% if @shipment.recent_label_pending? %>
-        	Pending..
-        	<script type='text/javascript'>var autoReload = true;</script>
-        	<% else %>
-    	 	<%= link_to 'Send to printer', reprint_shipment_path(@shipment), method: :post %>
+        	<% if @shipment.label_action == 'print' %>
+	        	<% if @shipment.recent_label_pending? %>
+	        	Pending..
+	        	<script type='text/javascript'>var autoReload = true;</script>
+	        	<% else %>
+	    	 	<%= link_to 'Send to printer', reprint_shipment_path(@shipment), method: :post %>
+	        	<% end %>
+        	<% elsif @shipment.label_action == 'email' %>
+        		<%= link_to 'Send email', email_shipment_path(@shipment), method: :post %>
         	<% end %>
         <% else %>
         -

@@ -44,7 +44,7 @@ class ImportFormatsController < ApplicationController
               :recipient_address_line1, :recipient_address_line2,
               :recipient_zip_code, :recipient_city, :recipient_country_code,
               :recipient_phone_number, :recipient_email, :description,
-              :amount, :reference, :parcelshop_id
+              :amount, :reference, :parcelshop_id, :label_action
               )
   end
 

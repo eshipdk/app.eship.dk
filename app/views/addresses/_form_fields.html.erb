@@ -8,11 +8,11 @@
 			<th>Zip code</th>
 		</tr>
 		<tr>
-			<td><%= f.text_field :company_name %></td>
-			<td><%= f.text_field :attention %></td>
-			<td><%= f.text_field :address_line1 %></td>
-			<td><%= f.text_field :address_line2 %></td>
-			<td><%= f.text_field :zip_code %></td>
+			<td><%= f.bstxt_field :company_name %></td>
+			<td><%= f.bstxt_field :attention %></td>
+			<td><%= f.bstxt_field :address_line1 %></td>
+			<td><%= f.bstxt_field :address_line2 %></td>
+			<td><%= f.bstxt_field :zip_code %></td>
 		</tr>
 	</table>
 	<table class='table table-striped'>
@@ -23,10 +23,10 @@
 			<th>Email</th>
 		</tr>
 		<tr>
-			<td><%= f.text_field :city %></td>
-			<td><%= country_select('address', 'country_code', selected: f.object.country_code) %></td>
-			<td><%= f.text_field :phone_number %></td>
-			<td><%= f.text_field :email %></td>
+			<td><%= f.bstxt_field :city %></td>
+			<td><%= bscountry_select('address', 'country_code', selected: f.object.country_code) %></td>
+			<td><%= f.bstxt_field :phone_number %></td>
+			<td><%= f.bstxt_field :email %></td>
 		</tr>
 	</table>
 </div>

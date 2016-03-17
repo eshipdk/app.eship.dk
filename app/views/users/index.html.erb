@@ -33,7 +33,7 @@
       </td>
       <td>
         <% if !user.import_format || !user.import_format.complete? %>
-        <span class='warning'>Format is incomplete!</span>
+        <span class='warning'>Format is malformed or incomplete.</span>
         <% end %>
         <%= link_to 'Edit format', edit_for_user_import_format_path(user) %>
       </td>
