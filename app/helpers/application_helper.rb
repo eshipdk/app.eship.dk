@@ -23,6 +23,6 @@ end
   end
   
   def bscountry_select(method, priority_countries = nil, options = {}, html_options = {})
-      country_select(method, priority_countries, options, html_options.merge(class: 'form-control'))
+      country_select(method, priority_countries, options.merge(:include_blank => 'Select country...'), html_options.merge(class: 'form-control'))
   end
 end
