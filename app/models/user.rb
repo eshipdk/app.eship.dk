@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   validates :email, :presence => true, :uniqueness => true, :format => EMAIL_REGEX
   validates :password, :confirmation => true #password_confirmation attr
   validates_length_of :password, :in => 6..20, :on => :create
-  validates_length_of :password, :in => 6..20, :on => :update
+  validates_length_of :password, :in => 6..20, :on => :update, :if => :password
   enum role: [:admin, :customer]
   enum billing_type: [:free, :flat_price] #flat_price: Pays a flat fee per label ordered
 
@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   has_many :addresses, :through => :address_book_records
   has_many :address_book_records, :dependent => :destroy
   has_many :shipments, :dependent => :destroy
-  has_many :invoices
+  has_many :invoices, :dependent => :destroy
   has_one :import_format, :dependent => :destroy
   belongs_to :default_address, :class_name => 'Address' , :foreign_key => 'address_id'
   belongs_to :contact_address, :class_name => 'Address', :foreign_key => 'contact_address_id'
