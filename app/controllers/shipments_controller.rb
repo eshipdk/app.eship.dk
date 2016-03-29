@@ -88,7 +88,8 @@ class ShipmentsController < ApplicationController
     shipment.update(shipment_params)
     shipment.sender.update(address_params(:sender))
     shipment.recipient.update(address_params(:recipient))
-
+    
+    Cargoflux.submit shipment
 
     redirect_to :action => 'show'
   end

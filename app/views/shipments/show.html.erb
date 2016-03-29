@@ -9,8 +9,8 @@
   <% end %>
 
   <% if @shipment.status == 'failed' %>
-  <div class='error'>
-    <div class='title'>Error: <%= @shipment.api_response_error_msg %></div>
+  <div class='alert alert-danger'>
+    <strong>Error:</strong> <%= @shipment.api_response_error_msg %></div>
   </div>
   <% end %>
 <div class='table-responsive'>
