@@ -29,11 +29,15 @@ class Shipment < ActiveRecord::Base
       id = pretty_id[1..-1].to_i
       return self.where(id: id)
     end
-    return self.where('cargoflux_shipment_id LIKE :prefix', prefix: "#{pretty_id}%")
+    return self.where('cargoflux_shipment_id LIKE ?', "#{pretty_id}%")
   }
   
   scope :filter_uninvoiced, ->(){
     return self.complete.where(invoiced: false)
+  }
+  
+  scope :filter_recipient_name, ->(recipient_name){
+    return self.joins(:recipient).where('company_name LIKE ?', "%#{recipient_name}%")
   }
   
   def self.find_by_pretty_id pretty_id

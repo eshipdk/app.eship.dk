@@ -8,12 +8,15 @@ class ShipmentsController < ApplicationController
   def index
     #@shipments = @current_user.shipments.order(id: :desc)
     
-    @shipments = @current_user.shipments.where('created_at > ?', @dateFrom).where('created_at < ?', @dateTo)
+    @shipments = @current_user.shipments.where('shipments.created_at > ?', @dateFrom).where('shipments.created_at < ?', @dateTo)
     if params[:id]
        @shipments = @shipments.filter_pretty_id(params[:id]) 
     end
     if params[:reference] != nil and params[:reference] != ''
-      @shipments = @shipments.where('reference LIKE :prefix', prefix: "#{params[:reference]}%")
+      @shipments = @shipments.where('reference LIKE ?', "%#{params[:reference]}%")
+    end
+    if params[:recipient] != nil and params[:recipient] != ''
+      @shipments = @shipments.filter_recipient_name(params['recipient'])
     end
     @shipments = @shipments.order(id: :desc).paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
   end
