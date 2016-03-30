@@ -81,6 +81,14 @@ module Cargoflux
     data['sender']['address_line3'] = ''
     data['recipient']['address_line3'] = ''
     
+    #Temporary fix to allow empty attention fields
+    if data['sender']['attention'].strip == ''
+      data['sender']['attention'] = '-'
+    end
+    if data['recipient']['attention'].strip == ''
+      data['recipient']['attention'] = '-'
+    end
+    
     if shipment.must_retry?
       data['unique_shipment_id'] = shipment.cargoflux_shipment_id
     end
