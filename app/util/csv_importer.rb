@@ -171,6 +171,19 @@ module CsvImporter
     shipment.label_action = hash['label_action']
     
   
+    emptySender = true
+    hash['sender'].each do |k, v|
+      if v != ""
+        emptySender = false
+        break
+      end
+    end
+    
+    if emptySender and user.default_address
+      hash['sender'] = user.default_address.attributes.except('id', 'created_at', 'updated_at')
+    end
+    
+    
     sender = Address.new hash['sender']
     shipment.sender = sender
 
