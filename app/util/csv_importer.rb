@@ -142,7 +142,12 @@ module CsvImporter
       return ImportFormat.const_val key
     end
     
-    v = row[Integer(key) - 1]
+    intVal = Integer(key)
+    if intVal < 0
+      return ""
+    end
+    
+    v = row[intVal- 1]
     if v == nil
       v = ""
     end
