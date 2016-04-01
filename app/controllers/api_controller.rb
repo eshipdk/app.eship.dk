@@ -98,7 +98,7 @@ class ApiController < ApplicationController
 
   def fresh_labels
 
-    ready_shipments = @current_user.shipments.where(label_pending: true).where(status: Shipment.statuses[:complete])
+    ready_shipments = @current_user.shipments.where(label_pending: true).where(status: Shipment.statuses[:complete]).where(label_action: Shipment.label_actions[:print])
 
     recently_registered = []
     ready_shipments.each do |shipment|
