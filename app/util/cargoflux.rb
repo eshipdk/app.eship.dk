@@ -74,7 +74,9 @@ module Cargoflux
     
     package_dimensions = []
     shipment.packages.each do |package|
-      package_dimensions << package.dimensions
+      dimensions = package.dimensions
+      dimensions['weight'] = ([dimensions['weight'].to_f, 0.1].max).to_s
+      package_dimensions << dimensions
     end
     data['shipment']['package_dimensions'] = package_dimensions
     
