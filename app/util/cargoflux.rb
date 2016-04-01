@@ -70,6 +70,17 @@ module Cargoflux
     }
     data['sender']['address_line3'] = ''
     data['recipient']['address_line3'] = ''
+    
+    #If address line 2 is used and line 1 is empty we switch the values silently
+    if data['sender']['address_line1'] == '' and data['sender']['address_line2'] != ''
+      data['sender']['address_line1'] = data['sender']['address_line2']
+      data['sender']['address_line2'] = ''
+    end
+    
+    if data['recipient']['address_line1'] == '' and data['recipient']['address_line2'] != ''
+      data['recipient']['address_line1'] = data['recipient']['address_line2']
+      data['recipient']['address_line2'] = ''
+    end
  
     
     package_dimensions = []
