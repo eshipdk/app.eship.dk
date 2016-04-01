@@ -47,8 +47,8 @@
  		</table>
 	</div>
 	<div class='table-responsive'>
-		<h2 class='sub-header'>Package dimensions</h2>
-		<table class='table table-striped'>
+		<h2 class='sub-header'>Packages</h2>
+		<table class='table table-striped' id='package-table'>
 			<tr>
 				<th>Length (cm)</th>
 				<th>Width (cm)</th>
@@ -56,23 +56,35 @@
 				<th>Weight (kg)</th>
 				<th>Amount</th>
 			</tr>
-			<tr>
+			<% i_package = 0 %>
+			<%= f.fields_for :packages do |fp| %>
+			<% i_package += 1 %>
+			<tr id='package-row-<%= i_package %>'>
 				<td>
-					<%= f.bsnum_field :package_length %>
+					<%= fp.bsnum_field :length %>
 				</td>
 				<td>
-					<%= f.bsnum_field :package_width %>
+					<%= fp.bsnum_field :width %>
 				</td>
 				<td>
-					<%= f.bsnum_field :package_height %>
+					<%= fp.bsnum_field :height %>
 				</td>
 				<td>
-					<%= f.bsnum_field :package_weight, :step=>'any' %>
+					<%= fp.bsnum_field :weight, :step => 'any' %>
 				</td>
 				<td>
-					<%= f.bsnum_field :amount %>
+					<%= fp.bsnum_field :amount %>
 				</td>
 			</tr>
+			<% end %>
+		<tfoot>
+		<tr>
+			<td></td>
+			<td></td>
+			<td><button id='btn-remove-package' <%= 'disabled' if i_package < 2 %> onclick='removePackage()' type='button' class='btn btn-primary btn-block'>Remove</button></td>
+			<td><button onclick='addPackage()' type='button' class='btn btn-primary btn-block'>Add</button></td>	
+		</tr>
+		</tfoot>
 		</table>
 	</div>
 
@@ -84,5 +96,33 @@
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 
+<script type='text/javascript'>
+	var nPackages = <%= i_package %>;
+	function addPackage(){
+		var baseRow = $('#package-row-1');
+		nPackages++;
+		var html = baseRow.html().replace(new RegExp('\\[0\\]', 'g'), '[' + nPackages + ']')
+				.replace(new RegExp('_0_', 'g'), '_' + nPackages + '_');
+		var newRow = document.createElement('tr')
+		newRow.id = 'package-row-' + nPackages;
+		newRow.innerHTML = html;
+		$('#package-table').append(newRow);
+		$('#btn-remove-package').prop('disabled', false);
+	}
+	
+	function removePackage(){
+		if(nPackages < 2){
+			return;
+		}
+		var lastRow = $('#package-row-' + nPackages);
+		lastRow.remove();
+		nPackages--;
+		if(nPackages < 2){
+			$('#btn-remove-package').prop('disabled', true);
+		}
+	}
+</script>
 
 <% end %>
+
+

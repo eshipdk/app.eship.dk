@@ -80,23 +80,24 @@
   		<td><%= @shipment.parcelshop_id %></td>
   	</tr>
   </table>
+  <h4 class='sub-header'>Packages</h4>
 	<table class='table table-striped'>
   		<tr>
-  			<th>Package:</th>
   			<th>Length</th>
   			<th>Width</th>
   			<th>Height</th>
   			<th>Weight</th>
   			<th>Amount</th>
   		</tr>
+  		<% @shipment.packages.each do |package| %>
   		<tr>
-			<td></td>
-  			<td><%= @shipment.package_length %></td>
-  			<td><%= @shipment.package_width %></td>
-  			<td><%= @shipment.package_height %></td>
-  			<td><%= @shipment.package_weight %></td>
-  			<td><%= @shipment.amount %></td>
+  			<td><%= package.length %></td>
+  			<td><%= package.width %></td>
+  			<td><%= package.height %></td>
+  			<td><%= package.weight %></td>
+  			<td><%= package.amount %></td>
   		</tr>
+  		<% end %>
 	</table>
 
   

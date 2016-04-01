@@ -158,12 +158,8 @@ module CsvImporter
     shipment = Shipment.new
     shipment.product = user.find_product hash['product_code']
     shipment.user = user
-    shipment.package_weight = hash['package_weight'].gsub ',', '.'
-    shipment.package_length = hash['package_length']
-    shipment.package_width = hash['package_width']
-    shipment.package_height = hash['package_height']
     shipment.description = hash['description']
-    shipment.amount = hash['amount']
+   
     shipment.reference = hash['reference']
     shipment.parcelshop_id = hash['parcelshop_id']
     shipment.return = hash['return'] == 1 || hash['return'] == '1'
@@ -178,6 +174,15 @@ module CsvImporter
 
     shipment.save
     shipment = Shipment.find shipment.id
+    
+    package = Package.new
+    package.weight = hash['package_weight'].gsub ',','.'
+    package.length = hash['package_length']
+    package.width = hash['package_width']
+    package.height = hash['package_height']
+    package.amount = hash['amount']
+    package.shipment = shipment
+    package.save
     
     Cargoflux.submit shipment
     

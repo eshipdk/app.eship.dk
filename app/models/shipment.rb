@@ -5,14 +5,13 @@ class Shipment < ActiveRecord::Base
   belongs_to :invoice
   belongs_to :sender, :class_name => 'Address', :foreign_key => 'sender_address_id', :dependent => :destroy
   belongs_to :recipient, :class_name => 'Address', :foreign_key => 'recipient_address_id', :dependent => :destroy
-
+  has_many :packages, :dependent => :destroy
+  accepts_nested_attributes_for :packages, :allow_destroy => true
+  
   #status label_ready has been deprecated. See label_pending bool
   enum status: [:initiated, :response_pending, :label_ready, :complete, :failed]
   enum label_action: [:print, :email]
-
-
   
-
   def pretty_id(id = self.id)
     #return "%09d" % id
     if cargoflux_shipment_id
@@ -101,7 +100,7 @@ class Shipment < ActiveRecord::Base
   end
   
   def recent_label_pending?
-    label_pending and label_pending_time > (DateTime.now - 1.hours)
+    label_pending and label_pending_time != nil and label_pending_time > (DateTime.now - 1.hours)
   end
 
   

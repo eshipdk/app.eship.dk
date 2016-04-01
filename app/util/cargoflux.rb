@@ -60,16 +60,6 @@ module Cargoflux
       'shipment' => {
         'product_code' => shipment.product.product_code,
         'dutiable' => false,
-        "package_dimensions" =>
-        [
-         {
-           "amount" => shipment.amount,
-           "height" => shipment.package_height.to_s,
-           "length" => shipment.package_length.to_s,
-           "weight" => shipment.package_weight.to_s,
-           "width" => shipment.package_width.to_s
-         }
-        ],
         'description' => shipment.description,
         'reference' => shipment.reference,
         'shipping_date' => Time.now.strftime("%F"),
@@ -80,6 +70,13 @@ module Cargoflux
     }
     data['sender']['address_line3'] = ''
     data['recipient']['address_line3'] = ''
+ 
+    
+    package_dimensions = []
+    shipment.packages.each do |package|
+      package_dimensions << package.dimensions
+    end
+    data['shipment']['package_dimensions'] = package_dimensions
     
     #Temporary fix to allow empty attention fields
     if data['sender']['attention'].strip == ''

@@ -27,6 +27,7 @@ class ShipmentsController < ApplicationController
 
   def new
     @shipment = Shipment.new
+    @shipment.packages.build
     @shipment.user = @current_user
   end
 
@@ -55,6 +56,8 @@ class ShipmentsController < ApplicationController
     @shipment.sender_address_id = sender.id
     @shipment.recipient_address_id = recipient.id
     @shipment.user_id = @current_user.id
+    
+    
 
     if @shipment.save
       Cargoflux.submit @shipment
@@ -88,6 +91,14 @@ class ShipmentsController < ApplicationController
 
   def update
     shipment = Shipment.find(params[:id])
+
+    packages_attributes = shipment_params['packages_attributes'].clone
+    for i in 0.. shipment.packages.length - 1
+      if packages_attributes[i.to_s].length == 1
+        shipment.packages[i].mark_for_destruction
+      end
+    end
+
     shipment.update(shipment_params)
     shipment.sender.update(address_params(:sender))
     shipment.recipient.update(address_params(:recipient))
@@ -166,7 +177,8 @@ class ShipmentsController < ApplicationController
                                      :package_length, :package_width,
                                      :package_height, :package_weight,
                                      :description, :amount, :reference,
-                                     :parcelshop_id, :label_action)
+                                     :parcelshop_id, :label_action).merge(
+          {'packages_attributes' => params.require(:shipment).require(:packages_attributes)})
   end
 
   def address_params(prefix)

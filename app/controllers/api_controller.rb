@@ -48,17 +48,21 @@ class ApiController < ApplicationController
     shipment.recipient = recipient
     
     shipment.return = shipment_params['return']
-    shipment.package_height = shipment_params['package_height']
-    shipment.package_length = shipment_params['package_length']
-    shipment.package_width = shipment_params['package_width']
-    shipment.package_weight = shipment_params['package_weight']
-    shipment.amount = shipment_params['amount']
     shipment.reference = shipment_params['reference']
     shipment.description = shipment_params['description']
     shipment.parcelshop_id = shipment_params['parcelshop_id']
     shipment.callback_url = shipment_params['callback_url']
    
     shipment.save
+    
+    package = Package.new
+    package.height = shipment_params['package_height']
+    package.length = shipment_params['package_length']
+    package.width = shipment_params['package_width']
+    package.weight = shipment_params['package_weight']
+    package.amount = shipment_params['amount']
+    package.shipment = shipment
+    package.save
     
     Cargoflux.submit shipment
     
