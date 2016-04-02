@@ -152,9 +152,9 @@ class ApiController < ApplicationController
       return
     end
     begin
-    res = CsvImporter.import_csv csv, @current_user
+      res = CsvImporter.import_csv csv, @current_user
     rescue Exception => e
-      render :text => e
+      api_error e.to_s
       return
     end
     if res['error']
