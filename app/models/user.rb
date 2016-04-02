@@ -156,6 +156,11 @@ class User < ActiveRecord::Base
     end
     raise 'Invalid product code: ' + product_code;
   end
+  
+  
+  def quick_select_addresses key
+    addresses.joins(:address_book_record).where('address_book_records.quick_select_' + key => true) 
+  end
 
   private
 

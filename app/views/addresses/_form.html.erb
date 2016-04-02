@@ -1,7 +1,20 @@
 <%= form_for @address do |f| %>
-<p>
- 	<%= check_box_tag 'default_address', "1", @current_user.default_address == @address %> <label for='default_address'>Make default address</label><br/>
-</p>
+
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>Default sender</th>
+			<th>Quick select sender</th>
+			<th>Quick select recipient</th>
+		</tr>
+		<tr>
+			<td><%= check_box_tag 'default_address', "1", @current_user.default_address == @address %></td>
+			<td><%= check_box_tag 'quick_select_sender', "1", @record.quick_select_sender %></td>
+			<td><%= check_box_tag 'quick_select_recipient', "1", @record.quick_select_recipient %></td>
+		</tr>
+	</table>
+</div>	
+
 
 <%= render :partial => 'form_fields', :locals => {:f => f}%>
  

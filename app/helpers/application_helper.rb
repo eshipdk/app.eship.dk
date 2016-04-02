@@ -25,4 +25,9 @@ end
   def bscountry_select(method, priority_countries = nil, options = {}, html_options = {})
       country_select(method, priority_countries, options.merge(:include_blank => 'Select country...'), html_options.merge(class: 'form-control'))
   end
+  
+  def bssel(name, option_tags = nil, options = {})
+    select_tag(name, option_tags, options.merge(class: 'form-control'))
+  end
+  
 end

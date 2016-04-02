@@ -22,6 +22,7 @@
 		<th>Street</th> 
 		<th>New shipment</th>
 		<th>Edit</th>
+		<th>Delete</th>
     </tr>
     <% @addresses.each do |address| %>
     <tr>
@@ -30,6 +31,11 @@
 		<td><%= address.address_line1 %></td>
 		<td><%= link_to 'New shipment', send_to_address_path(address) %></td>
 		<td><%= link_to 'Edit', edit_address_path(address) %></td>
+		<td>
+			<%= link_to 'Delete', address_path(address),
+              method: :delete,
+              data: { confirm: 'Are you sure?' } %>
+		</td>
     </tr>
     <% end %>
   </table>

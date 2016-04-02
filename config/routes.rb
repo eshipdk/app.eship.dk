@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   resources :addresses do
     member do
       get :send_to
+      get :json
     end
   end
   

@@ -33,7 +33,7 @@ class ShipmentsController < ApplicationController
 
   def edit
     @shipment = Shipment.find(params[:id])
-    if !@shipment.can_edit
+    if !@shipment.can_edit or @shipment.user != @current_user
       redirect_to '/'
     end
   end
@@ -91,6 +91,11 @@ class ShipmentsController < ApplicationController
 
   def update
     shipment = Shipment.find(params[:id])
+    
+    if not shipment.can_edit or shipment.user != @current_user
+      redirect_to :action => :index
+      return
+    end
 
     packages_attributes = shipment_params['packages_attributes'].clone
     for i in 0.. shipment.packages.length - 1

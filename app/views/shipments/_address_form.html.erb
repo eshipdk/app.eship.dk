@@ -1,5 +1,27 @@
 <div class='form-part'>
   <h2 class='sub-header'><%= prefix.capitalize %></h2>
+  
+  <% quick_select_addresses = @current_user.quick_select_addresses prefix %>
+  <%= bssel('select-' + prefix, options_from_collection_for_select(quick_select_addresses, :json_url, :short_desc), {include_blank: 'Quick select ' + prefix + '..'}) %>
+	
+  <script type='text/javascript'>
+  	
+	$('#select-<%= prefix %>').on('change', function(){
+		var sel = event.srcElement;
+		if(sel.selectedIndex > 0){
+			$.getJSON(sel.value, function(json){
+				$.each(json, function(key, value){
+					var el = $("#<%= prefix %>_" + key);
+					if(el.length){
+						el.val(value);
+					}
+				});
+			});
+		}
+	});
+  </script>
+	
+	
   <p>
     Company<br/>
     <%= bstxt_field(prefix, :company_name, :value => address.company_name) %>
