@@ -7,6 +7,14 @@ module CsvImporter
   
   
   def import_csv content, user
+    
+    encoding_options = {
+      :invalid           => :replace,  # Replace invalid byte sequences
+      :undef             => :replace,  # Replace anything not defined in ASCII
+      :replace           => '?',        # Use a question mark for those replacements
+      :universal_newline => true       # Always break lines with \n
+    }
+    content = content.encode(Encoding.find('ASCII'), encoding_options)
 
     separator = user.import_format.importer == 'interline' ? ',' : ';'
     lines = CSV.parse content, {:col_sep => separator}
@@ -89,8 +97,9 @@ module CsvImporter
     hash['package_width'] = '10'
     hash['package_length'] = '10'
  
-    hash['recipient']['country_code'] = GlsCountries.get_country_code hash['recipient']['country_code']
+    
     hash['sender']['country_code'] = GlsCountries.get_country_code hash['sender']['country_code']
+    hash['recipient']['country_code'] = GlsCountries.get_country_code hash['recipient']['country_code']
  
     return hash
   end
@@ -178,7 +187,7 @@ module CsvImporter
         break
       end
     end
-    
+ 
     if emptySender and user.default_address
       hash['sender'] = user.default_address.attributes.except('id', 'created_at', 'updated_at')
     end
