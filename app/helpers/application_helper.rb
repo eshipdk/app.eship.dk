@@ -30,4 +30,8 @@ end
     select_tag(name, option_tags, options.merge(class: 'form-control'))
   end
   
+  def print_datetime datetime
+    datetime.in_time_zone('Berlin').strftime('%H:%M:%S %d-%m-%Y')
+  end
+  
 end

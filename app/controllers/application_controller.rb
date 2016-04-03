@@ -69,12 +69,19 @@ class ApplicationController < ActionController::Base
     if from
       @dateFrom = DateTime.now.change(day: from[:day].to_i, month: from[:month].to_i, year: from[:year].to_i)
       @dateTo = DateTime.now.change(day: to[:day].to_i, month: to[:month].to_i, year: to[:year].to_i)
+    elsif session.key?(:filter_date_from)
+      @dateFrom = DateTime.parse session[:filter_date_from]
+      @dateTo = DateTime.parse session[:filter_date_to]
     else
       @dateFrom = DateTime.now
       @dateTo = DateTime.now
     end
+
     @dateFrom = @dateFrom.beginning_of_day
     @dateTo = @dateTo.end_of_day
+    
+    session[:filter_date_from] = @dateFrom
+    session[:filter_date_to] = @dateTo
   end
 
 end

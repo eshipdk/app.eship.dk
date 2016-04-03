@@ -10,9 +10,12 @@
 </div>
 <% end %>
 <br/><br/>
-<h3 class='sub-header'>All contacts</h3>
-<%= link_to 'New address', new_address_path %>
-<br/>
+<h3 class='sub-header'>All contacts
+	<span class='pull-right'>
+		<a href='<%= url_for new_address_path %>' class='btn btn-primary' role='button'>New address</a>
+	</span>
+	<div class='clearfix'></div>
+</h3>
 <%= will_paginate @addresses %>
 <div class="table-responsive">
   <table class='table table-striped'>

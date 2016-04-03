@@ -1,6 +1,9 @@
-<h1 class='page-header'>Products</h1>
-<%= link_to 'Create product', new_product_path %>
-<br/>
+<h1 class='page-header'>Products
+	<span class='pull-right'>
+		<a href='<%= url_for new_product_path %>' class='btn btn-primary' role='button'>New product</a>
+	</span>
+	<div class='clearfix'></div>
+	</h1>
 <%= will_paginate @products %>
 <div class='table-responsive'>
 	<table class='table table-striped'>

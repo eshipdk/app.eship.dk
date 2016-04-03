@@ -1,7 +1,10 @@
-<h1 class='page-header'>Users</h1>
+<h1 class='page-header'>Users
+	<span class='pull-right'>
+		<a href='<%= url_for new_user_path %>' class='btn btn-primary' role='button'>New user</a>
+	</span>
+	<div class='clearfix'></div>
+	</h1>
 <div class="table-responsive">
-  
-  <%= link_to 'Create user', new_user_path %><br/>
   <%= will_paginate @users %>
   <table class='table table-striped'>
     <tr>

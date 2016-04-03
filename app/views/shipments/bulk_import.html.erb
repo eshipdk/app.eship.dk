@@ -1,6 +1,6 @@
 <h1>Bulk import</h1>
 <p>Bulk import allows you to generate multiple shipments using data contained in a single file.</p>
-<% if @current_user.import_format.complete? %>
+<% if @current_user.import_format and @current_user.import_format.complete? %>
 
 <div class='import-csv'>
 	<p>Please make sure that your file comforms to the predefined import format.</p>
