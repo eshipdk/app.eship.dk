@@ -3,18 +3,9 @@ include Cargoflux
 include GlsCountries
 module CsvImporter
   
-  
-  
+
   
   def import_csv content, user
-    
-    encoding_options = {
-      :invalid           => :replace,  # Replace invalid byte sequences
-      :undef             => :replace,  # Replace anything not defined in ASCII
-      :replace           => '?',        # Use a question mark for those replacements
-      :universal_newline => true       # Always break lines with \n
-    }
-    content = content.encode(Encoding.find('ASCII'), encoding_options)
 
     separator = user.import_format.importer == 'interline' ? ',' : ';'
     lines = CSV.parse content, {:col_sep => separator}
