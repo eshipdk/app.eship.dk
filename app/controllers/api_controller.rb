@@ -102,7 +102,10 @@ class ApiController < ApplicationController
 
   def fresh_labels
 
-    ready_shipments = @current_user.shipments.where(label_pending: true).where(status: Shipment.statuses[:complete]).where(label_action: Shipment.label_actions[:print])
+    ready_shipments = @current_user.shipments.where(label_pending: true)
+      .where(status: Shipment.statuses[:complete])
+      .where(label_action: Shipment.label_actions[:print])
+      .limit(5)
 
     recently_registered = []
     ready_shipments.each do |shipment|
@@ -139,9 +142,19 @@ class ApiController < ApplicationController
   
   def validate_key
     
-    
     render :text => {'valid' => (authenticate_api true)}.to_json
     
+  end
+  
+  def client_version
+    files = Dir["#{Rails.root}/public/client/*_*"]
+    if files.length < 1
+      api_error 'Client update not available.'
+    else
+      fileName = files.sort[0][/[^\/]*\z/]
+      version = fileName.sub! '_', '.'
+      render :text => {'version' => version}.to_json
+    end
   end
 
 
