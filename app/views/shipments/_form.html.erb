@@ -18,15 +18,16 @@
  		<table class='table table-striped'>
  			<tr>
  				<th>Product</th>
+ 				<th>Parcelshop id (if applicable)</th>
  				<th>Return service (if applicable)</th>
  				<th>Label action</th>
- 				<th>Description</th>
- 				<th>Reference</th>
- 				<th>Parcelshop id (if applicable)</th>
  			</tr>
  			<tr>
  				<td>
  					<%= f.bssel :product_id, options_from_collection_for_select(@current_user.products, :id, :name) %>
+ 				</td>
+ 				<td>
+ 					<%= f.bstxt_field :parcelshop_id %>
  				</td>
  				<td>
  					<%= f.bssel :return, {'No'=>0,'Yes'=>1}%>
@@ -34,14 +35,23 @@
  				<td>
  					<%= f.bssel :label_action, Shipment.label_action_options %>
  				</td>
+ 			</tr>
+		</table>
+		<table class='table table-striped'>
+ 			<tr>
+ 				<th>Remarks</th>
+ 				<th>Description</th>
+ 				<th>Reference</th>
+ 			</tr>
+ 			<tr>
+ 				<td>
+ 					<%= f.bstxt_field :remarks %>
+ 				</td>
  				<td>
  					<%= f.bstxt_field :description %>
  				</td>
  				<td>
  					<%= f.bstxt_field :reference %>
- 				</td>
- 				<td>
- 					<%= f.bstxt_field :parcelshop_id %>
  				</td>
  			</tr>
  		</table>

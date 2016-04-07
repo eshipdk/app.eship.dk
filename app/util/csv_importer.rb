@@ -106,6 +106,7 @@ module CsvImporter
       'package_width'=>( row_val user, row, 'package_width'),
       'package_weight'=>( row_val user, row, 'package_weight'),
       'description' => ( row_val user, row, 'description' ),
+      'remarks' => ( row_val user, row, 'remarks' ),
       'label_action' => ( row_val user, row, 'label_action' ),
       'amount' => ( row_val user, row, 'amount' ),
       'reference' => ( row_val user, row, 'reference' ),
@@ -164,7 +165,7 @@ module CsvImporter
     shipment.product = user.find_product hash['product_code']
     shipment.user = user
     shipment.description = hash['description']
-   
+    shipment.remarks = hash['remarks']
     shipment.reference = hash['reference']
     shipment.parcelshop_id = hash['parcelshop_id']
     shipment.return = hash['return'] == 1 || hash['return'] == '1'
