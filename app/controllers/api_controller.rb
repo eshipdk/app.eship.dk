@@ -148,9 +148,8 @@ class ApiController < ApplicationController
   
   def client_version
     begin
-      files = Dir["#{Rails.root}/public/client/*_*"]
-      fileName = files.sort[0][/[^\/]*\z/]
-      version = fileName.sub! '_', '.'
+      files = Dir["#{Rails.root}/public/client/*.*"]
+      version = files.sort[0][/[^\/]*\z/]
     rescue => ex
       version = '0.0'
     end
