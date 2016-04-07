@@ -1,6 +1,6 @@
 include CsvImporter
 class ApiController < ApplicationController
-  before_filter :authenticate_api, :except => :validate_key
+  before_filter :authenticate_api, :except => [:validate_key, :client_version]
   skip_before_filter :verify_authenticity_token
 
 
@@ -147,14 +147,14 @@ class ApiController < ApplicationController
   end
   
   def client_version
-    files = Dir["#{Rails.root}/public/client/*_*"]
-    if files.length < 1
-      api_error 'Client update not available.'
-    else
+    begin
+      files = Dir["#{Rails.root}/public/client/*_*"]
       fileName = files.sort[0][/[^\/]*\z/]
       version = fileName.sub! '_', '.'
-      render :text => {'version' => version}.to_json
+    rescue => ex
+      version = '0.0'
     end
+    render :text => {'version' => version}.to_json
   end
 
 
