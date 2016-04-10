@@ -24,13 +24,13 @@
  			</tr>
  			<tr>
  				<td>
- 					<%= f.bssel :product_id, options_from_collection_for_select(@current_user.products, :id, :name) %>
+ 					<%= f.bssel :product_id, options_from_collection_for_select(@current_user.products, :id, :name, :selected => @shipment.product_id) %>
  				</td>
  				<td>
  					<%= f.bstxt_field :parcelshop_id %>
  				</td>
  				<td>
- 					<%= f.bssel :return, {'No'=>0,'Yes'=>1}%>
+ 					<%= f.bssel :return, options_for_select( [['No', 0], ['Yes', 1]], :selected => (@shipment.return ? 1 : 0) ) %>
  				</td>
  				<td>
  					<%= f.bssel :label_action, Shipment.label_action_options %>
