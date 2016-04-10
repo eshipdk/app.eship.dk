@@ -4,8 +4,17 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h3>Shipment label <%= @email_shipment.awb %></h3>
+  	
+  	<p>
+    	Dear <%= @email_shipment.sender.company_name %>
+    </p>
+    
+    
     <p>
+    	A label has been generated for your shipment to <%= @email_shipment.recipient.company_name %>.
+    	
+	</p>
+	<p>
     	Your label can be downloaded from the link below.
     </p>
  	<p>

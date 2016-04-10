@@ -91,6 +91,14 @@ module CsvImporter
     
     hash['sender']['country_code'] = GlsCountries.get_country_code hash['sender']['country_code']
     hash['recipient']['country_code'] = GlsCountries.get_country_code hash['recipient']['country_code']
+    
+    if is_return == 1
+      hash['recipient'], hash['sender'] = hash['sender'], hash['recipient']
+    end
+  
+    if product_code == 'glsp'
+      hash['delivery_instructions'] = ''
+    end
  
     return hash
   end

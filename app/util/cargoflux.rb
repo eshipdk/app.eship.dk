@@ -63,7 +63,6 @@ module Cargoflux
         'description' => shipment.description,
         'reference' => shipment.reference,
         'remarks' => shipment.remarks,
-        'delivery_instructions' => shipment.delivery_instructions,
         'shipping_date' => Time.now.strftime("%F"),
         'parcelshop_id' => shipment.parcelshop_id
       },
@@ -84,6 +83,9 @@ module Cargoflux
       data['recipient']['address_line2'] = ''
     end
  
+    if shipment.delivery_instructions and shipment.delivery_instructions != ''
+      data['delivery_instructions'] = shipment.delivery_instructions
+    end
     
     package_dimensions = []
     shipment.packages.each do |package|
