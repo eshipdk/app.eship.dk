@@ -63,6 +63,7 @@ module Cargoflux
         'description' => shipment.description,
         'reference' => shipment.reference,
         'remarks' => shipment.remarks,
+        'delivery_instructions' => shipment.delivery_instructions,
         'shipping_date' => Time.now.strftime("%F"),
         'parcelshop_id' => shipment.parcelshop_id
       },

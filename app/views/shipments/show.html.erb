@@ -21,6 +21,7 @@
       <th>Invoiced</th>
       <th>Timestamp</th>
       <th>Product</th>
+      <th>Parcelshop id</th>
       <th>AWB</th>
       <th>Document</th>
    	  <th>Label action</th>
@@ -35,6 +36,7 @@
       <% end %>
       <td><%= @shipment.created_at %></td>
       <td><%= @shipment.product.name %></td>
+      <td><%= @shipment.parcelshop_id %></td>
       <td>
         <% if @shipment.can_print %>
         <%= link_to @shipment.awb, @shipment.tracking_url, :target => '_blank' %>
@@ -70,16 +72,16 @@
   </table>
   <table class='table table-striped'>
   	<tr>
+  		<th>Delivery instructions</th>
   		<th>Remarks</th>
   		<th>Description</th>
   		<th>Reference</th>
-  		<th>Parcelshop id</th>
   	</tr>
   	<tr>
+  		<td><%= @shipment.delivery_instructions%></td>
   		<td><%= @shipment.remarks %></td>
   		<td><%= @shipment.description %></td>
   		<td><%= @shipment.reference %></td>
-  		<td><%= @shipment.parcelshop_id %></td>
   	</tr>
   </table>
   <h4 class='sub-header'>Packages</h4>
