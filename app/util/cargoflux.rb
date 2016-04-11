@@ -52,13 +52,22 @@ module Cargoflux
   
   
   def request_payload shipment
+    product_code = shipment.product.product_code
+    if shipment.recipient.country_code != 'DK'
+        if product_code == 'glsb'
+          product_code = 'glsboc'
+        elsif product_code == 'glsp'
+          product_code = 'glsp'
+        end
+    end
+    
     data =
     {
       'access_token' => shipment.user.cargoflux_api_key,
       'callback_url' => EShip::HOST_ADDRESS + "shipments/#{shipment.id}/callback",
       'return_label' => shipment.return,
       'shipment' => {
-        'product_code' => shipment.product.product_code,
+        'product_code' => product_code,
         'dutiable' => false,
         'description' => shipment.description,
         'reference' => shipment.reference,
