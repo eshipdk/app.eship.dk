@@ -17,11 +17,22 @@ module CsvImporter
        
         if user.import_format.importer == 'interline'
           hash = interline_csv_row_hash user, row
+          interline_service = hash['description']
+          hash['description'] = ''
         else
           hash = default_csv_row_hash user, row
         end
   
         create_shipment hash, user
+        
+        if user.import_format.importer == 'interline'
+          if interline_service == 'B'
+            hash['return'] = 1
+            hash['product_code'] = 'glsb'
+            hash['recipient'], hash['sender'] = hash['sender'], hash['recipient']
+            create_shipment hash, user
+          end
+        end
         
       end
     end
@@ -96,7 +107,10 @@ module CsvImporter
       hash['recipient'], hash['sender'] = hash['sender'], hash['recipient']
     end
   
-    if product_code == 'glsp'
+    if hash['description'] == 'C'
+      hash['delivery_instructions'] = hash['remarks']
+      hash['remarks'] = ''
+    else
       hash['delivery_instructions'] = ''
     end
  

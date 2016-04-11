@@ -84,7 +84,7 @@ module Cargoflux
     end
  
     if shipment.delivery_instructions and shipment.delivery_instructions != ''
-      data['delivery_instructions'] = shipment.delivery_instructions
+      data['shipment']['delivery_instructions'] = shipment.delivery_instructions
     end
     
     package_dimensions = []
