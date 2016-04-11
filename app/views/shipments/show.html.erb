@@ -1,13 +1,14 @@
 <div class='shipment-show'>
-  <h2 class='page-header'>Shipment #<%= @shipment.pretty_id %></h2>
-  <% if @shipment.can_edit %>
-  <%= link_to 'Edit', edit_shipment_path(@shipment) %>
-  <br/>
-  <% end %>
-  <% if @shipment.can_submit %>
-  <%= link_to 'Submit request', submit_shipment_path(@shipment), method: :post %> <br/>
-  <% end %>
-
+  <h2 class='page-header'>Shipment #<%= @shipment.pretty_id %>
+  	<span class='pull-right'>
+ 		<% if @shipment.can_edit %>
+		<a href='<%= url_for edit_shipment_path(@shipment) %>' class='btn btn-primary' role='button'>Edit</a>
+	  	<% else %>
+	  	<a href='<%= url_for copy_shipment_path(@shipment) %>' class='btn btn-primary' role='button'>Copy</a>
+	  	<% end %>
+  	</span>
+  </h2>
+  
   <% if @shipment.status == 'failed' %>
   <div class='alert alert-danger'>
     <strong>Error:</strong> <%= @shipment.api_response_error_msg %></div>
@@ -126,8 +127,12 @@
 
 <script type='text/javascript'>
 	if(autoReload === true){
+		var initialPage = window.location.href;
 		setInterval(
-	    	function(){   
+	    	function(){
+	    		if(window.location.href != initialPage){
+	    			return false;
+	    		}
       			location.reload();
 		     },5000 );
 	}

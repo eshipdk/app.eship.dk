@@ -6,8 +6,8 @@
 	
   <script type='text/javascript'>
   	
-	$('#select-<%= prefix %>').on('change', function(){
-		var sel = event.srcElement;
+	$('#select-<%= prefix %>').change(function(event){
+		var sel = event.currentTarget;
 		if(sel.selectedIndex > 0){
 			$.getJSON(sel.value, function(json){
 				$.each(json, function(key, value){

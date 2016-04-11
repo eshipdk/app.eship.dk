@@ -27,8 +27,24 @@ class ShipmentsController < ApplicationController
 
   def new
     @shipment = Shipment.new
-    @shipment.packages.build
-    @shipment.user = @current_user
+    if params[:copy]
+      @old_shipment = Shipment.find(params[:copy])
+      if @old_shipment.user != @current_user
+        redirect_to '/'
+        return
+      end
+      @shipment = Shipment.new @old_shipment.attributes
+      @shipment.id = nil
+      @cloning = true
+      packages = []
+      @old_shipment.packages.each do |package|
+        packages.append Package.new package.attributes
+      end
+      @shipment.packages = packages
+    else
+      @shipment.packages.build
+      @shipment.user = @current_user
+    end
   end
 
   def edit
@@ -36,6 +52,16 @@ class ShipmentsController < ApplicationController
     if !@shipment.can_edit or @shipment.user != @current_user
       redirect_to '/'
     end
+  end
+
+  def copy
+    @shipment = Shipment.find(params[:id])
+    if @shipment.user != @current_user
+      redirect_to '/'
+      return
+    end
+
+    redirect_to :controller => :shipments, :action => :new, :copy => params[:id]
   end
 
   def create

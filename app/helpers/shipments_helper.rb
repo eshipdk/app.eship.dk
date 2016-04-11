@@ -3,7 +3,7 @@ module ShipmentsHelper
   
   def form_address shipment, type
     
-    if shipment.new_record?
+    if shipment.new_record? and not @cloning
       if type == 'sender' && @current_user.default_address
         return @current_user.default_address
       else
