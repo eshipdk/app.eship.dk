@@ -105,10 +105,10 @@ module Cargoflux
     data['shipment']['package_dimensions'] = package_dimensions
     
     #Temporary fix to allow empty attention fields
-    if data['sender']['attention'].strip == ''
+    if data['sender']['attention'] == nil or data['sender']['attention'].strip == ''
       data['sender']['attention'] = '-'
     end
-    if data['recipient']['attention'].strip == ''
+    if data['recipient']['attention'] == nil or data['recipient']['attention'].strip == ''
       data['recipient']['attention'] = '-'
     end
     
