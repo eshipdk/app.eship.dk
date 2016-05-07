@@ -1,31 +1,50 @@
 <h1 class='page-header'>User billing: <%= @user.email %></h1>
 
-
 <h3 class='sub-header'>Current balance</h3>
 <div class='table-responsive'>
 	<table class='table table-striped'>
 		<tr>
 			<th>Uninvoiced shipments</th>
 			<th>Billing type</th>
-			<th>Balance</th>
+			<th>Price</th>
+			<th>Cost</th>
+			<th>Shipments</th>
 			<th>Invoice</th>
 		</tr>
 		<tr>
+			
 			<td><%= @user.n_uninvoiced_shipments %></td>
 			<td><%= @user.billing_type_title %></td>
-			<td><%= @user.balance %></td>
 			<td>
-				<% if @user.n_uninvoiced_shipments > 0 %>
+				<%
+				balance, issues = @user.balance
+				%>
+				<%= balance %></td>
+			<td>
+				<%
+				cost, c_issues = @user.cost_balance
+				issues = (issues or c_issues)
+				%>
+				<%= cost %>
+			</td>	
+			</td>
+			<th><%= link_to 'Shipments', user_edit_prices_path(@user) %></th>
+			<td>
+				<% if @user.n_uninvoiced_shipments < 1 %>
+					<% disable_invoice = true%>
+					Cannot create invoice: no shipments pending
+				<% elsif issues %>
+					<% disable_invoice = true%>
+					Cannot create invoice: some prices could not be determined (see shipments)
+				<% end %>
 				<%= form_tag invoice_all_path, method: :post do %>
 					<%= hidden_field_tag :user_id, @user.id %>
-					<button class="btn btn-lg btn-primary btn-block" type="submit">Create invoice</button>
-				<% end %>
+					<button <%= disable_invoice ? 'disabled' : '' %> class="btn btn-lg btn-primary btn-block" type="submit">Create invoice</button>
 				<% end %>
 			</td>
 		</tr>
 	</table>
 </div>
-
 
 <h2 class='sub-header'>History</h2>
 <h3 class='sub-header'>Totals</h3>

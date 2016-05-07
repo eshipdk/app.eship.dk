@@ -11,12 +11,14 @@
 			<th>Name</th>
 			<th>Code</th>
 			<th></th>
+			<th>Cost</th>
 		</tr>
 		<% @products.each do |product| %>
 		<tr>
 			<td><%= product.name %></td>
 			<td><%= product.product_code %></td>
 			<td><%= link_to 'Edit', edit_product_path(product) %></td>
+			<td><%= link_to 'Configure cost', edit_cost_product_path(product)%></td>
 		</tr>
 		<% end %>
 	</table>

@@ -20,7 +20,19 @@
        
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     	 	<% if flash[:error] %>
-		    	<div class="error"><%= flash[:error] %></div>
+    	 		<div class='alert alert-danger'>
+				    <strong>Error:</strong>
+				    <ul>
+				    	<% if flash[:error].is_a?(String) %>
+				    		<li><%= flash[:error] %></li>
+				    	<% else %>
+					    	<% flash[:error].each do |e| %>
+				    		<li><%= e %></li>
+					    	<% end %>
+				    	<% end %>
+				    </ul>
+
+			    </div>
 		    <% end %>
     	 	<%= yield %>
           

@@ -151,4 +151,67 @@ class Shipment < ActiveRecord::Base
       'about:blank'
     end
   end
+  
+  def calculate_cost
+    issue = false
+    case user.billing_type
+    when 'advanced'
+      begin
+        scheme = product.cost_scheme
+        cost = (scheme.get_cost self).round(2)
+      rescue PriceConfigException => e
+        issue = e.issue
+      end
+    else
+      return 0, issue
+    end
+    return cost, issue
+  end
+  
+  def get_cost
+    if not self.cost
+      calculated, issue = calculate_cost
+      if issue
+        return nil, issue
+      else
+        self.cost = calculated
+        save
+        return calculated, nil
+      end
+    end
+    return self.cost, nil
+  end
+  
+  def calculate_price
+    issue = false
+    case user.billing_type
+    when 'free'
+      price = 0
+    when 'flat_price'
+      price = user.unit_price
+    when 'advanced'
+      begin
+        scheme = product.price_scheme user
+        price = (scheme.get_price self).round(2)
+      rescue PriceConfigException => e
+        issue = e.issue
+      end
+    end
+    return price, issue
+  end
+  
+  def get_price
+    if not self.price
+      calculated, issue = calculate_price
+      if issue
+        return nil, issue
+      else
+        self.price = calculated
+        save
+        return calculated, nil
+      end
+    end
+    return self.price, nil
+  end
+  
 end

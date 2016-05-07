@@ -4,18 +4,23 @@ class AdminController < ApplicationController
 
   def dashboard
     
-    
-    
-    customers = User.customer
+    #customers = User.customer
+    customers = User.all
     @customerData = []
     @nShipments = 0
     @value = 0.0
     @nInvoices = 0
     @totalInvoiced = 0.0
+    totalIssues = []
     for c in customers do
       shipments = c.shipments.complete.where('created_at > ?', @dateFrom).where('created_at < ?', @dateTo)
       invoices = c.invoices.where('created_at > ?', @dateFrom).where('created_at < ?', @dateTo)
-      row = {'email' => c.email, 'booked' => shipments.count, 'value' => (c.calc_value shipments), 'invoices' => invoices.count, 'invoiced' => invoices.sum(:amount)}
+      row = {'email' => c.email, 'booked' => shipments.count, 'invoices' => invoices.count, 'invoiced' => invoices.sum(:amount)}
+
+      row['value'], issues = c.calc_value shipments
+      if issues
+          totalIssues = totalIssues + issues
+      end
       
       @nShipments = @nShipments + row['booked']
       @value = @value + row['value']
@@ -24,8 +29,16 @@ class AdminController < ApplicationController
       @customerData.push(row)
     end
     
+    if totalIssues
+      flash[:error] = totalIssues
+    end
     
-    
+  end
+
+  def show_shipment
+    @shipment = Shipment.find params[:id]
+    @disable_actions = true
+    render 'shipments/show'
   end
 
 end

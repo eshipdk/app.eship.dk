@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   validates_length_of :password, :in => 6..20, :on => :create
   validates_length_of :password, :in => 6..20, :on => :update, :if => :password
   enum role: [:admin, :customer]
-  enum billing_type: [:free, :flat_price] #flat_price: Pays a flat fee per label ordered
+  enum billing_type: [:free, :flat_price, :advanced] #flat_price: Pays a flat fee per label ordered. advanced: use pricing schemes per product
 
   has_many :products, :through => :user_products
   has_many :user_products, :dependent => :destroy
@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   end
   
   def self.billing_type_options
-    {(self.billing_type_title :free) => :free, (self.billing_type_title :flat_price) => :flat_price}
+    {(self.billing_type_title :free) => :free, (self.billing_type_title :flat_price) => :flat_price, (self.billing_type_title :advanced) => :advanced}
   end
   
   def self.billing_type_title code
@@ -59,6 +59,8 @@ class User < ActiveRecord::Base
         'Free'
     when 'flat_price'
         'Flat price'
+    when 'advanced'
+        'Advanced'
     end
   end
 
@@ -72,12 +74,41 @@ class User < ActiveRecord::Base
   end
   
   def calc_value shipments
-    case billing_type
-    when 'free'
-      0
-    when 'flat_price'
-      shipments.count * unit_price
+    total = 0
+    issues = nil
+    shipments.each do |shipment|
+      price, issue = shipment.get_price
+      if issue
+        if not issues
+          issues = []
+        end
+        issues.append issue
+      else
+        total += price
+      end
     end
+    return total, issues
+  end
+  
+  def cost_balance
+    calc_cost uninvoiced_shipments
+  end
+  
+  def calc_cost shipments
+    total = 0
+    issues = nil
+    shipments.each do |shipment|
+      cost, issue = shipment.get_cost
+      if issue
+        if not issues
+          issues = []
+        end
+        issues.append issue
+      else
+        total += cost
+      end
+    end
+    return total, issues
   end
 
   def add_product(product)
@@ -111,7 +142,11 @@ class User < ActiveRecord::Base
     if n < 1
       raise 'No shipments to invoice.'
     end
-    value = calc_value shipments
+    value, issues = calc_value shipments
+    if issues
+      raise 'Invoice cancelled -> Issues occured while calculating prices: ' + issues.to_s
+    end
+    
     invoice = Invoice.new()
     invoice.amount = value
     invoice.user = self

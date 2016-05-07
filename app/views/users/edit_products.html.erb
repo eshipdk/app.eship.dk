@@ -8,6 +8,7 @@
       <th>Status</th>
       <th>Action</th>
       <th>Alias</th>
+      <th>Pricing</th>
     </tr>
     <% @products.each do |product| %>
     <tr>
@@ -41,6 +42,11 @@
       	<input type='hidden' name='product_id' value=<%= product.id %>/>
       	<input type='text' name='alias' value='<%= @user.product_alias product %>'/>
       	<% end %>
+      	<% end %>
+      </td>
+      <td>
+      	<% if @user.holds_product product %>
+      	<%= link_to 'Configure price', product_edit_price_scheme_path(@user, product) %>
       	<% end %>
       </td>
     </tr>

@@ -23,6 +23,9 @@ class ShipmentsController < ApplicationController
 
   def show
     @shipment = Shipment.find params[:id]
+    if @shipment.user != @current_user
+      redirect_to :action => :index
+    end
   end
 
   def new

@@ -41,7 +41,7 @@ module EShip
     }
     
 
-
+    config.autoload_paths += Dir[Rails.root.join('app', 'models', '**/')]
     config.assets.paths << Rails.root.join('vendor', 'assets')
   end
 end

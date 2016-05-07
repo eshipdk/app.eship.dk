@@ -35,7 +35,7 @@
     </tr>
     <% @shipments.each do |shipment| %>
     <tr>
-      <td><%= link_to "#{shipment.pretty_id}", shipment_path(shipment) %>
+      <td><%= link_to "#{shipment.pretty_id}", shipment_path(shipment) %></td>
   	  <td><%= shipment.reference %></td>
   	  <td><%= shipment.recipient.company_name %></td>
       <td><%= print_datetime shipment.created_at %></td>

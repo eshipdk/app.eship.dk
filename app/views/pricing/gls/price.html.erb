@@ -1,0 +1,12 @@
+<h1 class='page-header'>Edit price scheme (<%= @user.email %>, <%= @product.name %>)</h1>
+<%= form_for @scheme, :url => product_update_price_scheme_path(@user, @product) do |f| %>
+<h2 class='sub-header'>Pricing table</h2>
+<div class='table-responsive'>
+	<%= render 'pricing/gls/pricing_matrix' %>
+</div>
+
+<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+
+<% end%>
+
+

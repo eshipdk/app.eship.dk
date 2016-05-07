@@ -1,0 +1,54 @@
+<%= form_tag(user_update_prices_path(@user)) do %>
+<h3>Pending shipments</h3>
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>ID</th><th>Product</th><th>Calculated cost</th><th>Final cost</th><th>Calculated price</th><th>Final price</th>
+		</tr>
+		<% @user.uninvoiced_shipments.each do |shipment| %>
+		<tr>
+			<td>
+				<%= link_to "#{shipment.pretty_id}", admin_shipment_path(shipment) %>
+			</td>
+			<td><%= shipment.product.name %></td>
+			<td>
+				<% cost, issue = shipment.calculate_cost %>
+				<% if issue %>
+				 <%= issue %>
+				<% else %>
+				 <%= cost %>
+				<% end %>
+			</td>
+			<td>
+				<% cost, issue = shipment.get_cost %>
+				<%= bstxt_field('shipments[' + shipment.id.to_s + ']', 'cost', value: cost) %>
+			</td>
+			<td>
+				<% price, issue = shipment.calculate_price %>
+				<% if issue %>
+					<%= issue %>
+				<% else %>
+					<%= price %>
+				<% end %>
+			</td>
+			<td>
+				<% 
+				price, issue = shipment.get_price
+				 %>
+				<%= bstxt_field('shipments[' + shipment.id.to_s + ']', 'price', value: price) %>
+			</td>
+		</tr>
+		<% end %>
+		<tfoot>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><button type='submit' class='btn btn-lg btn-primary btn-block'>Update</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+<% end %>

@@ -7,11 +7,21 @@ Rails.application.routes.draw do
       post :remove_product
       get :edit_products
       get :edit_contact_address
+      
       patch :update_contact_address
+      resources :products, only: [] do
+        get :edit_price_scheme
+        patch :update_price_scheme
+      end
     end
   end
 
-  resources :products
+  resources :products do
+    member do
+      get :edit_cost
+      patch :update_cost_scheme
+    end
+  end
 
   resources :shipments do
     member do
@@ -68,10 +78,13 @@ Rails.application.routes.draw do
 
   #Billing
   get 'billing/user/:id', to: 'billing#user', as: 'user_billing'
+  get 'billing/user/:id/edit_prices', to: 'billing#edit_prices', as: 'user_edit_prices'
   post 'billing/invoice', to: 'billing#invoice', as: 'invoice_all'
+  post 'billing/user/:id/update_prices', to: 'billing#update_prices', as: 'user_update_prices'
 
-  #Admin dashboard
+  #Admin
   get 'admin/dashboard', to: 'admin#dashboard', as: 'admin_dashboard'
+  get 'admin/shipment/:id', to: 'admin#show_shipment', as: 'admin_shipment'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
