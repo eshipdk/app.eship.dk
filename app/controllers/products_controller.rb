@@ -41,8 +41,8 @@ class ProductsController < ApplicationController
     begin
       @scheme = @product.cost_scheme
       @scheme.build
-    rescue Exception => e
-      flash[:error] = e.to_s
+    rescue PriceConfigException => e
+      flash[:error] = e.issue
       redirect_to :action => :index
       return
     end
@@ -70,8 +70,8 @@ class ProductsController < ApplicationController
     end
     begin
       @scheme = @product.price_scheme @user
-    rescue Exception => e
-      flash[:error] = e.to_s
+    rescue PriceConfigException => e
+      flash[:error] = e.issue
       redirect_to :controller => :users, :action => :edit_products
       return
     end
