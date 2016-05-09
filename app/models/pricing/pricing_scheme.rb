@@ -36,5 +36,29 @@ class PricingScheme < ActiveRecord::Base
     raise 'Cost calculation not implemented'
   end
   
+  #Takes shipments to be invocied with
+  #actual scheme and generates the rows to be
+  #associated with the invoice
+  def generate_invoice_rows shipments
+    raise 'Invoice row generation not implemented'
+  end
+  
+  def extras_data
+    if self.extras == nil
+      return {}
+    end
+    return JSON.parse self.extras
+  end
+  
+  def set_extras_val key, val
+    data = extras_data
+    data[key.to_s] = val
+    self.extras = data.to_json
+  end
+  
+  def get_extras_val key
+    data = self.extras_data
+    data.key?(key.to_s) ? data[key.to_s] : nil
+  end
   
 end

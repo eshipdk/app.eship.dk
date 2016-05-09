@@ -70,7 +70,7 @@
 		</tr>	
 		<% @invoices.each do |invoice| %>
 		<tr>
-			<td><%= invoice.id %></td>
+			<td><%= link_to invoice.id, invoice_path(invoice) %></td>
 			<td><%= invoice.created_at %></td>
 			<td><%= invoice.n_shipments %></td>
 			<td><%= invoice.amount %></td>

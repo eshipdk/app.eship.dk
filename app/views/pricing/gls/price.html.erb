@@ -2,6 +2,16 @@
 <%= form_for @scheme, :url => product_update_price_scheme_path(@user, @product) do |f| %>
 <h2 class='sub-header'>Pricing table</h2>
 <div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th><label for='pricing_scheme_enable_diesel_fee'>Enable diesel fee</label></th>
+		</tr>
+		<tr>
+			<td>
+				<%= bschckbx('pricing_scheme[enable_diesel_fee]', 1, @scheme.diesel_fee_enabled?) %>
+			</td>
+		</tr>
+	</table>
 	<%= render 'pricing/gls/pricing_matrix' %>
 </div>
 

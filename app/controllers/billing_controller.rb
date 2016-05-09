@@ -28,11 +28,11 @@ class BillingController < ApplicationController
   
   def invoice
     user = User.find(params[:user_id])
-    begin
+   # begin
       user.do_invoice
-    rescue Exception => e
-      flash[:error] = e.to_s
-    end
+    #rescue Exception => e
+      #flash[:error] = e.to_s
+  #  end
     redirect_to user_billing_path(user)
   end
   

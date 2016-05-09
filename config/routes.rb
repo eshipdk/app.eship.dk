@@ -33,6 +33,9 @@ Rails.application.routes.draw do
     end
   end
   
+  resources :invoices, only: [:show] do
+  end
+  
   resources :addresses do
     member do
       get :send_to

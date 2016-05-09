@@ -214,4 +214,15 @@ class Shipment < ActiveRecord::Base
     return self.price, nil
   end
   
+  def get_weight
+    weight = 0
+    packages.each do |package|
+      begin
+        weight += package.weight * package.amount
+      rescue NoMethodError
+      end
+    end
+    return weight
+  end
+  
 end

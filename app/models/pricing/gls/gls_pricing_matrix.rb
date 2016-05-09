@@ -41,18 +41,25 @@ class GlsPricingMatrix < PricingScheme
       rows[i].mark_for_destruction
     end
     
-    begin
-      attrs = params.require(:pricing_scheme).permit().merge(
-        {:rows_attributes => params.require(:pricing_scheme).require(:rows_attributes)})
-    rescue ActionController::ParameterMissing
-      #Permit empty list of rows
-      attrs = params.permit(:pricing_scheme).permit().merge(
-        {:rows_attributes => params.permit(:pricing_scheme).permit(:rows_attributes)})
-    end
+    attrs = params.require(:pricing_scheme).permit().merge(
+      {:rows_attributes => params.require(:pricing_scheme).require(:rows_attributes)})
+
     
     update attrs
     
+    dfe = params.require(:pricing_scheme).permit(:enable_diesel_fee)
+    set_extras_val(:enable_diesel_fee, dfe.key?(:enable_diesel_fee))
+    save
+    
   end
+  
+  
+  
+  def diesel_fee_enabled?
+    val = get_extras_val :enable_diesel_fee
+    val == nil ? false : val
+  end
+  
   
   def handle_cost_update params
     set_diesel_fee params.require(:pricing_scheme)[:diesel_fee]
@@ -91,12 +98,44 @@ class GlsPricingMatrix < PricingScheme
         if not val
           raise PriceConfigException.new 'No price configured for weight: ' + weight.to_s + '; country: ' + shipment.recipient.country_code
         end
-        return add_fee val
+        return val
       end
     end
     raise PriceConfigException.new 'Weight out of scope: ' + weight.to_s
   end
   
+  def weight_class shipment
+    weight = shipment.get_weight
+    intervals.each do |interval|
+      if interval.from <= weight and weight < interval.to
+        return interval.from.to_s + ' - ' + interval.to.to_s
+      end
+    end
+    return weight.to_s
+  end
+  
+  def generate_invoice_rows shipments
+    amount = 0
+    rows = []
+    shipments.each do |shipment|
+      row = InvoiceRow.new
+      price, issues = shipment.get_price
+      if issues
+        raise issues.to_s
+      end
+      amount += price
+      row.amount = amount
+      row.description = shipment.product.name + ': (' + shipment.recipient.country_code + ', ' + (weight_class shipment) + ')'
+      rows.push(row)
+    end
+    if diesel_fee_enabled?
+      row = InvoiceRow.new
+      row.amount = amount * (get_diesel_fee * 0.01)
+      row.description = shipments[0].product.name + ': Diesel fee'
+      rows.push(row)
+    end
+    return rows
+  end
 
   
 end

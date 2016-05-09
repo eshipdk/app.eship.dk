@@ -1,0 +1,22 @@
+<h1 class='page-header'>Invoice #<%= @invoice.id %></h1>
+
+<h2 class='sub-header'>Invoice lines</h2>
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>Product description</th><th>Amount</th>
+		</tr>
+		<% @invoice.rows.each do |row| %>
+		<tr>
+			<td><%= row.description %></td>
+			<td><%= row.amount %></td>
+		</tr>
+		<% end %>
+		<tfoot>
+			<tr>
+				<td>TOTAL</td>
+				<td><%= @invoice.amount %></td>
+			</tr>
+		</tfoot>
+	</table>
+</div>

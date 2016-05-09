@@ -2,6 +2,9 @@ class InvoicesController < ApplicationController
   before_filter :authenticate_admin
   
   
+  def show
+    @invoice = Invoice.find params[:id]
+  end
   
   def destroy
     invoice = Invoice.find(params[:id])

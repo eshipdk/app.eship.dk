@@ -136,29 +136,78 @@ class User < ActiveRecord::Base
     uninvoiced_shipments.count
   end
 
-  def do_invoice
-    shipments = uninvoiced_shipments
-    n = shipments.count
-    if n < 1
-      raise 'No shipments to invoice.'
-    end
-    value, issues = calc_value shipments
-    if issues
-      raise 'Invoice cancelled -> Issues occured while calculating prices: ' + issues.to_s
-    end
-    
-    invoice = Invoice.new()
-    invoice.amount = value
-    invoice.user = self
-    invoice.n_shipments = n
-    invoice.save()
-    
-    for shipment in shipments do
-      shipment.invoiced = true
-      shipment.invoice = invoice
-      shipment.save()
-    end
-  end
+ def do_invoice
+   shipments = uninvoiced_shipments
+   n = shipments.count
+   if n < 1
+     raise 'No shipments to invoice.'
+   end
+   invoice = Invoice.new()
+   invoice.user = self
+   invoice.n_shipments = n
+   
+   product_groups = {}
+   shipments.each do |shipment|
+     product_code = shipment.product.product_code
+     if not product_groups.key?(product_code)
+       product_groups[product_code] = {'shipments' => [shipment], 'product' => shipment.product}
+     else
+       product_groups[product_code]['shipments'].push(shipment)
+     end
+   end
+   
+   group_rows = {}
+   product_groups.each do |product_code, group|
+     product = group['product']
+     group_shipments = group['shipments']
+     group_rows[product_code] = (product.price_scheme self).generate_invoice_rows group_shipments
+   end
+   
+   invoice.save
+   amount = 0
+   group_rows.each do |product_code, rows|
+     
+     rows.each do |row|
+       row.invoice = invoice
+       row.save
+       amount += row.amount
+     end
+   end
+   invoice.amount = amount
+   invoice.save
+   
+   shipments.each do |shipment|
+    shipment.invoiced = true
+    shipment.invoice = invoice
+    shipment.save  
+   end
+   
+ end
+ 
+#  def do_invoice
+#    shipments = uninvoiced_shipments
+#    n = shipments.count
+#    if n < 1
+#      raise 'No shipments to invoice.'
+#    end
+#    value, issues = calc_value shipments
+#    if issues
+#      raise 'Invoice cancelled -> Issues occured while calculating prices: ' + issues.to_s
+#    end
+#    
+#    invoice = Invoice.new()
+#    invoice.amount = value
+#    invoice.user = self
+#    invoice.n_shipments = n
+#    invoice.save()
+#    
+#    for shipment in shipments do
+#      shipment.invoiced = true
+#      shipment.invoice = invoice
+#      shipment.save()
+#    end
+#  end
+  
   
   def total_shipments_invoiced
     invoices.sum(:n_shipments)
