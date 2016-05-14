@@ -4,8 +4,8 @@ class AdminController < ApplicationController
 
   def dashboard
     
-    #customers = User.customer
-    customers = User.all
+    customers = User.customer
+    #customers = User.all
     @customerData = []
     @nShipments = 0
     @value = 0.0
@@ -30,7 +30,7 @@ class AdminController < ApplicationController
     end
     
     if totalIssues
-      flash[:error] = totalIssues
+      #flash[:error] = totalIssues
     end
     
   end

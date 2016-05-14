@@ -13,8 +13,13 @@ module CsvImporter
     validation = validate_csv_values lines, user
 
     if !validation['error']
+      i = 0
       lines.each do |row|
-       
+        i += 1
+        if i <= user.import_format.header_lines
+          next
+        end
+        
         if user.import_format.importer == 'interline'
           hash = interline_csv_row_hash user, row
           interline_service = hash['description']

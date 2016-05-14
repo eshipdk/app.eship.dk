@@ -3,11 +3,16 @@
 <div class='table-responsive'>
 <table class='table table-striped'>
 	<tr>
-		<th><label for='importer_default'>Default</label></th><th><label for='importer_interline'>Interline</label></th>
+		<th><label for='importer_default'>Default</label></th>
+		<th><label for='importer_interline'>Interline</label></th>
+		<th><label for='import_format_header_lines'>Number of header lines (skipped during import)</label></th>
 	</tr>
 	<tr>
 		<td><%= radio_button_tag 'importer', 'default', @format.importer == 'default' %></td>
 		<td><%= radio_button_tag 'importer', 'interline', @format.importer == 'interline' %></td>
+		<td>
+			<%= f.bstxt_field :header_lines, :style => 'max-width: 100px;' %>
+		</td>
 	</tr>
 </table>
 
