@@ -1,6 +1,7 @@
 
 module Cargoflux
   
+  API_ENDPOINT = 'https://www.cargoflux.com/api/v1/customers/shipments/'
   
   
   def submit shipment
@@ -24,14 +25,26 @@ module Cargoflux
     return response
   end
   
-  
-  def api_endpoint
-    URI.parse('https://www.cargoflux.com/api/v1/customers/shipments')
-    #URI.parse('http://requestb.in/1i1oxsi1')
+  def fetch_state shipment
+    if !shipment.status == 'complete'
+      return :na
+    end
+    
+    endpoint = URI.parse(API_ENDPOINT + shipment.cargoflux_shipment_id)
+    http = Net::HTTP.new(endpoint.host, endpoint.port)
+    http.use_ssl = true
+    request = Net::HTTP::Get.new(endpoint.request_uri, initheader = {'access_token' => shipment.user.cargoflux_api_key})
+      
+    response = JSON.parse http.request(request).body
+    if response['state'] == 'delivered_at_destination'
+      response['state'] = 'delivered'
+    end
+    return response['state']
   end
+    
 
   def do_submit shipment
-    endpoint = api_endpoint
+    endpoint = URI.parse API_ENDPOINT
 
     http = Net::HTTP.new(endpoint.host, endpoint.port)
     http.use_ssl = true
@@ -44,8 +57,7 @@ module Cargoflux
       request = Net::HTTP::Post.new(endpoint.request_uri,
                                   initheader = {'Content-Type' =>
                                     'application/json'})
-    end
-    
+    end                        
     request.body = (request_payload shipment).to_json
     return JSON.parse http.request(request).body
   end
@@ -117,6 +129,5 @@ module Cargoflux
     end
     return data
   end
-  
   
 end

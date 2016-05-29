@@ -9,7 +9,12 @@ class Shipment < ActiveRecord::Base
   accepts_nested_attributes_for :packages, :allow_destroy => true
   
   #status label_ready has been deprecated. See label_pending bool
+  #This status describes the state of the shipment booking itself
   enum status: [:initiated, :response_pending, :label_ready, :complete, :failed]
+  
+  #The shiping state represents the state pulled from CF for a shipment that has been booked
+  enum shipping_state: [:na, :booked, :in_transit, :delivered, :cancelled]
+  
   enum label_action: [:print, :email]
   
   def pretty_id(id = self.id)
@@ -48,6 +53,13 @@ class Shipment < ActiveRecord::Base
       return self.find(id)
     end
     return find_by_cargoflux_shipment_id(pretty_id)
+  end
+  
+  def update_shipping_state
+    if status != 'complete' or ['arrived', 'cancelled'].include? shipping_state
+      return
+    end
+    update_attribute(:shipping_state, (Cargoflux.fetch_state self))
   end
 
   def address(type)
@@ -145,7 +157,7 @@ class Shipment < ActiveRecord::Base
     case product.product_code
     when 'daod'
       'http://www.tracktrace.dk/index.php?stregkode=' + awb
-    when 'glsb', 'glsp'
+    when 'glsb', 'glsp', 'glsboc', 'glspoc', 'glsproc'
       'https://gls-group.eu/DK/da/find-pakke?match=' + awb
     else
       'about:blank'

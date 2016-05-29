@@ -38,6 +38,7 @@ class AdminController < ApplicationController
   def show_shipment
     @shipment = Shipment.find params[:id]
     @disable_actions = true
+    @shipment.update_shipping_state
     render 'shipments/show'
   end
 

@@ -20,7 +20,8 @@
   <table class='table table-striped'>
     <tr>
       <th>ID</th>
-      <th>Status</th>
+      <th>Booking state</th>
+      <th>Shipping state</th>
       <th>Invoiced</th>
       <th>Timestamp</th>
       <th>Product</th>
@@ -33,6 +34,7 @@
     <tr>
       <td>#<%= @shipment.pretty_id %></td>
       <td><%= @shipment.status.capitalize %></td>
+      <td><%= @shipment.shipping_state.capitalize %></td>
       <td><%= @shipment.invoiced ? "Yes" : "No" %></td>
       <% if @shipment.status == 'response_pending'%>
       <script type='text/javascript'>var autoReload = true;</script>

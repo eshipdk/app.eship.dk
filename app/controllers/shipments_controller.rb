@@ -26,6 +26,8 @@ class ShipmentsController < ApplicationController
     if @shipment.user != @current_user
       redirect_to :action => :index
     end
+    
+    @shipment.update_shipping_state
   end
 
   def new
@@ -163,6 +165,7 @@ class ShipmentsController < ApplicationController
 
     if params['status'] == 'booked'
       shipment.status = 'complete'
+      shipment.shipping_state = 'booked'
       shipment.awb = params['awb']
       shipment.document_url = params['awb_asset_url']
     else
