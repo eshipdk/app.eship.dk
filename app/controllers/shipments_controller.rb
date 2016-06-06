@@ -214,7 +214,7 @@ class ShipmentsController < ApplicationController
                                      :package_length, :package_width,
                                      :package_height, :package_weight,
                                      :description, :amount, :reference,
-                                     :parcelshop_id, :label_actionm, :remarks, :delivery_instructions).merge(
+                                     :parcelshop_id, :label_action, :remarks, :delivery_instructions).merge(
           {'packages_attributes' => params.require(:shipment).require(:packages_attributes)})
   end
 
