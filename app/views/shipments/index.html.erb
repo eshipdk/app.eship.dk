@@ -16,7 +16,6 @@
       <th>Timestamp</th>
       <th>Product</th>
       <th>Booking state</th>
-      <th>Shipping state</th>
     </tr>
    
     <tr class='model-filters'>
@@ -42,8 +41,6 @@
       <td><%= print_datetime shipment.created_at %></td>
       <td><%= shipment.product.name %></td>
       <td><%= shipment.status.capitalize %></td>
-      <% shipment.update_shipping_state %>
-      <td><%= shipment.shipping_state.capitalize %></td>
     </tr>
     <% end %>
   </table>
