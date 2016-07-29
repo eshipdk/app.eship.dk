@@ -1,0 +1,95 @@
+
+<% countries = (defined? countries).nil? ? false : countries%>
+
+<%
+if countries == []
+	%>
+	NO COUNTRIES AVAILABLE
+	<%
+else
+%>
+<table class='table table-striped'>
+	<tr>
+		<th>Country</th>
+		<th>Weight from (&lt;= weight)</th>
+		<th>Weight to (&gt; weight)</th>
+		<th>Value</th>
+		<th class="col-md-1"></th>
+	</tr>
+	<tbody id='matrix'>
+	<% i = 0 %>
+	<% @scheme.rows.order(country_code: :asc).each do |row| %>
+	<tr id='row-<%= i %>'>
+		<td>
+			<%= bscountry_select("pricing_scheme[rows_attributes][" + i.to_s + "]", "country_code", selected: row.s_country_code, only: countries)%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'weight_from', :value => row.weight_from)%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'weight_to', :value => row.weight_to)%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'value', :value => row.value)%>
+		</td>
+		<td>
+			<button onclick='removeRow(<%= i.to_s %>)' type='button' class='btn btn-danger btn-block'>X</button>
+		</td>
+	</tr>
+	<% i+=1 %>
+	<% end %>
+	</tbody>
+	<tfoot>
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td><button onclick='addRow()' type='button' class='btn btn-primary btn-block'>Add</button></td>	
+	</tr>
+	</tfoot>
+</table>	
+
+
+<table style='display:none'>
+	<tr id='base-row'>
+		<td>
+			<%= bscountry_select("pricing_scheme[rows_attributes][{{x}}]", "country_code", only: countries)%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'weight_from')%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'weight_to')%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'value')%>
+		</td>
+		<td>
+			<button onclick='removeRow({{x}})' type='button' class='btn btn-danger btn-block'>X</button>
+		</td>
+	</tr>
+</table>
+
+<script type='text/javascript'>
+	var nRows = <%= i %>;
+	
+	var baseRow = $('#base-row');
+	var baseRowHtml = baseRow.html();
+	baseRow.remove();
+	function addRow(){
+		nRows++;
+		var html = baseRowHtml.replace(new RegExp('{{x}}', 'g'), nRows )
+		var newRow = document.createElement('tr')
+		newRow.id = 'row-' + nRows;
+		newRow.innerHTML = html;
+		$('#matrix').append(newRow);
+	}
+	
+	function removeRow(i){
+		var row = $('#row-' + i);
+		row.remove();
+	}
+</script>
+
+<% end %>

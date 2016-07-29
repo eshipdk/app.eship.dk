@@ -1,3 +1,4 @@
+include Cargoflux
 class Shipment < ActiveRecord::Base
   
   belongs_to :user
@@ -37,7 +38,8 @@ class Shipment < ActiveRecord::Base
   }
   
   scope :filter_uninvoiced, ->(){
-    return self.complete.where(invoiced: false)
+    self.complete.where(['invoiced = ? AND (shipping_state IN (2, 3))', false])
+    #self.complete.where(invoiced: false)
   }
   
   scope :filter_recipient_name, ->(recipient_name){
@@ -56,7 +58,7 @@ class Shipment < ActiveRecord::Base
   end
   
   def update_shipping_state
-    if status != 'complete' or ['arrived', 'cancelled'].include? shipping_state
+    if status != 'complete' or ['delivered', 'cancelled'].include? shipping_state
       return
     end
     update_attribute(:shipping_state, (Cargoflux.fetch_state self))
@@ -102,6 +104,9 @@ class Shipment < ActiveRecord::Base
   end
 
   def get_error
+    if not price_configured?
+      return {'errors' => [{'description' => 'Pricing could not be determined for this shipment!'}]}
+    end
     (JSON.parse api_response)
   end
 
@@ -139,17 +144,20 @@ class Shipment < ActiveRecord::Base
 
 
   def api_response_error_msg
-      if !api_response
-        return "No response"
+    if not price_configured?
+      return 'Pricing could not be determined for this shipment!'
+    end
+    if !api_response
+      return "No response"
+    end
+    begin
+      hash = JSON.parse api_response
+      if hash['status'] == 'failed'
+        return hash['errors'][0]['description']
       end
-      begin
-        hash = JSON.parse api_response
-        if hash['status'] == 'failed'
-          return hash['errors'][0]['description']
-        end
-      rescue
-        return api_response
-      end
+    rescue
+      return api_response
+    end
   end
 
     
@@ -235,6 +243,22 @@ class Shipment < ActiveRecord::Base
       end
     end
     return weight
+  end
+  
+  def price_configured?
+    product.price_scheme(user).price_configured? self
+  end
+  
+  def self.update_pending_shipping_states
+    Rails.logger.info "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"
+    pending_shipments = Shipment.where('shipping_state in (1, 2)')
+    
+    Rails.logger.info "Number of shipments to update: #{pending_shipments.length}"
+    for shipment in pending_shipments
+      shipment.update_shipping_state
+    end
+    
+    Rails.logger.info "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_pending_shipping_states"
   end
   
 end

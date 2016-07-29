@@ -31,12 +31,12 @@ module EShip
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.perform_deliveries = true
     config.action_mailer.smtp_settings = {
-     :address              => "smpt.mailgun.org",
-     :port                 => 587,
+     :address              => "smtp.mailgun.org",
      :domain               => 'mail.eship.dk',
      :user_name            => 'postmaster@mail.eship.dk',
      :password             => '4c8c07d8aa479c9f38f1ec1c63090074',
      :authentication       => "plain",
+     :port                 => 587,
      :enable_starttls_auto => true
     }
     

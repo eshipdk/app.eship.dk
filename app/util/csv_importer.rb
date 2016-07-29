@@ -232,7 +232,13 @@ module CsvImporter
     package.shipment = shipment
     package.save
     
-    Cargoflux.submit shipment
+    if shipment.price_configured?
+      Cargoflux.submit shipment
+    else
+      shipment.status = 'failed'
+      shipment.label_pending = true
+      shipment.save
+    end
     
   end
   

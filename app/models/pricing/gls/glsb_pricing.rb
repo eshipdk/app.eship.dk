@@ -1,12 +1,12 @@
 
-class GlsbPricing < GlsPricingMatrix
+class GlsbPricing < IntervalTable
   
   def cost_template
-    return "pricing/gls/cost"
+    return "pricing/interval/cost"
   end
   
   def price_template
-    return "pricing/gls/price"
+    return "pricing/interval/price"
   end
   
 end

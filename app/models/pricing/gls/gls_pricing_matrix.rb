@@ -27,13 +27,7 @@ class GlsPricingMatrix < PricingScheme
     #pass
   end
   
-  def get_diesel_fee
-    return (ConfigValue.get :gls_diesel_fee).to_f
-  end
   
-  def set_diesel_fee fee
-    ConfigValue.set :gls_diesel_fee, fee.to_s
-  end
   
   def handle_update params
     

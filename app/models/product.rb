@@ -23,6 +23,7 @@ class Product < ActiveRecord::Base
       price_scheme.user = user
       price_scheme.save
     end
+    price_scheme.cost_scheme = cost_scheme
     return price_scheme
   end
   

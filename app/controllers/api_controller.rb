@@ -64,7 +64,13 @@ class ApiController < ApplicationController
     package.shipment = shipment
     package.save
     
-    Cargoflux.submit shipment
+    
+    if shipment.price_configured?
+      Cargoflux.submit shipment
+    else
+      shipment.status = 'failed'
+      shipment.save
+    end
     
     shipment.reload
 

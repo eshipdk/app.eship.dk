@@ -91,8 +91,14 @@ class ShipmentsController < ApplicationController
     
 
     if @shipment.save
-      Cargoflux.submit @shipment
-      redirect_to :action => 'index'
+      if @shipment.price_configured?
+        Cargoflux.submit @shipment
+        redirect_to :action => 'index'
+      else
+        @shipment.status = 'failed'
+        @shipment.save
+        render 'show'
+      end
     else
       render 'new'
     end
@@ -139,9 +145,15 @@ class ShipmentsController < ApplicationController
     shipment.sender.update(address_params(:sender))
     shipment.recipient.update(address_params(:recipient))
     
-    Cargoflux.submit shipment
+    if shipment.price_configured?
+      Cargoflux.submit shipment
+    else
+      shipment.status = 'failed'
+      shipment.save
+    end
 
-    redirect_to :action => 'show'
+    @shipment = shipment
+    render'show'
   end
 
   def submit
@@ -171,6 +183,8 @@ class ShipmentsController < ApplicationController
     else
       shipment.status = 'failed'
     end
+
+    shipment.save
 
     shipment.api_response = params.to_json
     if shipment.label_action == 'print' || shipment.status != 'complete'
