@@ -1,6 +1,7 @@
 class Address < ActiveRecord::Base
 
   has_one :address_book_record
+  has_one :user, :dependent => :nullify
 
 
   def company #Convenient alias
