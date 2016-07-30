@@ -37,7 +37,12 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if @user.update(user_params)
+    params = user_params
+    if params[:password] == ''
+      params.delete :password
+      params.delete :password_confirmation
+    end
+    if @user.update(params)
       redirect_to :action => 'index'
     else
       render 'edit'

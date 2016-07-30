@@ -33,10 +33,10 @@
 
 	
  
-  <% if @user.new_record? %>
+
   	<table class='table table-striped'>
 		<tr>
-			<th>Password</th>
+			<th>Password<% if not @user.new_record? %> (Leave blank to keep existing)<% end %></th>
 			<th>Repeat password</th>
 		</tr>
 		<tr>
@@ -44,7 +44,7 @@
 			<td><%= f.password_field :password_confirmation %></td>
 		</tr>
 	</table>
-  <% end %>
+
   
   
   	<h2 class='sub-header'>Billing</h2>
