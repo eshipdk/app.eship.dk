@@ -83,15 +83,24 @@ class ApiController < ApplicationController
 
   def shipment_info
     
-    pretty_id = @api_params['shipment_id']
-    shipment = Shipment.find_by_pretty_id pretty_id
-    
-    if shipment == nil || shipment.user != @current_user
+    shipment = @current_user.shipments
+    query = ''
+    if @api_params.key? 'shipment_id' and @api_params.key? 'reference'
+      shipment = shipment.filter_pretty_id(@api_params['shipment_id']).where(['reference LIKE ?', @api_params['reference']]).last
+    elsif @api_params.key? 'shipment_id'
+      shipment = shipment.find_by_pretty_id(@api_params['shipment_id'])
+    elsif @api_params.key? 'reference'
+      shipment = shipment.where(['reference LIKE ?', @api_params['reference']]).last
+    else
+      shipment = nil
+    end
+
+    if shipment == nil
       result = {'found' => false}
     else
       result = {
           'found' => true,
-          'id'  => pretty_id,
+          'id'  => shipment.pretty_id,
           'status' => shipment.status
         }
 
