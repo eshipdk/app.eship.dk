@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   has_many :address_book_records, :dependent => :destroy
   has_many :shipments, :dependent => :destroy
   has_many :invoices, :dependent => :destroy
+  has_many :pricing_schemes, :dependent => :destroy
   has_one :import_format, :dependent => :destroy
   belongs_to :default_address, :class_name => 'Address' , :foreign_key => 'address_id'
   belongs_to :contact_address, :class_name => 'Address', :foreign_key => 'contact_address_id'
@@ -135,7 +136,7 @@ class User < ActiveRecord::Base
   def n_uninvoiced_shipments
     uninvoiced_shipments.count
   end
-
+  
  def do_invoice
    shipments = uninvoiced_shipments
    n = shipments.count

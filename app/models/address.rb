@@ -1,6 +1,6 @@
 class Address < ActiveRecord::Base
 
-  has_one :address_book_record, :dependent => :destroy
+  has_one :address_book_record
 
 
   def company #Convenient alias
