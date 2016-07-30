@@ -16,6 +16,35 @@
     <strong>Error:</strong> <%= @shipment.api_response_error_msg %>
   </div>
   <% end %>
+  
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>Calculated Shipment Price</th>
+			<th>Adjusted Shipment Price</th>
+			<th>Calculated Diesel Fee</th>
+			<th>Total</th>
+		</tr>
+		<tr>
+			<td>
+				<% price, issue = @shipment.calculate_price %>
+				<%= price %>
+			</td>
+			<td>
+				<% price, issue = @shipment.get_price %>
+				<%= price %>
+			</td>
+			<td>
+				<% fee = @shipment.calculate_diesel_fee %>
+				<%= fee %>
+			</td>
+			<td>
+				<%= price + fee %>
+			</td>
+		</tr>
+	</table>	
+</div>
+  
 <div class='table-responsive'>
   <table class='table table-striped'>
     <tr>

@@ -82,15 +82,7 @@ class IntervalTable < PricingScheme
     handle_update params
   end
   
-  def diesel_fee_dk_enabled?
-    val = get_extras_val :diesel_fee_dk
-    val == nil ? false : val
-  end
-  
-  def diesel_fee_inter_enabled?
-    val = get_extras_val :diesel_fee_inter
-    val == nil ? false : val
-  end
+ 
   
   def available_countries
     countries = Set.new

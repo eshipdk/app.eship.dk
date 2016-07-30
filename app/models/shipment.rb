@@ -234,6 +234,21 @@ class Shipment < ActiveRecord::Base
     return self.price, nil
   end
   
+  def calculate_diesel_fee
+    price, _ = get_price
+    scheme = product.price_scheme(user)
+    if recipient.country_code == 'DK'
+      if scheme.diesel_fee_dk_enabled?
+        return price * scheme.get_diesel_fee_dk * 0.01
+      end
+    else
+      if scheme.diesel_fee_inter_enabled?
+        return price * scheme.get_diesel_fee_inter * 0.01
+      end
+    end
+    return 0
+  end
+  
   def get_weight
     weight = 0
     packages.each do |package|
