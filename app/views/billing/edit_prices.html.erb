@@ -3,7 +3,8 @@
 <div class='table-responsive'>
 	<table class='table table-striped'>
 		<tr>
-			<th>ID</th><th>Product</th><th>Calculated cost</th><th>Final cost</th><th>Calculated price</th><th>Final price</th>
+			<th>ID</th><th>Product</th><th>Calculated Cost</th><th>Calculated Price</th><th>Adjusted Price</th>
+			<th>Calculated Diesel Fee</th><th>Adjusted Diesel Fee</th>
 		</tr>
 		<% @user.uninvoiced_shipments.each do |shipment| %>
 		<tr>
@@ -12,35 +13,25 @@
 			</td>
 			<td><%= shipment.product.name %></td>
 			<td>
-				<% cost, issue = shipment.calculate_cost %>
-				<% if issue %>
-				 <%= issue %>
-				<% else %>
-				 <%= cost %>
-				<% end %>
+				<%= shipment.cost %>
 			</td>
 			<td>
-				<% cost, issue = shipment.get_cost %>
-				<%= bstxt_field('shipments[' + shipment.id.to_s + ']', 'cost', value: cost) %>
+				<%= shipment.price %>
 			</td>
 			<td>
-				<% price, issue = shipment.calculate_price %>
-				<% if issue %>
-					<%= issue %>
-				<% else %>
-					<%= price %>
-				<% end %>
+				<%= bstxt_field('shipments[' + shipment.id.to_s + ']', 'price', value: shipment.final_price) %>
 			</td>
 			<td>
-				<% 
-				price, issue = shipment.get_price
-				 %>
-				<%= bstxt_field('shipments[' + shipment.id.to_s + ']', 'price', value: price) %>
+				<%= shipment.diesel_fee %>
+			</td>
+			<td>
+				<%= bstxt_field('shipments[' + shipment.id.to_s + ']', 'diesel_fee', value: shipment.final_diesel_fee) %>
 			</td>
 		</tr>
 		<% end %>
 		<tfoot>
 			<tr>
+				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>

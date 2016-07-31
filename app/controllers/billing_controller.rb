@@ -19,8 +19,8 @@ class BillingController < ApplicationController
       if shipment.user != @user
         raise 'Unknown logical error..'
       end
-      shipment.price = row['price'] == '' ? nil : row['price'].to_f
-      shipment.cost = row['cost'] == '' ? nil : row['cost'].to_f
+      shipment.final_price = row['price'] == '' ? shipment.price : row['price'].to_f
+      shipment.final_diesel_fee = row['diesel_fee'] == '' ? shipment.diesel_fee : row['diesel_fee'].to_f
       shipment.save
     end
     redirect_to :action => :user

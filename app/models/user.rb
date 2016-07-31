@@ -74,42 +74,17 @@ class User < ActiveRecord::Base
     calc_value uninvoiced_shipments
   end
   
+  
   def calc_value shipments
-    total = 0
-    issues = nil
+    total_price = 0
+    total_fee = 0
+    total_cost = 0
     shipments.each do |shipment|
-      price, issue = shipment.get_price
-      if issue
-        if not issues
-          issues = []
-        end
-        issues.append issue
-      else
-        total += price
-      end
+      total_price += shipment.final_price
+      total_fee += shipment.final_diesel_fee
+      total_cost += shipment.cost
     end
-    return total, issues
-  end
-  
-  def cost_balance
-    calc_cost uninvoiced_shipments
-  end
-  
-  def calc_cost shipments
-    total = 0
-    issues = nil
-    shipments.each do |shipment|
-      cost, issue = shipment.get_cost
-      if issue
-        if not issues
-          issues = []
-        end
-        issues.append issue
-      else
-        total += cost
-      end
-    end
-    return total, issues
+    return total_cost, total_price, total_fee
   end
 
   def add_product(product)

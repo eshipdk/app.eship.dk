@@ -17,10 +17,7 @@ class AdminController < ApplicationController
       invoices = c.invoices.where('created_at > ?', @dateFrom).where('created_at < ?', @dateTo)
       row = {'email' => c.email, 'booked' => shipments.count, 'invoices' => invoices.count, 'invoiced' => invoices.sum(:amount)}
 
-      row['value'], issues = c.calc_value shipments
-      if issues
-          totalIssues = totalIssues + issues
-      end
+      cost, row['value'], fee = c.balance
       
       @nShipments = @nShipments + row['booked']
       @value = @value + row['value']

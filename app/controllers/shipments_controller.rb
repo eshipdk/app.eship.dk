@@ -6,8 +6,6 @@ class ShipmentsController < ApplicationController
   before_filter :filter_dates, :only => :index
 
   def index
-    #@shipments = @current_user.shipments.order(id: :desc)
-    
     @shipments = @current_user.shipments.where('shipments.created_at > ?', @dateFrom).where('shipments.created_at < ?', @dateTo)
     if params[:id]
        @shipments = @shipments.filter_pretty_id(params[:id]) 
@@ -180,6 +178,7 @@ class ShipmentsController < ApplicationController
       shipment.shipping_state = 'booked'
       shipment.awb = params['awb']
       shipment.document_url = params['awb_asset_url']
+      shipment.determine_value
     else
       shipment.status = 'failed'
     end
@@ -220,6 +219,7 @@ class ShipmentsController < ApplicationController
     
     redirect_to :action => 'show'
   end
+  
 
   private
 

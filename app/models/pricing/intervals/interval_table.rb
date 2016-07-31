@@ -111,33 +111,28 @@ class IntervalTable < PricingScheme
   
   
   def generate_invoice_rows shipments
-    
-  
-    amount_dk = 0
-    amount_inter = 0
+
+    fee_dk = 0
+    fee_inter = 0
     hash = {}
-    shipments.each do |shipment|
-      price_class = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, shipment.get_weight, shipment.get_weight]).first!
-      title = "#{shipment.product.name}: (#{price_class.country_code}: #{price_class.weight_from} - #{price_class.weight_to})"
-      
-      price, issues = shipment.get_price #Price must be fetched through the shipment in case it has a custom price
-      if issues
-        raise issues.to_s
-      end
-      
-      if hash.key? title
-        hash[title][:price] += price
-        hash[title][:count] += 1
-      else
-        hash[title] = {:price => price, :count => 1}
-      end
-      
-      if shipment.recipient.country_code == 'DK'
-        amount_dk += price
-      else
-        amount_inter += price
-      end
-      
+    for shipment in shipments
+       price_class = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', 
+         shipment.recipient.country_code, shipment.get_weight, shipment.get_weight]).first!
+       
+       title = "#{shipment.product.name}: (#{price_class.country_code}: #{price_class.weight_from} - #{price_class.weight_to})"
+       if shipment.recipient.country_code == 'DK'
+         fee_dk += shipment.final_diesel_fee
+       else
+         fee_inter += shipment.final_diesel_fee
+       end
+       
+       if hash.key? title
+         hash[title][:price] += shipment.final_price
+         hash[title][:count] += 1
+       else
+         hash[title] = {:price => shipment.final_price, :count => 1}
+       end
+       
     end
 
     rows = []
@@ -148,16 +143,16 @@ class IntervalTable < PricingScheme
       rows.push(row)
     end
     
-    if diesel_fee_dk_enabled?
+    if fee_dk > 0
       row = InvoiceRow.new
-      row.amount = amount_dk * (get_diesel_fee_dk * 0.01)
+      row.amount = fee_dk
       row.description = shipments[0].product.name + ': Diesel fee (DK)'
       rows.push(row)
     end
     
-    if diesel_fee_inter_enabled?
+    if fee_inter > 0
       row = InvoiceRow.new
-      row.amount = amount_inter * (get_diesel_fee_inter * 0.01)
+      row.amount = fee_inter
       row.description = shipments[0].product.name + ': Diesel fee (International)'
       rows.push(row)
     end

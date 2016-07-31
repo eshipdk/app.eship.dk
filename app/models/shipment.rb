@@ -264,6 +264,19 @@ class Shipment < ActiveRecord::Base
     product.price_scheme(user).price_configured? self
   end
   
+  def determine_value
+    get_cost
+    price, _ = calculate_price
+
+    if price != nil
+      self.final_price = price
+      self.diesel_fee = calculate_diesel_fee
+      self.final_diesel_fee = diesel_fee
+      self.value_determined = true
+      save
+    end
+  end
+  
   def self.update_pending_shipping_states
     Rails.logger.info "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"
     pending_shipments = Shipment.where('shipping_state in (1, 2)')
