@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_filter :authenticate_admin
-
+before_filter :filter_dates, :only => :shipments
 
   def index
     @users = User.all.paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
@@ -108,6 +108,22 @@ class UsersController < ApplicationController
     
     redirect_to :action => :edit_products
   end
+  
+  def shipments
+    @user = User.find params[:id]
+    @shipments = @user.shipments.where('shipments.created_at > ?', @dateFrom).where('shipments.created_at < ?', @dateTo)
+    if params[:shipment_id]
+       @shipments = @shipments.filter_pretty_id(params[:shipment_id]) 
+    end
+    if params[:reference] != nil and params[:reference] != ''
+      @shipments = @shipments.where('reference LIKE ?', "%#{params[:reference]}%")
+    end
+    if params[:recipient] != nil and params[:recipient] != ''
+      @shipments = @shipments.filter_recipient_name(params['recipient'])
+    end
+    @shipments = @shipments.order(id: :desc).paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
+  end
+
 
   private
 

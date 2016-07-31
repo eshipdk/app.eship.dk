@@ -13,6 +13,8 @@ Rails.application.routes.draw do
         get :edit_price_scheme
         patch :update_price_scheme
       end
+      
+      get :shipments
     end
   end
 
