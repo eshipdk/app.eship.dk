@@ -16,6 +16,7 @@
       <th>Timestamp</th>
       <th>Product</th>
       <th>Booking state</th>
+      <th>Shipping state</th>
     </tr>
    
     <tr class='model-filters'>
@@ -26,6 +27,7 @@
     		<%= select_date(@dateFrom, {:prefix => 'from', :order => [:day, :month, :year]}, {:class =>'form-control'}) %><br/>
     		<%= select_date(@dateTo, {:prefix => 'to', :order => [:day, :month, :year]}, {:class => 'form-control'}) %>
     	</td>
+    	<td></td>
     	<td></td>
     	<td><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></td>
     </tr>
@@ -41,6 +43,7 @@
       <td><%= print_datetime shipment.created_at %></td>
       <td><%= shipment.product.name %></td>
       <td><%= shipment.status.capitalize %></td>
+      <td><%= shipment.shipping_state.capitalize %></td>
     </tr>
     <% end %>
   </table>
