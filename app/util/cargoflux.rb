@@ -26,7 +26,7 @@ module Cargoflux
   end
   
   def fetch_state shipment
-    if !shipment.status == 'complete'
+    if shipment.status != 'complete'
       return :na
     end
     

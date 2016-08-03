@@ -278,15 +278,15 @@ class Shipment < ActiveRecord::Base
   end
   
   def self.update_pending_shipping_states
-    Rails.logger.info "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"
+    Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"
     pending_shipments = Shipment.where('shipping_state in (1, 2)')
     
-    Rails.logger.info "Number of shipments to update: #{pending_shipments.length}"
+    Rails.logger.warn "Number of shipments to update: #{pending_shipments.length}"
     for shipment in pending_shipments
-      shipment.update_shipping_state
+        shipment.update_shipping_state
     end
     
-    Rails.logger.info "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_pending_shipping_states"
+    Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_pending_shipping_states"
   end
   
 end
