@@ -14,7 +14,7 @@ class Shipment < ActiveRecord::Base
   enum status: [:initiated, :response_pending, :label_ready, :complete, :failed]
   
   #The shiping state represents the state pulled from CF for a shipment that has been booked
-  enum shipping_state: [:na, :booked, :in_transit, :delivered, :cancelled]
+  enum shipping_state: [:na, :booked, :in_transit, :delivered, :cancelled, :problem]
   
   enum label_action: [:print, :email]
   
