@@ -80,12 +80,14 @@ Rails.application.routes.draw do
   get 'account', to: 'account#index'
   get 'account/change_password', to: 'account#change_password', as: 'change_password'
   post 'account/do_change_password', to: 'account#do_change_password', as: 'do_change_password'
+  get 'account/products', to: 'account#products', as: 'my_products'
 
   #Billing
   get 'billing/user/:id', to: 'billing#user', as: 'user_billing'
   get 'billing/user/:id/edit_prices', to: 'billing#edit_prices', as: 'user_edit_prices'
   post 'billing/invoice', to: 'billing#invoice', as: 'invoice_all'
   post 'billing/user/:id/update_prices', to: 'billing#update_prices', as: 'user_update_prices'
+
 
   #Admin
   get 'admin/dashboard', to: 'admin#dashboard', as: 'admin_dashboard'

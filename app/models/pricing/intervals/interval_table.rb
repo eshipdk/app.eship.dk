@@ -92,6 +92,14 @@ class IntervalTable < PricingScheme
     return countries.to_a
   end
   
+  def product_rows country
+    res = []
+    rows.where('country_code LIKE ?', country).each do |row|
+      res.push({:title => "#{country} #{row.weight_from} kg - #{row.weight_to} kg", :price => row.value})
+    end
+    return res
+  end
+  
   def price_configured? shipment
     rows.exists?(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, shipment.get_weight, shipment.get_weight])
   end
@@ -119,7 +127,7 @@ class IntervalTable < PricingScheme
        price_class = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', 
          shipment.recipient.country_code, shipment.get_weight, shipment.get_weight]).first!
        
-       title = "#{shipment.product.name}: (#{price_class.country_code}: #{price_class.weight_from} - #{price_class.weight_to})"
+       title = "#{shipment.product.name}: (#{price_class.country_code}: #{price_class.weight_from} kg - #{price_class.weight_to} kg)"
        if shipment.recipient.country_code == 'DK'
          fee_dk += shipment.final_diesel_fee
        else

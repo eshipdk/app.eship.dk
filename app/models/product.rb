@@ -13,6 +13,10 @@ class Product < ActiveRecord::Base
     return cost_scheme
   end
   
+  def available_countries user
+    price_scheme(user).available_countries
+  end
+  
   def price_scheme user
     c = pricing_scheme_class
     

@@ -5,6 +5,7 @@
 			<%= render :partial => 'layouts/left_link', :locals => {:area => 'shipments', :title => 'Shipments', :path => shipments_path} %>
 			<%= render :partial => 'layouts/left_link', :locals => {:area => 'addresses', :title => 'Address book', :path => addresses_path}%>
 			<%= render :partial => 'layouts/left_link', :locals => {:area => 'account', :title => 'My account', :path => '/account'} %>
+			<%= render :partial => 'layouts/left_link', :locals => {:area => 'products', :title => 'My products', :path => my_products_path}%>
 	</ul>
 	
 	<% if @current_user.role=='admin' %>

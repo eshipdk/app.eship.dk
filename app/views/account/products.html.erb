@@ -1,0 +1,44 @@
+Products
+
+
+<select id="product_select">
+	<% @products.each do |code, hash| %>
+		<option value="<%= hash[:product].product_code %>"><%= hash[:product].name %></option>
+	<% end %>	
+</select>
+
+<select id="country_select">
+</select>
+
+<div id="products">
+	
+</div>
+
+
+<script type="text/javascript">
+
+	productData = <%= raw @products.to_json %>;
+
+	function selectProduct(){
+		var hash = productData[$('#product_select').val()];
+		var countrySelect = $('#country_select');
+		countrySelect.html('');
+		for(var i=0; i<hash['countries'].length; i++){
+			countrySelect
+	          .append($('<option>', { value : hash['countries'][i]})
+	          .text(hash['countries'][i]));
+		}
+		selectCountry();
+	}
+	
+	function selectCountry(){
+		var products = productData[$('#product_select').val()]['country_products'][$('#country_select').val()];
+		for(var i=0; i<products.length; i++){
+			console.log(products[i].title + ' => ' + products[i].price);
+		}
+	}
+
+	$('#product_select').change(selectProduct);
+	$('#country_select').change(selectCountry);
+	$(document).ready(selectProduct);
+</script>

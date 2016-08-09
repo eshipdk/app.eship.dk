@@ -49,6 +49,16 @@ class PricingScheme < ActiveRecord::Base
     raise self.to_s + 'Shipment price configuration check not implemented'
   end
   
+  def available_countries shipment
+    raise self.to_s + 'Available countries not implemented'
+  end
+  
+  #Returns an array of hashes containing information about available products and their prices within a specific country
+  #E.g.: [{'title' => 'DK 1.0 kg - 2.0 kg', 'price' => 2.0}]
+  def product_rows country
+    raise self.to_s + 'Product rows not implemented'
+  end
+  
   def extras_data
     if self.extras == nil
       return {}
