@@ -10,10 +10,21 @@ Products
 <select id="country_select">
 </select>
 
-<div id="products">
-	
-</div>
+<br/><br/>
 
+
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Product</th>
+				<th>Price</th>
+			</tr>
+		</thead>
+		<tbody id="products">
+		</tbody>
+	</table>
+</div>
 
 <script type="text/javascript">
 
@@ -33,9 +44,11 @@ Products
 	
 	function selectCountry(){
 		var products = productData[$('#product_select').val()]['country_products'][$('#country_select').val()];
+		var html = "";
 		for(var i=0; i<products.length; i++){
-			console.log(products[i].title + ' => ' + products[i].price);
+			html += "<tr><td>" + products[i].title + "</td><td>" + products[i].price + "</td></tr>";
 		}
+		$('#products').html(html);
 	}
 
 	$('#product_select').change(selectProduct);
