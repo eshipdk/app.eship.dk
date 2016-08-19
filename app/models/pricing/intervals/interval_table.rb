@@ -101,7 +101,12 @@ class IntervalTable < PricingScheme
   end
   
   def price_configured? shipment
-    rows.exists?(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, shipment.get_weight, shipment.get_weight])
+    shipment.packages.each do |package|
+      if not rows.exists?(['country_code LIKE ? and weight_from <= ? and weight_to > ?', shipment.recipient.country_code, package.weight, package.weight])
+        return false
+      end
+    end
+    return true
   end
   
   def get_cost shipment
@@ -109,12 +114,19 @@ class IntervalTable < PricingScheme
   end
   
   def get_price shipment
-    begin
-      row = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, shipment.get_weight, shipment.get_weight]).first!
-      return row.value
-    rescue ActiveRecord::RecordNotFound
-      raise PriceConfigException.new "No price configured for country #{shipment.recipient.country_code}, weight #{shipment.get_weight}"
-    end
+    
+      val = 0
+      shipment.packages.each do |package|
+        begin
+          row = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, package.weight, package.weight]).first!
+          val += row.value * package.amount
+        rescue ActiveRecord::RecordNotFound
+          issue = "WARNING: No price configured for country #{shipment.recipient.country_code}, weight #{package.weight} (shipment id #{shipment.pretty_id} user #{shipment.user.email})"
+          Rails.logger.warn issue
+          raise PriceConfigException.new issue
+        end
+      end
+      return val
   end
   
   
@@ -123,26 +135,45 @@ class IntervalTable < PricingScheme
     fee_dk = 0
     fee_inter = 0
     hash = {}
-    for shipment in shipments
-       price_class = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', 
-         shipment.recipient.country_code, shipment.get_weight, shipment.get_weight]).first!
-       
-       title = "#{shipment.product.name}: (#{price_class.country_code}: #{price_class.weight_from} kg - #{price_class.weight_to} kg)"
-       if shipment.recipient.country_code == 'DK'
-         fee_dk += shipment.final_diesel_fee
-       else
-         fee_inter += shipment.final_diesel_fee
-       end
-       
-       if hash.key? title
-         hash[title][:price] += shipment.final_price
-         hash[title][:count] += 1
-       else
-         hash[title] = {:price => shipment.final_price, :count => 1}
-       end
-       
+    shipments.each do |shipment|
+      
+      title = "#{shipment.product.name}: #{shipment.recipient.country_code}"
+      
+      classes = {}
+      shipment.packages.each do |package|
+        begin
+          row = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, package.weight, package.weight]).first!
+          package_class = "[#{row.weight_from} - #{row.weight_to}]"
+          if classes.key? package_class
+            classes[package_class] += package.amount
+          else
+            classes[package_class] = package.amount
+          end
+        rescue ActiveRecord::RecordNotFound
+          issue = "WARNING: No price configured for country #{shipment.recipient.country_code}, weight #{package.weight} (shipment id #{shipment.pretty_id} user #{shipment.user.email})"
+          Rails.logger.warn issue
+          raise PriceConfigException.new issue
+        end
+      end
+      
+      classes.sort.map do |k, v|
+        title += " (#{k} X #{v})"
+      end
+      
+      if shipment.recipient.country_code == 'DK'
+       fee_dk += shipment.final_diesel_fee
+      else
+        fee_inter += shipment.final_diesel_fee
+      end
+      
+      if hash.key? title
+        hash[title][:price] += shipment.final_price
+        hash[title][:count] += 1
+      else
+        hash[title] = {:price => shipment.final_price, :count => 1}
+      end
     end
-
+    
     rows = []
     hash.each do |title, value|
       row = InvoiceRow.new
