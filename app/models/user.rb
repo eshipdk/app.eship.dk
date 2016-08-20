@@ -229,6 +229,9 @@ class User < ActiveRecord::Base
     raise 'Invalid product code: ' + product_code;
   end
   
+  def customer_type
+    billing_type == 'advanced' ? 'shipping' : 'label'
+  end
   
   def quick_select_addresses key
     addresses.joins(:address_book_record).where('address_book_records.quick_select_' + key => true) 

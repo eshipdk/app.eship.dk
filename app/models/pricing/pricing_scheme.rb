@@ -78,6 +78,14 @@ class PricingScheme < ActiveRecord::Base
   end
   
   def get_diesel_fee_dk
+    return PricingScheme.get_diesel_fee_dk
+  end
+  
+  def get_diesel_fee_inter
+    return PricingScheme.get_diesel_fee_inter
+  end
+  
+  def self.get_diesel_fee_dk
     return (ConfigValue.get :diesel_fee_dk).to_f
   end
   
@@ -85,9 +93,10 @@ class PricingScheme < ActiveRecord::Base
     ConfigValue.set :diesel_fee_dk, fee.to_s
   end
 
-  def get_diesel_fee_inter
+  def self.get_diesel_fee_inter
     return (ConfigValue.get :diesel_fee_inter).to_f
   end
+  
   
   def set_diesel_fee_inter fee
     ConfigValue.set :diesel_fee_inter, fee.to_s

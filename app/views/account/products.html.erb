@@ -1,6 +1,11 @@
-Products
+<h1 class='page-header'>My products</h1>
+
+<% if @user.customer_type == 'shipping'%>
 
 
+
+
+<h3>Available products</h3>
 <select id="product_select">
 	<% @products.each do |code, hash| %>
 		<option value="<%= hash[:product].product_code %>"><%= hash[:product].name %></option>
@@ -22,6 +27,24 @@ Products
 			</tr>
 		</thead>
 		<tbody id="products">
+		</tbody>
+	</table>
+</div>
+
+<h3>Current diesel fee</h3>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>DK</th>
+				<th>International</th>
+			</tr>
+		</thead>	
+		<tbody>
+			<tr>
+				<td><%= PricingScheme.get_diesel_fee_dk %></td>
+				<td><%= PricingScheme.get_diesel_fee_inter %></td>
+			</tr>
 		</tbody>
 	</table>
 </div>
@@ -55,3 +78,8 @@ Products
 	$('#country_select').change(selectCountry);
 	$(document).ready(selectProduct);
 </script>
+
+<% else %>
+<h3>Label Price: <%= @user.unit_price %></h3>
+
+<% end %>

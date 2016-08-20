@@ -20,6 +20,7 @@ class AccountController < ApplicationController
   def products
     product_groups = @current_user.products
     @products = {}
+    @user = @current_user
     product_groups.each do |product|
       product_hash = {:product => product}
       country_products = {}
