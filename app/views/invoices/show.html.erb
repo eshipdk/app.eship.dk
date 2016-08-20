@@ -9,13 +9,13 @@
 		<% @invoice.rows.each do |row| %>
 		<tr>
 			<td><%= row.description %></td>
-			<td><%= row.amount %></td>
+			<td><%= currency row.amount %></td>
 		</tr>
 		<% end %>
 		<tfoot>
 			<tr>
 				<td>TOTAL</td>
-				<td><%= @invoice.amount %></td>
+				<td><%= currency @invoice.amount %></td>
 			</tr>
 		</tfoot>
 	</table>

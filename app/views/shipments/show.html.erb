@@ -139,10 +139,10 @@
 			<th>Adjusted Diesel Fee</th>
 		</tr>
 		<tr>
-			<td><%= @shipment.price %></td>
-			<td><%= @shipment.final_price %></td>
-			<td><%= @shipment.diesel_fee %></td>
-			<td><%= @shipment.final_diesel_fee %></td>
+			<td><%= currency @shipment.price %></td>
+			<td><%= currency @shipment.final_price %></td>
+			<td><%= currency @shipment.diesel_fee %></td>
+			<td><%= currency @shipment.final_diesel_fee %></td>
 		</tr>
 	</table>	
 </div>

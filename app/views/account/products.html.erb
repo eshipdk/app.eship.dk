@@ -42,8 +42,8 @@
 		</thead>	
 		<tbody>
 			<tr>
-				<td><%= PricingScheme.get_diesel_fee_dk %></td>
-				<td><%= PricingScheme.get_diesel_fee_inter %></td>
+				<td><%= currency PricingScheme.get_diesel_fee_dk %></td>
+				<td><%= currency PricingScheme.get_diesel_fee_inter %></td>
 			</tr>
 		</tbody>
 	</table>
@@ -69,7 +69,7 @@
 		var products = productData[$('#product_select').val()]['country_products'][$('#country_select').val()];
 		var html = "";
 		for(var i=0; i<products.length; i++){
-			html += "<tr><td>" + products[i].title + "</td><td>" + products[i].price + "</td></tr>";
+			html += "<tr><td>" + products[i].title + "</td><td>" + currency(products[i].price) + "</td></tr>";
 		}
 		$('#products').html(html);
 	}
@@ -80,6 +80,6 @@
 </script>
 
 <% else %>
-<h3>Label Price: <%= @user.unit_price %></h3>
+<h3>Label Price: <%= currency @user.unit_price %></h3>
 
 <% end %>

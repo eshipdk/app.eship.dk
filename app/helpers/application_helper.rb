@@ -38,4 +38,8 @@ end
     datetime.in_time_zone('Berlin').strftime('%H:%M:%S %d-%m-%Y')
   end
   
+  def currency value, currency = ' kr.', round_to = 2
+    "<span class='currency-value'>#{value.round(round_to)}#{currency}</span>".html_safe
+  end
+  
 end
