@@ -189,6 +189,7 @@ class Shipment < ActiveRecord::Base
   end
   
   def get_cost
+    
     if not self.cost
       calculated, issue = calculate_cost
       if issue
@@ -235,6 +236,9 @@ class Shipment < ActiveRecord::Base
   end
   
   def calculate_diesel_fee
+    if user.billing_type != 'advanced'
+      return 0
+    end
     price, _ = get_price
     scheme = product.price_scheme(user)
     if recipient.country_code == 'DK'
@@ -261,7 +265,7 @@ class Shipment < ActiveRecord::Base
   end
   
   def price_configured?
-    product.price_scheme(user).price_configured? self
+    user.billing_type == 'advanced' ? product.price_scheme(user).price_configured?(self) : true
   end
   
   def determine_value
@@ -269,6 +273,7 @@ class Shipment < ActiveRecord::Base
     price, _ = calculate_price
 
     if price != nil
+      self.price = price
       self.final_price = price
       self.diesel_fee = calculate_diesel_fee
       self.final_diesel_fee = diesel_fee
