@@ -42,4 +42,11 @@ end
     "<span class='currency-value'>#{value.round(round_to)}#{currency}</span>".html_safe
   end
   
+  def display_pagination collection
+    total = collection.total_entries
+    from =  [1 + (collection.current_page - 1) * collection.per_page, total].min
+    to = [from + collection.per_page - 1, total].min
+    "<span class='pagination-counter'>Showing #{from} to #{to} of #{total}</span>".html_safe
+  end
+  
 end

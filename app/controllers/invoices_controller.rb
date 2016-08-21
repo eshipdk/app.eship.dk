@@ -4,6 +4,14 @@ class InvoicesController < ApplicationController
   
   def show
     @invoice = Invoice.find params[:id]
+    @shipments_link = invoice_shipments_path @invoice
+    @admin = true
+  end
+  
+  def shipments
+    @invoice = Invoice.find params[:invoice_id]
+    @shipments = @invoice.shipments
+    @admin = true
   end
   
   def destroy

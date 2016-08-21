@@ -6,6 +6,10 @@
 	</h1>
 
 <%= will_paginate @shipments %>
+
+
+<%= display_pagination @shipments %>
+
 <div class="table-responsive">
  <%= form_tag({:action => 'index'}, {:method => :get}) do %>
   <table class='table table-striped'>

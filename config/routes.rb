@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   end
   
   resources :invoices, only: [:show] do
+    get :shipments
   end
   
   resources :addresses do
@@ -81,6 +82,9 @@ Rails.application.routes.draw do
   get 'account/change_password', to: 'account#change_password', as: 'change_password'
   post 'account/do_change_password', to: 'account#do_change_password', as: 'do_change_password'
   get 'account/products', to: 'account#products', as: 'my_products'
+  get 'account/invoices', to: 'account#invoices', as: 'my_invoices'
+  get 'account/invoices/:id', to: 'account#invoices_show', as: 'my_invoices_show'
+  get 'account/invoices/:id/shipments', to: 'account#invoices_shipments', as: 'my_invoices_shipments'
 
   #Billing
   get 'billing/user/:id', to: 'billing#user', as: 'user_billing'

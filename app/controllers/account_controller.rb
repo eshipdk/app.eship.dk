@@ -1,5 +1,6 @@
 class AccountController < ApplicationController
   before_filter :authenticate_user
+  before_filter :filter_dates, :only => :invoices
   
   def index
     
@@ -32,6 +33,33 @@ class AccountController < ApplicationController
       product_hash[:countries] = countries
       product_hash[:country_products] = country_products
       @products[product.product_code] = product_hash
+    end
+  end
+  
+  def invoices
+    @invoices = @current_user.invoices.where(['invoices.created_at > ? AND invoices.created_at < ?', @dateFrom, @dateTo])
+    if params[:id] and params[:id].to_i > 0
+       @invoices = @invoices.where('id = ?', params[:id]) 
+    end
+    @invoices = @invoices.order(id: :desc).paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
+  end
+  
+  def invoices_show
+    @invoice = Invoice.find params[:id]
+    if @invoice.user != @current_user
+      redirect_to home_path
+    else
+      render 'invoices/show'
+    end
+  end
+  
+  def invoices_shipments
+    @invoice = Invoice.find params[:id]
+    if @invoice.user != @current_user
+      redirect_to home_path
+    else
+      @shipments = @invoice.shipments
+      render 'invoices/shipments'
     end
   end
   

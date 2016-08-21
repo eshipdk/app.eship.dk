@@ -1,6 +1,7 @@
 <h1 class='page-header'>Invoice #<%= @invoice.id %></h1>
 
 <h2 class='sub-header'>Invoice lines</h2>
+<%= link_to 'Show shipments', @admin ? invoice_shipments_path(@invoice) : my_invoices_shipments_path(@invoice) %>
 <div class='table-responsive'>
 	<table class='table table-striped'>
 		<tr>

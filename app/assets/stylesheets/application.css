@@ -167,3 +167,11 @@ table button.btn{
 	width: auto;
 	padding: 0;
 }
+
+.pagination {
+	margin: 0;
+	margin-bottom: 10px;
+	margin-right: 10px;
+}
+
+

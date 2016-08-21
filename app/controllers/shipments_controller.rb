@@ -6,7 +6,7 @@ class ShipmentsController < ApplicationController
   before_filter :filter_dates, :only => :index
 
   def index
-    @shipments = @current_user.shipments.where('shipments.created_at > ?', @dateFrom).where('shipments.created_at < ?', @dateTo)
+    @shipments = @current_user.shipments.where(['shipments.created_at > ? AND shipments.created_at < ?', @dateFrom, @dateTo])
     if params[:id]
        @shipments = @shipments.filter_pretty_id(params[:id]) 
     end
@@ -24,6 +24,7 @@ class ShipmentsController < ApplicationController
     if @shipment.user != @current_user
       redirect_to :action => :index
     end
+    
     
     @shipment.update_shipping_state
   end
