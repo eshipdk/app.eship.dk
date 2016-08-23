@@ -4,8 +4,10 @@
 	</span>
 	<div class='clearfix'></div>
 	</h1>
+  <%= will_paginate @users %> 
+  <%= display_pagination @users %>
 <div class="table-responsive">
-  <%= will_paginate @users %>
+
   <table class='table table-striped'>
     <tr>
       <th>User</th>

@@ -37,8 +37,15 @@ class Shipment < ActiveRecord::Base
     return self.where('cargoflux_shipment_id LIKE ?', "#{pretty_id}%")
   }
   
-  scope :filter_uninvoiced, ->(){
-    self.complete.where(['invoiced = ? AND (shipping_state IN (2, 3))', false])
+
+  scope :filter_uninvoiced, ->(user){
+    #Label customers pay for all bookings. Shipping customers only pay for
+    #shipments after they have been delivered so that extra charges may be included.
+    if user.customer_type == 'shipping'
+      return self.complete.where(['invoiced = false AND (shipping_state = 3)', false])
+    else
+      return self.complete.where(['invoiced = ?', false])
+    end
     #self.complete.where(invoiced: false)
   }
   

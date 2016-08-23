@@ -105,7 +105,7 @@ class User < ActiveRecord::Base
   end
 
   def uninvoiced_shipments
-    shipments.filter_uninvoiced
+    shipments.filter_uninvoiced self
   end
 
   def n_uninvoiced_shipments
