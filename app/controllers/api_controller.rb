@@ -110,6 +110,7 @@ class ApiController < ApplicationController
       when 'complete'
         result['document_url'] = shipment.document_url
         result['tracking_url'] = shipment.tracking_url
+        result['shipping_state'] = shipment.shipping_state
       end
     end
     render :text => result.to_json
