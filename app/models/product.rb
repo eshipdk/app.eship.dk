@@ -46,6 +46,14 @@ class Product < ActiveRecord::Base
       return GlsprocPricing
     when 'OC_glsproc'
       return OcGlsprocPricing
+  	when 'pnbps'
+  	  return PnbpsPricing
+  	when 'pnmh'
+  	  return PnmhPricing
+  	when 'pnmc'
+  	  return PnmcPricing
+  	when 'pndpdc'
+  	  return PndpdcPricing
     else
       raise PriceConfigException.new("Pricing scheme does not exist for product: " + name)
     end
