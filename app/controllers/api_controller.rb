@@ -50,6 +50,7 @@ class ApiController < ApplicationController
     shipment.return = shipment_params['return']
     shipment.reference = shipment_params['reference']
     shipment.description = shipment_params['description']
+    shipment.delivery_instructions = shipment_params['delivery_instructions']
     shipment.parcelshop_id = shipment_params['parcelshop_id']
     shipment.callback_url = shipment_params['callback_url']
    
