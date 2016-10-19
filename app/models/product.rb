@@ -46,7 +46,7 @@ class Product < ActiveRecord::Base
       return GlsprocPricing
     when 'OC_glsproc'
       return OcGlsprocPricing
-  	when 'pnbps'
+  	when 'OC_pne'
   	  return PnbpsPricing
   	when 'pnmh'
   	  return PnmhPricing

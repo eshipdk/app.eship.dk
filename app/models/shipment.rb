@@ -169,13 +169,10 @@ class Shipment < ActiveRecord::Base
 
     
   def tracking_url
-    case product.product_code
-    when 'daod'
-      'http://www.tracktrace.dk/index.php?stregkode=' + awb
-    when 'glsb', 'glsp', 'glsboc', 'glspoc', 'glsproc'
-      'https://gls-group.eu/DK/da/find-pakke?match=' + awb
+    if product.tracking_url_prefix.blank?
+      "about:blank"
     else
-      'about:blank'
+      product.tracking_url_prefix + awb
     end
   end
   
