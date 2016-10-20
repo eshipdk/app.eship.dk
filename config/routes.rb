@@ -75,6 +75,7 @@ Rails.application.routes.draw do
   post 'api/validate_key', to: 'api#validate_key'
   post 'api/shipment_info', to: 'api#shipment_info'
   post 'api/client_version', to: 'api#client_version'
+  post 'api/pn/servicepoints', to: 'api#pn_servicepoint_by_address'
 
 
   #User account

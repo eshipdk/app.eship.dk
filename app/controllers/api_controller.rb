@@ -192,5 +192,22 @@ class ApiController < ApplicationController
     end
     api_success
   end
+  
+  
+# POSTNORD API 
+  
+  def pn_servicepoint_by_address
+    url = 'https://api2.postnord.com/rest/businesslocation/v1/servicepoint/findNearestByAddress.json?apikey=e882a3b4126a72f01d95be8411d43938'
+    @api_params.each do |k,v|
+      if k != 'api_key'
+        url += "&#{k}=#{v}"
+      end
+    end
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Get.new(url)
+    render :text => http.request(request).body
+  end
 
 end
