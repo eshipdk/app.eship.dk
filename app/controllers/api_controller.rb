@@ -135,7 +135,8 @@ class ApiController < ApplicationController
 
     render :text => {'labels' => recently_registered.map(&:document_url), 
                       'awbs' => recently_registered.map(&:awb),
-                      'ids' => recently_registered.map(&:cargoflux_shipment_id)}.to_json
+                      'ids' => recently_registered.map(&:cargoflux_shipment_id),
+                      'references' => recently_registered.map(&:reference)}.to_json
   end
 
   def recent_failures
