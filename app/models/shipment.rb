@@ -269,7 +269,11 @@ class Shipment < ActiveRecord::Base
   end
   
   def price_configured?
-    user.billing_type == 'advanced' ? product.price_scheme(user).price_configured?(self) : true
+    begin
+      user.billing_type == 'advanced' ? product.price_scheme(user).price_configured?(self) : true
+    rescue PriceConfigException
+      false
+    end
   end
   
   def determine_value
