@@ -8,7 +8,7 @@ class ApiController < ApplicationController
 
   def product_codes
     products = @current_user.products
-    render :text => {'product_codes' => @current_user.products.map(&:product_code)}.to_json
+    render :text => {'products' => @current_user.products.select(:product_code, :name)}.to_json
   end
 
 
@@ -136,7 +136,8 @@ class ApiController < ApplicationController
     render :text => {'labels' => recently_registered.map(&:document_url), 
                       'awbs' => recently_registered.map(&:awb),
                       'ids' => recently_registered.map(&:cargoflux_shipment_id),
-                      'references' => recently_registered.map(&:reference)}.to_json
+                      'references' => recently_registered.map(&:reference),
+                      'returns' => recently_registered.map(&:return)}.to_json
   end
 
   def recent_failures
