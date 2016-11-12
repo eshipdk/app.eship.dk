@@ -1,0 +1,45 @@
+
+<h2 class="sub-header">Result</h2>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<td>Unknown shipments</td><td>Incomplete shipments</td><td>Total</td>
+		</tr>
+		<tr>
+			<td>
+				<%= @unknown.length %>
+			</td>
+			<td>
+				<%= @incomplete.length %>
+			</td>
+			<td>
+				<%= @unknown.length + @incomplete.length%>
+			</td>
+		</tr>
+	</table>
+</div>	
+
+<h2 class="sub-header">Unknown shipments</h2>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead><tr><th>ID</th></tr></thead>
+		<% @unknown.each do |id| %>
+		<tr>
+			<td><%= id %></td>
+		</tr>
+		<% end %>
+	</table>
+</div>
+
+<h2 class="sub-header">Incomplete shipments</h2>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead><tr><th>ID</th><th>Shipping state</th></tr></thead>
+		<% @incomplete.each do |s| %>
+		<tr>
+		 	<td><%= link_to "#{s.pretty_id}", admin_shipment_path(s) %></td>
+			<td><%= s.shipping_state %></td>
+		</tr>
+		<% end %>
+	</table>
+</div>

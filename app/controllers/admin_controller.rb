@@ -38,5 +38,33 @@ class AdminController < ApplicationController
     @shipment.update_shipping_state
     render 'shipments/show'
   end
+  
+  def tools
+  end
+  
+  
+  def verify_billable_shipments
+    
+    begin
+      uploaded_file = params[:file]
+      file_content = uploaded_file.read
+      lines = CSV.parse file_content,  {:col_sep => ';', :quote_char => "\x00"}
+      lines.shift
+    rescue Exception => e
+      flash[:error] = e.to_s
+      redirect_to admin_tools_path
+      return
+    end
+    
+    ids = []
+    lines.each do |line|
+      ids << line[0]
+    end
+    
+    all_shipments = Shipment.where(:cargoflux_shipment_id => ids)
+    known_ids = all_shipments.map{|s| s.cargoflux_shipment_id}
+    @unknown = ids.reject{|x| known_ids.include? x}
+    @incomplete = all_shipments.where.not(:shipping_state => 3)
+  end
 
 end

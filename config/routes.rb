@@ -97,6 +97,8 @@ Rails.application.routes.draw do
   #Admin
   get 'admin/dashboard', to: 'admin#dashboard', as: 'admin_dashboard'
   get 'admin/shipment/:id', to: 'admin#show_shipment', as: 'admin_shipment'
+  get 'admin/tools', to: 'admin#tools', as: 'admin_tools'
+  post 'admin/tools/verify_billable_shipments', to: 'admin#verify_billable_shipments', as: 'admin_verify_billable'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

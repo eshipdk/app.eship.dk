@@ -1,0 +1,13 @@
+<h1 class='page-header'>Tools</h1>
+
+
+
+
+<h2 class="sub-header">Verify billable shipments</h2>
+<div class='import-csv'>
+  <%= form_tag '/admin/tools/verify_billable_shipments', :multipart=>true do %>
+  <%= label_tag(:file, "") %>
+  <%= file_field_tag :file %>
+  <%= submit_tag "Upload" %>
+  <% end %>
+</div>
