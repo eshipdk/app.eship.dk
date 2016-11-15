@@ -1,3 +1,4 @@
+include Economic
 class UsersController < ApplicationController
   before_filter :authenticate_admin
 before_filter :filter_dates, :only => :shipments
@@ -11,10 +12,12 @@ before_filter :filter_dates, :only => :shipments
   end
 
   def new
+    @economic_customers = Economic.get_customer_options
     @user = User.new
   end
 
   def edit
+    @economic_customers = Economic.get_customer_options
     @user = User.find(params[:id])
   end
 
@@ -130,7 +133,8 @@ before_filter :filter_dates, :only => :shipments
   def user_params
     params.require(:user).permit(:email,:cargoflux_api_key,
                                    :password,:password_confirmation,
-                                   :role,:billing_type,:unit_price)
+                                   :role,:billing_type,:unit_price,
+                                   :economic_customer_id)
   end
     
   def address_params

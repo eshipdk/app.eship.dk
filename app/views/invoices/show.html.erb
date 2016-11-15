@@ -1,21 +1,42 @@
 <h1 class='page-header'>Invoice #<%= @invoice.id %></h1>
 
-<h2 class='sub-header'>Invoice lines</h2>
-<%= link_to 'Show shipments', @admin ? invoice_shipments_path(@invoice) : my_invoices_shipments_path(@invoice) %>
+
 <div class='table-responsive'>
 	<table class='table table-striped'>
 		<tr>
-			<th>Product description</th><th>Amount</th>
+			<th>Sent to e-conomic?
+				<%= link_to 'Submit', submit_invoice_path(@invoice), method: :post,
+				data: @invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {}%>
+				</th><th>Shipments</th>
+		</tr>
+		<tr>
+			<td><%= @invoice.sent_to_economic ? "Yes" : "No" %>
+				
+			</td>
+			<td><%= link_to 'Show shipments', @admin ? invoice_shipments_path(@invoice) : my_invoices_shipments_path(@invoice)  %></td>
+		</tr>
+	</table>
+</div>
+<h2 class='sub-header'>Invoice lines</h2>
+
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>Product description</th><th>Quantity</th><th>Unit price (Avg.)</th><th>Total</th>
 		</tr>
 		<% @invoice.rows.each do |row| %>
 		<tr>
 			<td><%= row.description %></td>
+			<td><%= row.qty %></td>
+			<td><%= row.unit_price %></td>
 			<td><%= currency row.amount %></td>
 		</tr>
 		<% end %>
 		<tfoot>
 			<tr>
 				<td>TOTAL</td>
+				<td/>
+				<td/>
 				<td><%= currency @invoice.amount %></td>
 			</tr>
 		</tfoot>

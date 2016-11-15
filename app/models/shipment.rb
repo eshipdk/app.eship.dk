@@ -114,7 +114,10 @@ class Shipment < ActiveRecord::Base
     if not price_configured?
       return {'errors' => [{'description' => 'Pricing could not be determined for this shipment!'}]}
     end
-    (JSON.parse api_response)
+    if api_response != nil
+      (JSON.parse api_response)
+    end
+    nil
   end
 
   #Marks the shipment to have a pending label and registers when the label was pushed

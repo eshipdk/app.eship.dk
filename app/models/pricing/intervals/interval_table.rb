@@ -173,12 +173,14 @@ class IntervalTable < PricingScheme
         hash[title] = {:price => shipment.final_price, :count => 1}
       end
     end
-    
     rows = []
     hash.each do |title, value|
       row = InvoiceRow.new
       row.amount = value[:price]
-      row.description = "#{title} X #{value[:count]}"
+      row.description = title
+      row.product_code = shipments[0].product.product_code
+      row.qty = value[:count]
+      row.unit_price = (row.amount / row.qty).round(2)
       rows.push(row)
     end
     
@@ -186,6 +188,9 @@ class IntervalTable < PricingScheme
       row = InvoiceRow.new
       row.amount = fee_dk
       row.description = shipments[0].product.name + ': Diesel fee (DK)'
+      row.product_code = 'diesel_fee'
+      row.qty = 1
+      row.unit_price = row.amount
       rows.push(row)
     end
     
@@ -193,6 +198,9 @@ class IntervalTable < PricingScheme
       row = InvoiceRow.new
       row.amount = fee_inter
       row.description = shipments[0].product.name + ': Diesel fee (International)'
+      row.product_code = 'diesel_fee'
+      row.qty = 1
+      row.unit_price = row.amount
       rows.push(row)
     end
 

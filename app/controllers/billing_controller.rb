@@ -1,3 +1,5 @@
+include Economic
+using PatternMatch
 class BillingController < ApplicationController
   before_filter :authenticate_admin
   
@@ -34,6 +36,19 @@ class BillingController < ApplicationController
       flash[:error] = e.issue
     end
     redirect_to user_billing_path(user)
+  end
+  
+  # Submit invoice draft to e-conomic
+  def submit_invoice
+    invoice = Invoice.find(params[:id])
+    match(Economic.submit_invoice(invoice)) do
+      with(_[:error, issue]) do
+        flash[:error] = issue
+      end
+      with(res) do
+      end
+    end
+    redirect_to user_billing_path(invoice.user)
   end
   
 end

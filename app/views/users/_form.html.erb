@@ -38,10 +38,14 @@
 		<tr>
 			<th>Password<% if not @user.new_record? %> (Leave blank to keep existing)<% end %></th>
 			<th>Repeat password</th>
+			<th>e-conomic customer</th>
 		</tr>
 		<tr>
 			<td><%= f.password_field :password %></td>
 			<td><%= f.password_field :password_confirmation %></td>
+			<td>
+				<%= f.bssel :economic_customer_id, @economic_customers %>
+			</td>
 		</tr>
 	</table>
 

@@ -92,6 +92,7 @@ Rails.application.routes.draw do
   get 'billing/user/:id/edit_prices', to: 'billing#edit_prices', as: 'user_edit_prices'
   post 'billing/invoice', to: 'billing#invoice', as: 'invoice_all'
   post 'billing/user/:id/update_prices', to: 'billing#update_prices', as: 'user_update_prices'
+  post 'billing/invoice/:id/submit', to:'billing#submit_invoice', as: 'submit_invoice'
 
 
   #Admin

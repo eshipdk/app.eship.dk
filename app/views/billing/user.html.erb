@@ -64,7 +64,7 @@
 	<%= will_paginate @invoices %>
 	<table class='table table-striped'>
 		<tr>
-			<th>ID</th><th>Timestamp</th><th>Number of labels</th><th>Amount</th><th>Undo invoice</th>
+			<th>ID</th><th>Timestamp</th><th>Number of labels</th><th>Amount</th><th>Undo invoice</th><th>Sent to e-conomic</th>
 		</tr>	
 		<% @invoices.each do |invoice| %>
 		<tr>
@@ -76,6 +76,11 @@
 				<%= link_to 'Undo', invoice_path(invoice),
 		              method: :delete,
 		              data: { confirm: 'Do you want to delete this invoice? Assoicated shipments will be marked as uninvoiced.' } %>
+			</td>
+			<td>
+				<%= invoice.sent_to_economic ? "Yes" : "No" %>
+				<%= link_to 'Submit', submit_invoice_path(invoice), method: :post,
+				data: invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {} %>
 			</td>
 		</tr>
 		<% end %>
