@@ -49,7 +49,7 @@ module Economic
     end
     
     netAmount = invoice.amount.round(2).to_f
-    grossAmount = (netAmount * 1.25).round(2).to_f # Assuming dk tax for now
+    grossAmount = invoice.gross_amount.round(2).to_f
     vatAmount = (grossAmount - netAmount).round(2).to_f
     customer = invoice.customer.contact_address
     

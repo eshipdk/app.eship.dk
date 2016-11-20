@@ -9,11 +9,13 @@ class ActionView::Helpers::FormBuilder
     number_field(method, options.merge(class: 'form-control'))
   end
   
-  def bssel(method, sel_options = {}, promt = {}, options = {})
+  def bssel(method, options = {})
     select(method, sel_options, promt, options.merge(class: 'form-control'))
   end
   
-  
+  def bschckbx(method, options = {})
+    check_box(method, options.merge(class: 'form-control'))
+  end
 
   
 end

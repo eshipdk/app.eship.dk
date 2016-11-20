@@ -122,11 +122,13 @@ class User < ActiveRecord::Base
     invoice.user = self
     invoice.n_shipments = n
    
+    product_taxed = {'diesel_fee' => true}
     product_groups = {}
     shipments.each do |shipment|
       product_code = shipment.product.product_code
       if not product_groups.key?(product_code)
         product_groups[product_code] = {'shipments' => [shipment], 'product' => shipment.product}
+        product_taxed[product_code] = shipment.product.taxed
       else
         product_groups[product_code]['shipments'].push(shipment)
       end
@@ -154,15 +156,19 @@ class User < ActiveRecord::Base
    
     invoice.save
     amount = 0
+    tax_amount = 0
     group_rows.each do |product_code, rows|
-     
       rows.each do |row|
         row.invoice = invoice
         row.save
         amount += row.amount
+        if product_taxed[row.product_code]
+          tax_amount += row.amount * 0.25
+        end
       end
     end
     invoice.amount = amount
+    invoice.gross_amount = amount + tax_amount
     invoice.save
    
     shipments.each do |shipment|
@@ -171,30 +177,6 @@ class User < ActiveRecord::Base
       shipment.save  
     end
  end
- 
-#  def do_invoice
-#    shipments = uninvoiced_shipments
-#    n = shipments.count
-#    if n < 1
-#      raise 'No shipments to invoice.'
-#    end
-#    value, issues = calc_value shipments
-#    if issues
-#      raise 'Invoice cancelled -> Issues occured while calculating prices: ' + issues.to_s
-#    end
-#    
-#    invoice = Invoice.new()
-#    invoice.amount = value
-#    invoice.user = self
-#    invoice.n_shipments = n
-#    invoice.save()
-#    
-#    for shipment in shipments do
-#      shipment.invoiced = true
-#      shipment.invoice = invoice
-#      shipment.save()
-#    end
-#  end
   
   
   def total_shipments_invoiced

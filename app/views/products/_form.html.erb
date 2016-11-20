@@ -17,7 +17,7 @@
 <div class='table-responsive'>
 	<table class='table table-striped'>
 	<tr>
-		<th>Name</th><th>Code</th><th>Tracking url prefix (e.g. https://gls-group.eu/DK/da/find-pakke?match=)</th><th></th>
+		<th>Name</th><th>Code</th><th>Taxed</th><th>Tracking url prefix (e.g. https://gls-group.eu/DK/da/find-pakke?match=)</th><th></th>
 	</tr>
 	<tr>
 		<td>
@@ -25,6 +25,9 @@
 		</td>
 		<td>
 			<%= f.bstxt_field :product_code%>
+		</td>
+		<td>
+			<%= f.bschckbx :taxed %>
 		</td>
 		<td>
 			<%= f.bstxt_field :tracking_url_prefix %>

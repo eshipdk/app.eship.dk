@@ -102,7 +102,7 @@ class ProductsController < ApplicationController
   private
 
   def product_params
-    params.require(:product).permit(:product_code, :name, :tracking_url_prefix)
+    params.require(:product).permit(:product_code, :name, :tracking_url_prefix, :taxed)
   end
 
 end
