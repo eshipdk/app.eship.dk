@@ -9,7 +9,7 @@ class ActionView::Helpers::FormBuilder
     number_field(method, options.merge(class: 'form-control'))
   end
   
-  def bssel(method, options = {})
+  def bssel(method, sel_options = {}, promt = {}, options = {})
     select(method, sel_options, promt, options.merge(class: 'form-control'))
   end
   
