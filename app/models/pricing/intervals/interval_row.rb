@@ -8,8 +8,13 @@ class IntervalRow  < ActiveRecord::Base
   validates :weight_to, :presence => true
   validates :value, :presence => true
   
+
   def s_country_code
     return country_code == nil ? '' : country_code
+  end
+  
+  def sort_value
+    ApplicationController.helpers.country_name(country_code) + weight_from.to_s.rjust(10, '0')
   end
   
 end
