@@ -1,11 +1,12 @@
 
 class PricingScheme < ActiveRecord::Base
   
+  
   belongs_to :user
   #A scheme instance of type cost is the internal price that we pay for a product
   #A scheme instance of type price is the price that the given customer is charged
   #Only schemes of type price should reference a user
-  enum pricing_type: [:cost, :price]
+  enum pricing_type: [:cost, :price, :default_price]
   
   attr_accessor :cost_scheme
   
@@ -16,6 +17,14 @@ class PricingScheme < ActiveRecord::Base
   
   def price_template
     raise self.to_s + "Price template not implemented"
+  end
+  
+  def default_price_template
+    raise self.to_s + "Default price template not implemented"
+  end
+  
+  def dup_deep
+    raise self.to_s + "Deep duplication not implemented"
   end
   
   def build

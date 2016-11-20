@@ -64,6 +64,52 @@ class ProductsController < ApplicationController
     redirect_to :action => :index
   end
   
+  def edit_default_price
+    @product = Product.find params[:id]
+    begin
+      @scheme = @product.default_price_scheme
+      @scheme.build
+    rescue PriceConfigException => e
+      flash[:error] = e.issue
+      redirect_to :action => :index
+      return
+    end
+      
+    render @scheme.default_price_template
+  end
+  
+  def update_default_price_scheme
+    begin
+      @product = Product.find params[:id]
+      @scheme = @product.default_price_scheme
+      @scheme.handle_price_update params
+      if not @scheme.valid?
+        flash[:error] = @scheme.errors.messages
+      end
+    rescue PriceConfigException => e
+      flash[:error] = e.issue
+    end
+    redirect_to :action => :index
+  end
+  
+  def default_price_scheme
+    product = Product.find params[:product_id]
+    user = User.find params[:id]
+    if not user.holds_product product
+      flash[:error] = 'User ' + user.email + ' can not access product ' + product.name
+      redirect_to :action => :index
+      return
+    end
+    begin
+      product.use_default_price_scheme user
+    rescue PriceConfigException => e
+      flash[:error] = e.issue
+      redirect_to :controller => :users, :action => :edit_products
+      return
+    end
+   redirect_to :back
+  end
+  
   def edit_price_scheme
     @product = Product.find params[:product_id]
     @user = User.find params[:id]

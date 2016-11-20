@@ -5,6 +5,7 @@ class IntervalTable < PricingScheme
   has_many :rows, :class_name => :IntervalRow, :dependent => :destroy
   accepts_nested_attributes_for :rows, :allow_destroy => true
   
+    
   
   def build
     #pass
@@ -205,6 +206,29 @@ class IntervalTable < PricingScheme
     end
 
     return rows
+  end
+  
+  def cost_template
+    return "pricing/interval/cost"
+  end
+  
+  def price_template
+    return "pricing/interval/price"
+  end
+  
+  def default_price_template
+    return "pricing/interval/default_price"
+  end
+  
+  def dup_deep
+    res = dup
+    res.save
+    rows.each do |row|
+      row_dup = row.dup
+      row_dup.interval_table = res
+      row_dup.save
+    end
+    return res
   end
   
 end

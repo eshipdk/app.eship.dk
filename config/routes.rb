@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :products, only: [] do
         get :edit_price_scheme
         patch :update_price_scheme
+        patch :default_price_scheme
       end
       
       get :shipments
@@ -22,6 +23,8 @@ Rails.application.routes.draw do
     member do
       get :edit_cost
       patch :update_cost_scheme
+      get :edit_default_price
+      patch :update_default_price_scheme
     end
   end
 

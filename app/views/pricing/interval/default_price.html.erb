@@ -1,12 +1,6 @@
-<h2 class='page-header'>Edit price scheme (<%= @user.email %>, <%= @product.name %>)
-	<span class='pull-right'>
-		<%= link_to 'Reset to default', product_default_price_scheme_path(@user, @product), method: :patch,
-				data: { confirm: 'Are you sure you want to reset prices to default values?' },
-				class: 'btn btn-default'%>
-	</span>
-	</h2>
-<%= form_for @scheme, :url => product_update_price_scheme_path(@user, @product) do |f| %>
-<h3 class='sub-header'>Pricing table</h3>
+<h1 class='page-header'>Edit default price scheme (<%= @product.name %>)</h1>
+<%= form_for @scheme, :url => {:controller => 'products', :action => 'update_default_price_scheme'}  do |f| %>
+<h2 class='sub-header'>Pricing table</h2>
 <div class='table-responsive'>
 	<table class='table table-striped'>
 		<tr>
