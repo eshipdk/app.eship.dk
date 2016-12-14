@@ -8,7 +8,8 @@ class ApiController < ApplicationController
 
   def product_codes
     products = @current_user.products
-    render :text => {'products' => @current_user.products.select(:product_code, :name)}.to_json
+    ps = products.select(:product_code, :name).map { |p| {:product_code => p.product_code, :name => p.name}}
+    render :text => {'products' => ps}.to_json, :content_type => 'application/json'
   end
 
 
@@ -79,7 +80,7 @@ class ApiController < ApplicationController
     if shipment.status == 'failed'
       response['errors'] = shipment.api_response_error_msg
     end
-    render :text => response.to_json
+    render :text => response.to_json, :content_type => 'application/json'
   end
 
   def shipment_info
@@ -114,7 +115,7 @@ class ApiController < ApplicationController
         result['shipping_state'] = shipment.shipping_state
       end
     end
-    render :text => result.to_json
+    render :text => result.to_json,  :content_type => 'application/json'
   end
 
   def fresh_labels
@@ -137,7 +138,7 @@ class ApiController < ApplicationController
                       'awbs' => recently_registered.map(&:awb),
                       'ids' => recently_registered.map(&:cargoflux_shipment_id),
                       'references' => recently_registered.map(&:reference),
-                      'returns' => recently_registered.map(&:return)}.to_json
+                      'returns' => recently_registered.map(&:return)}.to_json,  :content_type => 'application/json'
   end
 
   def recent_failures
@@ -155,13 +156,13 @@ class ApiController < ApplicationController
      shipment.save
     end
 
-    render :text => {'shipments'=>shipments}.to_json
+    render :text => {'shipments'=>shipments}.to_json,  :content_type => 'application/json'
 
   end
   
   def validate_key
     
-    render :text => {'valid' => (authenticate_api true)}.to_json
+    render :text => {'valid' => (authenticate_api true)}.to_json,  :content_type => 'application/json'
     
   end
   
@@ -172,7 +173,7 @@ class ApiController < ApplicationController
     rescue => ex
       version = '0.0'
     end
-    render :text => {'version' => version}.to_json
+    render :text => {'version' => version}.to_json,  :content_type => 'application/json'
   end
 
 
@@ -209,7 +210,7 @@ class ApiController < ApplicationController
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     request = Net::HTTP::Get.new(url)
-    render :text => http.request(request).body
+    render :text => http.request(request).body,  :content_type => 'application/json'
   end
 
 end
