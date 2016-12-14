@@ -1,0 +1,346 @@
+\documentclass{article}
+\setlength{\parindent}{0ex}
+\setlength{\parskip}{1em}
+\usepackage[utf8]{inputenc} 
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\renewenvironment{proof}[1][\proofname]{{\bfseries #1.}}{\qed}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{fancybox}
+\usepackage{tikz}
+\usepackage{tkz-euclide}
+\usepackage{gensymb}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{qtree}
+\usepackage{scrextend}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{algpseudocode}
+\usepackage[bottom]{footmisc}
+\usepackage[toc,page]{appendix}
+\usepackage{pbox}
+\usepackage{pdfpages}
+\usepackage{longtable}
+\setlength{\LTleft}{0pt}
+\tikzset{main node/.style={circle,fill=blue!20,draw,minimum size=1cm,inner sep=0pt},
+}
+\usepackage[margin=0.5in]{geometry}
+
+%Kodestyling \begin{lstlisting}
+\usepackage{color}
+\usepackage{listings}
+\lstset{ %
+language=C++,                % choose the language of the code
+%basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+basicstyle=\ttfamily,
+%numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,           % adds a frame around the code
+tabsize=2,          % sets default tabsize to 2 spaces
+captionpos=b,           % sets the caption-position to bottom
+breaklines=true,        % sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)},          % if you want to add a comment within your code
+%mathescape
+}
+
+\def\multiset#1#2{\ensuremath{\left(\kern-.3em\left(\genfrac{}{}{0pt}{}{#1}{#2}\right)\kern-.3em\right)}}
+
+\usepackage{caption}
+\captionsetup{font=small}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\def\meta#1{\mbox{$\langle\hbox{#1}\rangle$}}
+\def\macrowitharg#1#2{{\tt\string#1\bra\meta{#2}\ket}}
+
+{\escapechar-1 \xdef\bra{\string\{}\xdef\ket{\string\}}}
+
+\def\intro#1{{#1}{\cal I}}
+\def\elim#1{{#1}{\cal E}}
+
+\showboxbreadth 999
+\showboxdepth 999
+\tracingoutput 1
+
+
+\let\imp\to
+\def\elim#1{{{#1}{\cal E}}}
+\def\intro#1{{{#1}{\cal I}}}
+\def\lt{<}
+\def\eqdef{=}
+\def\eps{\mathrel{\epsilon}}
+\def\biimplies{\leftrightarrow}
+\def\flt#1{\mathrel{{#1}^\flat}}
+\def\setof#1{{\left\{{#1}\right\}}}
+\let\implies\to
+\def\KK{{\mathsf K}}
+\let\squashmuskip\relax
+
+\graphicspath{ {images/} }
+\usetikzlibrary{arrows}
+\tikzset{
+  leaf_/.style = {shape=rectangle,draw, align=center},
+  node_/.style     = {shape=circle,draw,align=center}
+}
+\author{eship ApS}
+\title{eShip Web API}
+\DeclareMathOperator{\Ran}{Ran}
+\DeclareMathOperator{\Dom}{Dom}
+
+\renewcommand*\contentsname{Contents}
+\begin{document}
+	
+\section*{eShip JSON Web API Specification}
+\today
+
+\tableofcontents
+
+
+\section{Introduction}
+The eShip Web API service allows integrating shipment booking in any context. The service accepts POST requests containing well-formed JSON as specified for each endpoint.
+
+\section{Authentication}
+Before you can access the service you need an eShip API key granted to you by your eShip representative. The API key is tied directly to an eShip account. All calls must provide the key in a top-level field called \verb|api_key|.
+
+\begin{lstlisting}
+{
+    "api_key": "YOUR_API_KEY",
+    ...
+}
+\end{lstlisting}
+
+\section{Endpoints}
+All endpoints are hosted at \verb|http://app.eship.dk/...|
+
+\subsection{List available products}
+\begin{tabular}{l|p{10cm}}
+	\textbf{ENDPOINT} & \verb|/api/products|\\
+	\textbf{DESCRIPTION} & Returns a list of all available products. The \verb|product_code| field is the code that must be issued when booking a shipment to signify which product to book.\\
+	\textbf{EXAMPLE REQUEST} & \begin{lstlisting}
+{
+	"api_key": "YOUR_API_KEY"
+}
+	\end{lstlisting}\\
+	\textbf{EXAMPLE RESPONSE} & \begin{lstlisting}
+{
+    "products": [
+        {
+            "product_code": "glsboc",
+            "name": "GLS Erhverv (OC)"
+        },
+        {
+            "product_code": "glspoc",
+            "name": "GLS Pakkeshop (OC)"
+        }
+    ]
+}
+	\end{lstlisting}\\
+\end{tabular}
+
+\newpage
+\subsection{Book new shipment}
+\begin{longtable}{l|p{10cm}}
+	\textbf{ENDPOINT} & \verb|/api/create_shipment|\\
+	\textbf{DESCRIPTION} & Books a new shipment from a sender address to a recipient address. Returns the ID of the new shipment along with its status or an error if the shipment could not be booked. Please see the example below and reference the list of parameters.\\
+	\textbf{PARAMETERS} & 
+	\begin{tabular}{l|p{7cm}}
+		\verb|shipment| & Contains the entire booking information.\\
+		\verb|return| & If true, the shipment is booked with return service (if applicable). Note that the sender/recipient is not switched automatically.\\
+		\verb|product_code| & The product code of the product to be booked (see \verb|/api/products|).\\
+		\verb|parchelship_id| & Specifies a parcelshop at which to put the package (if applicable to the product).\\
+		\verb|package_height| & Package height in cm. \\
+		\verb|package_length| & Package length in cm. \\
+		\verb|package_width| & Package width in cm. \\
+		\verb|package_weight| & Package weight in kg.\\
+		\verb|description| & Describes the contents of the package. \\
+		\verb|amount| & Number of packages (\textbf{note} that the API currently only supports packages with the same dimensions).\\
+		\verb|reference| & Your reference number for the shipment, e.g. relevant order number.\\
+		\verb|delivery_instructions| & Instructions to the person delivering the package.\\
+		\verb|sender| & Contains sender address and contact information.\\
+		\verb|recipient| & Contains recipient address and contact information.\\
+	\end{tabular}\\
+	\textbf{EXAMPLE REQUEST} & \begin{lstlisting}
+{
+    "api_key": "YOUR_API_KEY",
+    "shipment": {
+        "return": false,
+        "product_code": "glsboc",
+        "parcelshop_id": "",
+        "package_height": 1,
+        "package_length": 1,
+        "package_width": 1,
+        "package_weight": 1,
+        "description": "This package contains nothing in particular.",
+        "amount": 1,
+        "reference": "12345678",
+        "delivery_instructions": "Please leave in the shed.",
+        "sender": {
+            "company_name": "eShip",
+            "attention": "Mr. Parcel",
+            "address_line1": "Main street 2",
+            "address_line2": "",
+            "zip_code": "1234",
+            "city": "Some city",
+            "country_code": "DK",
+            "phone_number": "12345678",
+            "email": "info@eship.dk"
+        },
+        "recipient": {
+            "company_name": "Mr. John Snow",
+            "attention": "Mr. Snow himself",
+            "address_line1": "Odd street 1",
+            "address_line2": "",
+            "zip_code": "1234",
+            "city": "Some city",
+            "country_code": "DK",
+            "phone_number": "12345678",
+            "email": "recipient@eship.dk"
+        }
+    }
+}
+	\end{lstlisting}\\
+	\textbf{EXAMPLE RESPONSE} & \begin{lstlisting}
+{
+	"shipment_id": "528-1-827",
+	"status": "pending"
+}
+	\end{lstlisting}\\
+\end{longtable}
+
+
+\newpage
+\subsection{Retrieve shipment status}
+\begin{tabular}{l|p{10cm}}
+	\textbf{ENDPOINT} & \verb|/api/shipment_info|\\
+	\textbf{DESCRIPTION} & Takes a shipment ID and/or a reference and tries to find the specified shipment, returning basic information depending on the result.\\
+	\textbf{EXAMPLE REQUEST} & \begin{lstlisting}
+{
+    "api_key": "YOUR_API_KEY",
+    "shipment_id": "528-1-827",
+    "reference": "12345678"
+}
+	\end{lstlisting}\\
+	\textbf{EXAMPLE RESPONSE 1} & The shipment was not found. \newline\begin{lstlisting}
+{
+    "found": false
+}
+	\end{lstlisting}\\
+    \textbf{EXAMPLE RESPONSE 2} & The booking is still pending. \newline\begin{lstlisting}
+{
+    "found": true,
+    "id": "528-1-827",
+    "status": "pending"
+}
+	\end{lstlisting}\\
+    \textbf{EXAMPLE RESPONSE 3} & The booking has failed. \newline\begin{lstlisting}
+{
+    "found": true,
+    "id": "528-1-827",
+    "status": "failed",
+    "error": "Some issue with the booking"
+}
+	\end{lstlisting}\\
+    \textbf{EXAMPLE RESPONSE 4} & The booking is completed. \newline\begin{lstlisting}
+{
+    "found": true,
+    "id": "528-1-827",
+    "status": "complete",
+    "document_url": "[label pdf url]",
+    "tracking_url": "[tracking page url]",
+    "shipping_state": "[state of shipping, (booked, in_transit, delivered, cancelled, problem)]
+}
+	\end{lstlisting}\\
+\end{tabular}
+
+\newpage
+\subsection{Post Nord service points}
+\begin{tabular}{l|p{10cm}}
+	\textbf{ENDPOINT} & \verb|/api/pn/servicepoints|\\
+	\textbf{DESCRIPTION} & Proxy access to\newline https://developer.postnord.com/docs\#!/servicepoint/findNearestByAddress\newline
+	Accessing the postnord API to lookup service points require an account and an API key. Instead of requiring this of our customers, we allow them to access the service using our own API key. Calls to this endpoint should include the same parameters as you would include to the postnord service, but instead of supplying their API key you provide an eShip API key. The result is returned directly.\\
+	\textbf{EXAMPLE REQUEST} & \begin{lstlisting}
+{
+    "api_key": "YOUR_API_KEY",
+    "countryCode": "DK",
+    "postalCode": "1000",
+    "numberOfServicePoints": 1
+}
+	\end{lstlisting}\\
+	\textbf{EXAMPLE RESPONSE} & \begin{lstlisting}
+{
+  "servicePointInformationResponse" : {
+    "customerSupportPhoneNo" : "+45XXXXXXXX",
+    "servicePoints" : [ {
+      "servicePointId" : "1263",
+      "name" : "Posthus X",
+      "routeDistance" : 617,
+      "visitingAddress" : {
+        "streetName" : "Esplanaden",
+        "streetNumber" : "1",
+        "postalCode" : "1263",
+        "city" : "KBH K",
+        "countryCode" : "DK"
+      },
+      "deliveryAddress" : {
+        "streetName" : "Esplanaden",
+        "streetNumber" : "1",
+        "postalCode" : "1263",
+        "city" : "KBH K",
+        "countryCode" : "DK"
+      },
+      "coordinate" : {
+        "srId" : "EPSG:4326",
+        "northing" : 55.687417,
+        "easting" : 12.590448
+      },
+      "openingHours" : [ {
+        "from1" : "0800",
+        "to1" : "2300",
+        "day" : "MO"
+      }, {
+        "from1" : "0800",
+        "to1" : "2300",
+        "day" : "TU"
+      }, {
+        "from1" : "0800",
+        "to1" : "2300",
+        "day" : "WE"
+      }, {
+        "from1" : "0800",
+        "to1" : "2300",
+        "day" : "TH"
+      }, {
+        "from1" : "0800",
+        "to1" : "2300",
+        "day" : "FR"
+      }, {
+        "from1" : "0900",
+        "to1" : "2300",
+        "day" : "SA"
+      }, {
+        "from1" : "0900",
+        "to1" : "2300",
+        "day" : "SU"
+      } ]
+    } ]
+  }
+}
+	\end{lstlisting}\\
+\end{tabular}
+
+
+
+\end{document}
