@@ -69,6 +69,7 @@ class AdminController < ApplicationController
   
   def update_shipping_states
     Shipment.update_pending_shipping_states
+    redirect_to admin_tools_path
   end
 
 end

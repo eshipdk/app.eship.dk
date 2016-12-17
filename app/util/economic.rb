@@ -1,4 +1,5 @@
 using PatternMatch
+include ApplicationHelper
 module Economic
   
   BASE_ENDPOINT = 'https://restapi.e-conomic.com/'
@@ -53,6 +54,14 @@ module Economic
     vatAmount = (grossAmount - netAmount).round(2).to_f
     customer = invoice.customer.contact_address
     
+    if invoice.customer.invoices.count > 1
+      # The last invoice created before this one
+      prev_invoice = invoice.customer.invoices.where(['created_at < ?', invoice.created_at]).order(created_at: :desc).first
+      notes = "Periode: #{print_date prev_invoice.created_at} til #{print_date invoice.created_at}"
+    else
+      notes = "Periode: #{print_date invoice.user.created_at} til #{print_date invoice.created_at}"
+    end
+    
     i = 0
     lines = invoice.rows.map{|x| i+=1;
         {'lineNumber' => i,
@@ -76,6 +85,9 @@ module Economic
     "vatAmount"=> vatAmount,
     "roundingAmount"=> 0.00,
     "costPriceInBaseCurrency"=> 0,
+    "notes" => {
+      "textLine1" => notes
+    },
     "paymentTerms"=> {
         "paymentTermsNumber"=> 1,
         "daysOfCredit"=> 14,
