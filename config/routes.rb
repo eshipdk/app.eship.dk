@@ -96,6 +96,7 @@ Rails.application.routes.draw do
   post 'billing/invoice', to: 'billing#invoice', as: 'invoice_all'
   post 'billing/user/:id/update_prices', to: 'billing#update_prices', as: 'user_update_prices'
   post 'billing/invoice/:id/submit', to:'billing#submit_invoice', as: 'submit_invoice'
+  get 'billing', to: 'billing#overview', as: 'billing_overview'
 
 
   #Admin
@@ -103,6 +104,7 @@ Rails.application.routes.draw do
   get 'admin/shipment/:id', to: 'admin#show_shipment', as: 'admin_shipment'
   get 'admin/tools', to: 'admin#tools', as: 'admin_tools'
   post 'admin/tools/verify_billable_shipments', to: 'admin#verify_billable_shipments', as: 'admin_verify_billable'
+  post 'admin/tools/update_shipping_states', to: 'admin#update_shipping_states', as: 'admin_update_shipping_states'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

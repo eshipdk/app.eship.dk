@@ -66,5 +66,9 @@ class AdminController < ApplicationController
     @unknown = ids.reject{|x| known_ids.include? x}
     @incomplete = all_shipments.where.not(:shipping_state => 3)
   end
+  
+  def update_shipping_states
+    Shipment.update_pending_shipping_states
+  end
 
 end

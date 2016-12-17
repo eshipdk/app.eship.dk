@@ -295,11 +295,18 @@ class Shipment < ActiveRecord::Base
   
   def self.update_pending_shipping_states
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"
-    pending_shipments = Shipment.where('shipping_state in (1, 2)')
+    
+    from_time = DateTime.now() - 360.days
+    pending_shipments = Shipment.where(['shipping_state in (1, 2) AND created_at > ?', from_time])
     
     Rails.logger.warn "Number of shipments to update: #{pending_shipments.length}"
     for shipment in pending_shipments
-        shipment.update_shipping_state
+        begin
+          shipment.update_shipping_state
+        rescue => e
+          Rails.logger.warn "#{Time.now.utc.iso8601} EXCEPTION UPDATING SHIPMENT #{shipment.id}: #{e.to_s}"
+          Rails.logger.warn e.backtrace.join("\n")
+        end
     end
     
     Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_pending_shipping_states"
