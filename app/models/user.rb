@@ -220,6 +220,14 @@ class User < ActiveRecord::Base
   def quick_select_addresses key
     addresses.joins(:address_book_record).where('address_book_records.quick_select_' + key => true) 
   end
+  
+  def last_invoice_date
+    invoice = invoices.last
+    if invoice == nil
+      return nil
+    end
+    return invoice.created_at.to_date
+  end
 
   private
 
@@ -238,6 +246,8 @@ class User < ActiveRecord::Base
   def clear_password
     self.password = nil
   end
+  
+
   
   
 end

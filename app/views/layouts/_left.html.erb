@@ -14,6 +14,7 @@
 	<ul class='nav nav-sidebar'>
 		<li><h4>Admin</h4></li>
 		<%= render :partial => 'layouts/left_link', :locals => {:area => 'admin', :title => 'Dashboard', :path => admin_dashboard_path}%>
+		<%= render :partial => 'layouts/left_link', :locals => {:area => 'admin', :title => 'Billing', :path => billing_overview_path}%>
 		<%= render :partial => 'layouts/left_link', :locals => {:area => 'products', :title => 'Products', :path => products_path} %>
 		<%= render :partial => 'layouts/left_link', :locals => {:area => 'users', :title => 'Users', :path => users_path} %>
 		<%= render :partial => 'layouts/left_link', :locals => {:aera => 'admin', :title => 'Tools', :path => admin_tools_path}%>

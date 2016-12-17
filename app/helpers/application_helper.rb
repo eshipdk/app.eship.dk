@@ -37,7 +37,11 @@ end
   end
   
   def print_datetime datetime
-    datetime.in_time_zone('Berlin').strftime('%H:%M:%S %d-%m-%Y')
+    datetime == nil ? '-' : datetime.in_time_zone('Berlin').strftime('%H:%M:%S %d-%m-%Y')
+  end
+  
+  def print_date datetime
+    datetime == nil ? '-' : datetime.in_time_zone('Berlin').strftime('%d-%m-%Y')
   end
   
   def currency value, currency = ' kr.', round_to = 2

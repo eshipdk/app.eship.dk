@@ -51,4 +51,10 @@ class BillingController < ApplicationController
     redirect_to user_billing_path(invoice.user)
   end
   
+  
+  def overview
+     # Bad in-memory ordering. Todo: put uninvoiced shipment count in database
+    @users = User.customer.sort_by  {|user| user.n_uninvoiced_shipments}.reverse.find_all {|user| user.n_uninvoiced_shipments > 0}
+  end
+  
 end
