@@ -1,3 +1,5 @@
+include Economic
+using PatternMatch
 class User < ActiveRecord::Base
   attr_accessor :password
   EMAIL_REGEX = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i
@@ -7,6 +9,7 @@ class User < ActiveRecord::Base
   validates_length_of :password, :in => 6..20, :on => :update, :if => :password
   enum role: [:admin, :customer]
   enum billing_type: [:free, :flat_price, :advanced] #flat_price: Pays a flat fee per label ordered. advanced: use pricing schemes per product
+  enum billing_control: [:manual, :by_time, :by_balance]
 
   has_many :products, :through => :user_products
   has_many :user_products, :dependent => :destroy
@@ -74,6 +77,10 @@ class User < ActiveRecord::Base
     calc_value uninvoiced_shipments
   end
   
+  def balance_price
+    (_, price, _) = balance
+    return price
+  end
   
   def calc_value shipments
     total_price = 0
@@ -178,6 +185,7 @@ class User < ActiveRecord::Base
       shipment.invoice = invoice
       shipment.save  
     end
+    return invoice
  end
   
   
@@ -227,6 +235,50 @@ class User < ActiveRecord::Base
       return nil
     end
     return invoice.created_at.to_date
+  end
+
+  def invoice_and_submit
+    invoice = do_invoice
+    res = Economic.submit_invoice(invoice)
+    match(res) do
+      with(_[:error, issue]) do
+        SystemMailer.economic_autosubmit_failed(invoice, issue).deliver_now
+      end
+      with(res) do
+        return res
+      end
+    end
+  end
+
+  def self.perform_automatic_invoicing
+    Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: User.perform_automatic_invoicing"
+    
+    customers_by_time = User.customer.by_time
+    customers_by_time.each do |customer|
+      if customer.invoices.count < 1
+        if customer.balance_price > 0
+          Rails.logger.warn "Automatically invoicing customer #{customer.email}. Reason: By time - no previous invoices exist." 
+          customer.invoice_and_submit
+        end
+      else
+       
+        if customer.invoices.last.created_at + customer.invoice_x_days.days < DateTime.now() and customer.balance_price > 0
+          Rails.logger.warn "Automatically invoicing customer #{customer.email}. Reason: By time" 
+          customer.invoice_and_submit
+        end
+      end
+    end
+    
+    
+    customers_by_balance = User.customer.by_balance
+    customers_by_balance.each do |customer|
+      if customer.balance_price >= customer.invoice_x_balance
+        Rails.logger.warn "Automatically invoicing customer #{customer.email}. Reason: By balance"
+        customer.invoice_and_submit 
+      end
+    end
+    
+    Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: User.perform_automatic_invoicing"
   end
 
   private

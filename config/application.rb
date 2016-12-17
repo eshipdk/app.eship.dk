@@ -8,6 +8,7 @@ Bundler.require(*Rails.groups)
 
 module EShip
   HOST_ADDRESS = 'http://app.eship.dk/'
+  WEBMASTER_MAIL = 'rune@runekoknielsen.dk'
 
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.

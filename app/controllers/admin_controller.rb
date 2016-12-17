@@ -71,5 +71,10 @@ class AdminController < ApplicationController
     Shipment.update_pending_shipping_states
     redirect_to admin_tools_path
   end
+  
+  def automatic_invoicing
+    User.perform_automatic_invoicing
+    redirect_to admin_tools_path
+  end
 
 end

@@ -305,7 +305,9 @@ class Shipment < ActiveRecord::Base
           shipment.update_shipping_state
         rescue => e
           Rails.logger.warn "#{Time.now.utc.iso8601} EXCEPTION UPDATING SHIPMENT #{shipment.id}: #{e.to_s}"
-          Rails.logger.warn e.backtrace.join("\n")
+          issue = "#{e.to_s}: #{e.backtrace.join("\n")}"
+          Rails.logger.warn issue
+          SystemMailer.shipment_status_update_failed(shipment, issue).deliver_now
         end
     end
     

@@ -14,6 +14,13 @@
 
 
 
-<h2 class="sub-header">Update shipping states</h2>
+<h2 class="sub-header">Cron jobs</h2>
+
+<h3 class="sub-header">Update shipping states</h3>
 <%= link_to 'Run update', admin_update_shipping_states_path,
+          method: :post%>
+
+
+<h3 class="sub-header">Perform automatic invoicing</h3>
+<%= link_to 'Run invoicing', admin_automatic_invoicing_path,
           method: :post%>

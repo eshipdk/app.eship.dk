@@ -134,7 +134,8 @@ before_filter :filter_dates, :only => :shipments
     params.require(:user).permit(:email,:cargoflux_api_key,
                                    :password,:password_confirmation,
                                    :role,:billing_type,:unit_price,
-                                   :economic_customer_id)
+                                   :economic_customer_id, :billing_control,
+                                   :invoice_x_days, :invoice_x_balance)
   end
     
   def address_params

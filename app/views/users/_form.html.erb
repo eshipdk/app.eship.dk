@@ -68,9 +68,40 @@
   			</td>
   		</tr>
 	</table>
+	
+	<table class="table table-striped">
+		<tr>
+			<th>Invoice manually</th><th>Invoice by time (X days since last invoice)</th><th>Invoice by balance (more than X,- due) </th>
+		</tr>
+		<tr>
+			<td>
+				<input class="form-control" type="radio" name="user[billing_control]" <%= @user.manual? ? 'checked' : ''%>  value="manual"/>
+			</td>
+			<td>
+				<input id='radio_by_time' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_time? ? 'checked' : ''%> value="by_time"/>
+				<%= f.bsnum_field :invoice_x_days %>
+			</td>
+			<td>
+				<input id='radio_by_balance' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_balance? ? 'checked' : ''%> value="by_balance"/>
+				<%= f.bsnum_field :invoice_x_balance %>
+			</td>
+		</tr>
+	</table>
   
   
   <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
   </div>	
  
 <% end %>
+
+<script type='text/javascript'>
+	function control_fields(){
+		$('#user_invoice_x_days').prop('disabled', !$('#radio_by_time').prop('checked'));
+		$('#user_invoice_x_balance').prop('disabled', !$('#radio_by_balance').prop('checked'));
+	}
+	
+	$("input[name='user[billing_control]']").change(function(e){
+    	control_fields();
+	});
+	control_fields();
+</script>
