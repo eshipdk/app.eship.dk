@@ -1,4 +1,5 @@
 include Economic
+include Epay
 using PatternMatch
 class User < ActiveRecord::Base
   attr_accessor :password
@@ -10,6 +11,7 @@ class User < ActiveRecord::Base
   enum role: [:admin, :customer]
   enum billing_type: [:free, :flat_price, :advanced] #flat_price: Pays a flat fee per label ordered. advanced: use pricing schemes per product
   enum billing_control: [:manual, :by_time, :by_balance]
+  enum payment_method: [:bank_transfer, :epay]
 
   has_many :products, :through => :user_products
   has_many :user_products, :dependent => :destroy
@@ -70,6 +72,27 @@ class User < ActiveRecord::Base
 
   def billing_type_title
     return User.billing_type_title billing_type
+  end
+  
+  def self.payment_method_options
+    {(self.payment_method_title :bank_transfer) => :bank_transfer, (self.payment_method_title :epay) => :epay}
+  end
+  
+  def self.payment_method_title code
+    case code.to_s
+    when 'bank_transfer'
+      'Manual / Bank Transfer'
+    when 'epay'
+      'Recurring / epay'
+    end
+  end
+  
+  def payment_method_title
+    User.payment_method_title payment_method
+  end
+  
+  def can_pay_online
+    epay?
   end
   
   
@@ -154,10 +177,10 @@ class User < ActiveRecord::Base
         qty = 0
         group_shipments.each do |shipment|
           row.amount += shipment.final_price
-          row.unit_price = shipment.final_price
           qty += 1
         end
         row.qty = qty
+        row.unit_price = row.amount / row.qty
         row.product_code = 'label_fee'
         group_rows[product_code] = [row]
       end
@@ -245,7 +268,16 @@ class User < ActiveRecord::Base
         SystemMailer.economic_autosubmit_failed(invoice, issue).deliver_now
       end
       with(res) do
-        return res
+        if invoice.can_capture_online
+          match(Epay.capture_invoice(invoice)) do
+            with(_[:error, issue]) do
+              SystemMailer.epay_autocapture_failed(invoice, issue).deliver_now
+            end
+            with(res2) do
+              return invoice
+            end
+          end
+        end
       end
     end
   end
@@ -280,6 +312,17 @@ class User < ActiveRecord::Base
     
     Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: User.perform_automatic_invoicing"
   end
+  
+  
+  def verify_epay_subscription
+    if epay? and epay_subscription_id == nil
+      return false
+    else
+      return true
+    end
+  end
+  
+
 
   private
 

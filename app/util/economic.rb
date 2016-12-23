@@ -20,7 +20,6 @@ module Economic
     customers['collection']
   end
   
- 
   
   def submit_invoice invoice
     match(invoice_payload(invoice)) do
@@ -33,6 +32,7 @@ module Economic
         if res.key?('errorCode')
           [:error, res]
         else
+          invoice.gross_amount = res['grossAmount']
           invoice.sent_to_economic = true
           invoice.save
           res

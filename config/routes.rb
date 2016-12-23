@@ -15,6 +15,7 @@ Rails.application.routes.draw do
         patch :default_price_scheme
       end
       
+      get :epay_subscribe
       get :shipments
     end
   end
@@ -89,6 +90,7 @@ Rails.application.routes.draw do
   get 'account/invoices', to: 'account#invoices', as: 'my_invoices'
   get 'account/invoices/:id', to: 'account#invoices_show', as: 'my_invoices_show'
   get 'account/invoices/:id/shipments', to: 'account#invoices_shipments', as: 'my_invoices_shipments'
+  get 'account/epay_subscribe', to: 'account#epay_subscribe', as: 'epay_subscribe'
 
   #Billing
   get 'billing/user/:id', to: 'billing#user', as: 'user_billing'
@@ -96,6 +98,7 @@ Rails.application.routes.draw do
   post 'billing/invoice', to: 'billing#invoice', as: 'invoice_all'
   post 'billing/user/:id/update_prices', to: 'billing#update_prices', as: 'user_update_prices'
   post 'billing/invoice/:id/submit', to:'billing#submit_invoice', as: 'submit_invoice'
+  post 'billing/invoice/:id/capture', to: 'billing#capture_invoice', as: 'capture_invoice' 
   get 'billing', to: 'billing#overview', as: 'billing_overview'
 
 

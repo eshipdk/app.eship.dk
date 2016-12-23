@@ -1,4 +1,5 @@
 include Economic
+include Epay
 using PatternMatch
 class BillingController < ApplicationController
   before_filter :authenticate_admin
@@ -51,6 +52,17 @@ class BillingController < ApplicationController
     redirect_to user_billing_path(invoice.user)
   end
   
+  def capture_invoice
+    invoice = Invoice.find(params[:id])
+    match(Epay.capture_invoice(invoice)) do
+      with(_[:error, issue]) do
+        flash[:error] = issue
+      end
+      with(res) do
+      end
+    end
+    redirect_to :back
+  end
   
   def overview
      # Bad in-memory ordering. Todo: put uninvoiced shipment count in database

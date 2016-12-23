@@ -27,3 +27,20 @@
 
 <h2 class='sub-header'>Contact information</h2>
 <%= render :partial => '/addresses/display', :locals => {:address => @current_user.contact_address} %>
+
+<h2 class='sub-header'>Payment information</h2>
+<div class='table-responsive'>
+	<table class='table table-striped'>
+		<tr>
+			<th>Payment method</th><th></th>
+		</tr>
+		<tr>
+			<td>
+				<%= @current_user.payment_method_title %>
+				<% if @current_user.epay? %>
+					<%= link_to "Update credit card information", epay_subscribe_path %>
+				<% end %>
+			</td>
+		</tr>
+	</table>
+</div>

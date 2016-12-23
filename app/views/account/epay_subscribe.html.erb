@@ -1,0 +1,20 @@
+
+
+
+<h1 class="page-header">Credit card subscription</h1>
+<p>This account is registered for automatic payments. Please click the button below to register your credit card.</p>
+
+<script type="text/javascript" src="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js" charset="UTF-8"></script>
+  
+<script type="text/javascript">
+    paymentwindow = new PaymentWindow({
+        'merchantnumber': "<%= EShip::EPAY_MERCHANT_NUMBER %>",
+        'amount': "0",
+        'currency': "DKK",
+        'subscription': "1",
+        'callbackurl' : "<%= @callback_url %>",
+        'accepturl' : "<%= @accept_url %>"
+    });
+</script>
+  
+<input type="button" onclick="javascript: paymentwindow.open()" value="Register credit card" />

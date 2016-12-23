@@ -1,7 +1,7 @@
 include Economic
 class UsersController < ApplicationController
-  before_filter :authenticate_admin
-before_filter :filter_dates, :only => :shipments
+  before_filter :authenticate_admin, :except => :epay_subscribe
+  before_filter :filter_dates, :only => :shipments
 
   def index
     @users = User.all.paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
@@ -127,6 +127,14 @@ before_filter :filter_dates, :only => :shipments
     @shipments = @shipments.order(id: :desc).paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
   end
 
+  def epay_subscribe
+    Rails.logger.warn "EPAY SUBSCRIBE"
+    user = User.find params[:id]
+    subscription_id = params[:subscriptionid]
+    user.epay_subscription_id = subscription_id
+    user.save
+    render :text => 'ok'
+  end
 
   private
 
@@ -135,7 +143,8 @@ before_filter :filter_dates, :only => :shipments
                                    :password,:password_confirmation,
                                    :role,:billing_type,:unit_price,
                                    :economic_customer_id, :billing_control,
-                                   :invoice_x_days, :invoice_x_balance)
+                                   :invoice_x_days, :invoice_x_balance,
+                                   :payment_method)
   end
     
   def address_params

@@ -4,14 +4,24 @@
 <div class='table-responsive'>
 	<table class='table table-striped'>
 		<tr>
-			<th>Sent to e-conomic?
+			<% if @current_user.admin? %>
+				<th>Sent to e-conomic?
 				<%= link_to 'Submit', submit_invoice_path(@invoice), method: :post,
 				data: @invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {}%>
-				</th><th>Shipments</th>
+				</th>
+				<th>Captured online?
+				<% if not @invoice.captured_online and @invoice.can_capture_online %>
+				<%= link_to 'Capture now', capture_invoice_path(@invoice), method: :post %>
+				<% end %>	
+				</th>
+			<% end %>
+			<th>Shipments</th>
 		</tr>
 		<tr>
+			<% if @current_user.admin? %>
 			<td><%= @invoice.sent_to_economic ? "Yes" : "No" %>
-				
+			<td><%= @invoice.captured_online ? "Yes" : "No" %></td>
+			<% end %>
 			</td>
 			<td><%= link_to 'Show shipments', @admin ? invoice_shipments_path(@invoice) : my_invoices_shipments_path(@invoice)  %></td>
 		</tr>

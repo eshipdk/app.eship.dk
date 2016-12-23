@@ -63,4 +63,13 @@ class AccountController < ApplicationController
     end
   end
   
+  def epay_subscribe
+    if not @current_user.epay?
+      redirect_to '/account'
+      return
+    end
+    @callback_url =  EShip::HOST_ADDRESS + "users/#{@current_user.id}/epay_subscribe"
+    @accept_url = EShip::HOST_ADDRESS + "account"
+  end
+  
 end
