@@ -13,7 +13,7 @@ module Cargoflux
 
     shipment.api_response = response.to_json.to_s
 
-    if response['status'] != 'waiting_for_booking' && response['status'] != 'booking_initiated'
+    if response['status'] == 'failed'
       shipment.status = :failed
       shipment.label_pending = true
     else
