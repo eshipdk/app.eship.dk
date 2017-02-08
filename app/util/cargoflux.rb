@@ -1,7 +1,7 @@
 
 module Cargoflux
   
-  API_ENDPOINT = 'https://www.cargoflux.com/api/v1/customers/shipments/'
+  API_ENDPOINT = 'https://api.cargoflux.com/api/v1/customers/shipments/'
   
   
   def submit shipment
