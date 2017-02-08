@@ -144,7 +144,7 @@ class IntervalTable < PricingScheme
       shipment.packages.each do |package|
         begin
           row = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, package.weight, package.weight]).first!
-          package_class = "[#{row.weight_from} - #{row.weight_to}]"
+          package_class = "#{row.weight_from} - #{row.weight_to} kg"
           if classes.key? package_class
             classes[package_class] += package.amount
           else
@@ -158,7 +158,7 @@ class IntervalTable < PricingScheme
       end
       
       classes.sort.map do |k, v|
-        title += " (#{k} X #{v})"
+        title += " (#{k})"
       end
       
       if shipment.recipient.country_code == 'DK'
