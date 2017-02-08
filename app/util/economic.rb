@@ -63,7 +63,7 @@ module Economic
     end
     
     i = 0
-    lines = invoice.rows.map{|x| i+=1;
+    lines = invoice.rows.order(:description).map{|x| i+=1;
         {'lineNumber' => i,
          "product" => {
            "productNumber" => x.product_code
