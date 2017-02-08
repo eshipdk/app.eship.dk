@@ -76,7 +76,7 @@ class Product < ActiveRecord::Base
       return PnmhPricing
     when 'pnmc'
       return PnmcPricing
-    when 'pdkpe'
+    when 'OC_pnpe'
       return PndpdcPricing
     when 'glspri'
       return GlspriPricing
