@@ -45,7 +45,11 @@ end
   end
   
   def currency value, currency = ' kr.', round_to = 2
-    "<span class='currency-value'>#{value.round(round_to)}#{currency}</span>".html_safe
+    "<span class='currency-value'>#{number_with_precision(value, :precision => round_to).gsub('.', ',')}#{currency}</span>".html_safe
+  end
+  
+  def percent value, round_to = 2
+    "<span class='percent'>#{number_with_precision(value, :precision => round_to).gsub('.', ',')}%</span>".html_safe
   end
   
   def display_pagination collection
