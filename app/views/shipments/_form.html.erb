@@ -138,8 +138,40 @@
 			$('#btn-remove-package').prop('disabled', true);
 		}
 	}
+	
+	
+	// Update destination country when changing product
+	var DEFAULT_COUNTRIES = [];
+	<% current_user.user_products.each do |user_product| %>
+		DEFAULT_COUNTRIES['<%= user_product.product_id %>'] = '<%= user_product.default_country %>';
+	<% end %>
+	
+	// True if the destination country was chosen by the default option
+	var DEFAULT_DESTINATION_COUNTRY = false;
+	
+	function setDestinationCountry(productId){
+		targetCountry = DEFAULT_COUNTRIES[productId];
+		if(targetCountry == "") return;
+		
+		$('#recipient_country_code').children().filter(function() {
+			return this.value == targetCountry; 
+		}).attr('selected', true);
+	}
+	
+	$('#shipment_product_id').on('change', function(){		
+		setDestinationCountry(this.value);
+	});
+	
+	$(document).ready(function(){
+		destCountrySelector = $('#recipient_country_code');
+		if(destCountrySelector.val() == ""){
+			setDestinationCountry($('#shipment_product_id').val());
+		}
+	});
+	
 </script>
 
 <% end %>
+
 
 

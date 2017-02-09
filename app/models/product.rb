@@ -85,5 +85,8 @@ class Product < ActiveRecord::Base
     end
   end
   
+  def code
+    product_code
+  end
   
 end

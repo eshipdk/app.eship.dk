@@ -5,28 +5,47 @@
 <%= form_for @settings do |f| %>
 <div class='table-responsive'>
 	<h2 class='sub-header'>Default Package Dimensions</h2>
-	<table class='table table-striped' id='package-table'>
-		<tr>
-			<th>Length (cm)</th>
-			<th>Width (cm)</th>
-			<th>Height (cm)</th>
-			<th>Weight (kg)</th>
-		</tr>
-		<tr>
-			<td>
-				<%= f.bstxt_field :package_length %>
-			</td>
-			<td>
-				<%= f.bstxt_field :package_width %>
-			</td>
-			<td>
-				<%= f.bstxt_field :package_height %>
-			</td>
-			<td>
-				<%= f.bstxt_field :package_weight %>
-			</td>
-		</tr>
+	<table class='table table-striped'>
+		<thead>
+			<tr>
+				<th>Length (cm)</th>
+				<th>Width (cm)</th>
+				<th>Height (cm)</th>
+				<th>Weight (kg)</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<%= f.bstxt_field :package_length %>
+				</td>
+				<td>
+					<%= f.bstxt_field :package_width %>
+				</td>
+				<td>
+					<%= f.bstxt_field :package_height %>
+				</td>
+				<td>
+					<%= f.bstxt_field :package_weight %>
+				</td>
+			</tr>
+		</tbody>
 	</table>
+	
+	<h2 class='sub-header'>Default Destination Country</h2>
+	<table class='table table-striped'>
+		<thead>
+			<th>Product</th><th>Destination</th>
+		</thead>
+		<tbody>
+			<% current_user.user_products.each do |p| %>
+			<tr>
+				<td><%= p.product.name %></td>
+				<td><%= bscountry_select('default_country', p.product.code, selected: p.default_country) %></td>
+			</tr>
+			<% end %>	
+		</tbody>
+	</table>	
 </div>
 
 <button type="submit" class="form-control btn btn-primary">Save</button>
