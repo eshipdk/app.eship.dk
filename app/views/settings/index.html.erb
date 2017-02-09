@@ -1,0 +1,34 @@
+<h1 class='page-header'>Settings</h1>
+
+
+
+<%= form_for @settings do |f| %>
+<div class='table-responsive'>
+	<h2 class='sub-header'>Default Package Dimensions</h2>
+	<table class='table table-striped' id='package-table'>
+		<tr>
+			<th>Length (cm)</th>
+			<th>Width (cm)</th>
+			<th>Height (cm)</th>
+			<th>Weight (kg)</th>
+		</tr>
+		<tr>
+			<td>
+				<%= f.bstxt_field :package_length %>
+			</td>
+			<td>
+				<%= f.bstxt_field :package_width %>
+			</td>
+			<td>
+				<%= f.bstxt_field :package_height %>
+			</td>
+			<td>
+				<%= f.bstxt_field :package_weight %>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<button type="submit" class="form-control btn btn-primary">Save</button>
+
+<% end %>

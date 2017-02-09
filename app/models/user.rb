@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   has_many :invoices, :dependent => :destroy
   has_many :pricing_schemes, :dependent => :destroy
   has_one :import_format, :dependent => :destroy
+  has_one :user_setting,  :dependent => :destroy
   belongs_to :default_address, :class_name => 'Address' , :foreign_key => 'address_id'
   belongs_to :contact_address, :class_name => 'Address', :foreign_key => 'contact_address_id'
 
@@ -322,7 +323,15 @@ class User < ActiveRecord::Base
     end
   end
   
-
+  def settings
+    s = user_setting
+    if !s
+      s = UserSetting.new
+      s.user = self
+      s.save
+    end
+    s
+  end
 
   private
 

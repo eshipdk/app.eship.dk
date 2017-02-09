@@ -4,6 +4,12 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   
   DEFAULT_PER_PAGE = 20
+  
+  helper_method :current_user
+  def current_user
+    @current_user ||= User.find_by(id: session[:user])
+  end
+  
 
   protected
   def authenticate_user

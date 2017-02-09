@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     end
   end
   
+  
   post 'shipments/upload_csv', to: 'shipments#upload_csv'
   get 'bulk_import', to: 'shipments#bulk_import'
 
@@ -83,7 +84,7 @@ Rails.application.routes.draw do
 
 
   #User account
-  get 'account', to: 'account#index'
+  get 'account', to: 'account#index', as: 'account'
   get 'account/change_password', to: 'account#change_password', as: 'change_password'
   post 'account/do_change_password', to: 'account#do_change_password', as: 'do_change_password'
   get 'account/products', to: 'account#products', as: 'my_products'
@@ -91,6 +92,10 @@ Rails.application.routes.draw do
   get 'account/invoices/:id', to: 'account#invoices_show', as: 'my_invoices_show'
   get 'account/invoices/:id/shipments', to: 'account#invoices_shipments', as: 'my_invoices_shipments'
   get 'account/epay_subscribe', to: 'account#epay_subscribe', as: 'epay_subscribe'
+
+  #User settings
+  get 'settings', to: 'settings#index', as: 'settings'
+  patch 'settings/:id/update', to: 'settings#update', as: 'user_setting'
 
   #Billing
   get 'billing/user/:id', to: 'billing#user', as: 'user_billing'

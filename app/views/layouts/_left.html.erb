@@ -5,7 +5,8 @@
 			<%= render :partial => 'layouts/left_link', :locals => {:area => 'shipments', :title => 'Shipments', :path => shipments_path} %>
 			<%= render :partial => 'layouts/left_link', :locals => {:area => 'addresses', :title => 'Address book', :path => addresses_path}%>
 		<li><h4>Account</h4></li>
-			<%= render :partial => 'layouts/left_link', :locals => {:area => 'account', :title => 'Account', :path => '/account'} %>
+			<%= render :partial => 'layouts/left_link', :locals => {:area => 'account', :title => 'Account', :path => account_path } %>
+			<%= render :partial => 'layouts/left_link', :locals => {:area => 'settings', :title => 'Settings', :path => settings_path }%>
 			<%= render :partial => 'layouts/left_link', :locals => {:area => 'products', :title => 'Products', :path => my_products_path}%>
 			<%= render :partial => 'layouts/left_link', :locals => {:area => 'invoices', :title => 'Invoices', :path => my_invoices_path}%>
 	</ul>
