@@ -129,7 +129,7 @@
 	
 	function removePackage(){
 		if(nPackages < 2){
-			return;
+			return false;
 		}
 		var lastRow = $('#package-row-' + nPackages);
 		lastRow.remove();
@@ -137,20 +137,25 @@
 		if(nPackages < 2){
 			$('#btn-remove-package').prop('disabled', true);
 		}
+		return true;
 	}
 	
-	
-	// Update destination country when changing product
-	var DEFAULT_COUNTRIES = [];
-	<% current_user.user_products.each do |user_product| %>
-		DEFAULT_COUNTRIES['<%= user_product.product_id %>'] = '<%= user_product.default_country %>';
-	<% end %>
-	
-	// True if the destination country was chosen by the default option
-	var DEFAULT_DESTINATION_COUNTRY = false;
-	
+	<%
+	default_values = {}
+	current_user.user_products.each do |user_product|
+		default_values[user_product.product_id] = {
+				:country => user_product.default_country,
+				:length => user_product.default_length,
+				:width => user_product.default_width,
+				:height => user_product.default_height,
+				:weight => user_product.default_weight
+			 }
+	end
+	%>
+	var DEFAULT_VALUES = JSON.parse('<%= default_values.to_json.html_safe %>');
+
 	function setDestinationCountry(productId){
-		targetCountry = DEFAULT_COUNTRIES[productId];
+		targetCountry = DEFAULT_VALUES[productId]['country'];
 		if(targetCountry == "") return;
 		
 		$('#recipient_country_code').children().filter(function() {
@@ -158,14 +163,24 @@
 		}).attr('selected', true);
 	}
 	
+	function setPackageDimensions(productId){
+		while(removePackage());
+		$('#shipment_packages_attributes_0_length').val(DEFAULT_VALUES[productId]['length']);
+		$('#shipment_packages_attributes_0_width').val(DEFAULT_VALUES[productId]['width']);
+		$('#shipment_packages_attributes_0_height').val(DEFAULT_VALUES[productId]['height']);
+		$('#shipment_packages_attributes_0_weight').val(DEFAULT_VALUES[productId]['weight']);
+	}
+	
 	$('#shipment_product_id').on('change', function(){		
 		setDestinationCountry(this.value);
+		setPackageDimensions(this.value);
 	});
 	
 	$(document).ready(function(){
 		destCountrySelector = $('#recipient_country_code');
-		if(destCountrySelector.val() == ""){
+		if(destCountrySelector.val() == ""){ //Only set default values if this is a new shipment
 			setDestinationCountry($('#shipment_product_id').val());
+			setPackageDimensions($('#shipment_product_id').val());
 		}
 	});
 	

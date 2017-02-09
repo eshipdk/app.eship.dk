@@ -47,12 +47,6 @@ class ShipmentsController < ApplicationController
       @shipment.packages = packages
     else
       @shipment.packages.build
-      package = @shipment.packages[0]
-      settings = @current_user.settings
-      package.length = settings.package_length
-      package.width = settings.package_width
-      package.height = settings.package_height
-      package.weight = settings.package_weight
       @shipment.user = @current_user
     end
   end

@@ -72,4 +72,17 @@ class AccountController < ApplicationController
     @accept_url = EShip::HOST_ADDRESS + "account"
   end
   
+  def update_product
+    user_product = UserProduct.find params[:id]
+    if user_product.user == current_user
+      user_product.update product_settings_params
+      user_product.save
+    end
+    redirect_to my_products_path
+  end
+private
+  def product_settings_params
+    params.require(:user_product).permit(:default_length, :default_width, :default_height, :default_weight, :default_country)
+  end
+  
 end

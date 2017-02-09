@@ -3,9 +3,6 @@
 <% if @user.customer_type == 'shipping'%>
 
 
-
-
-<h3>Available products</h3>
 <select id="product_select">
 	<% @products.each do |code, hash| %>
 		<option value="<%= hash[:product].product_code %>"><%= hash[:product].name %></option>
@@ -31,6 +28,47 @@
 	</table>
 </div>
 
+
+<h3>Default Product Settings</h3>
+<% current_user.user_products.each do |user_product| %>
+	<% product = user_product.product%>
+	<%= form_for user_product do |f| %>
+	<div style='display: none' class="table-responsive" id='settings-<%= product.code %>'>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Package Length</th><th>Package Width</th><th>Package Height</th><th>Package Weight</th><th>Destination Country</th><th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<%= f.bstxt_field :default_length %>
+					</td>
+					<td>
+						<%= f.bstxt_field :default_width %>
+					</td>
+					<td>
+						<%= f.bstxt_field :default_height %>
+					</td>
+					<td>
+						<%= f.bstxt_field :default_weight %>
+					</td>
+					<td>
+						<%= bscountry_select('user_product', 'default_country', selected: user_product.default_country) %>
+					</td>
+					<td>
+						<button type='submit' class='btn btn-primary'>Update</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<% end %>
+<% end %>
+
+
+
 <h3>Current diesel fee</h3>
 <div class="table-responsive">
 	<table class="table table-striped">
@@ -54,7 +92,8 @@
 	productData = <%= raw @products.to_json %>;
 
 	function selectProduct(){
-		var hash = productData[$('#product_select').val()];
+		selected = $('#product_select').val();
+		var hash = productData[selected];
 		var countrySelect = $('#country_select');
 		countrySelect.html('');
 		for(var i=0; i<hash['countries'].length; i++){
@@ -63,6 +102,16 @@
 	          .text(hash['countries'][i]));
 		}
 		selectCountry();
+		
+		$('#product_select').children().each(function(){
+			code = $(this).val();
+			elem = $('#settings-' + code);
+			if(code == selected){
+				elem.show();
+			}else{
+				elem.hide();
+			}
+		});
 	}
 	
 	function selectCountry(){
