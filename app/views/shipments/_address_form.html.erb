@@ -1,72 +1,63 @@
-<div class='form-part'>
-  <h2 class='sub-header'><%= prefix.capitalize %></h2>
-  
-  <% quick_select_addresses = @current_user.quick_select_addresses prefix %>
-  <%= bssel('select-' + prefix, options_from_collection_for_select(quick_select_addresses, :json_url, :short_desc), {include_blank: 'Quick select ' + prefix + '..'}) %>
-	
-  <script type='text/javascript'>
+<div class='panel panel-default'>
+	<div class='panel-heading'><%= prefix.capitalize %></div>  	
+	<div class='panel-body'>
+		<div class='form-group'>
+		<% quick_select_addresses = @current_user.quick_select_addresses prefix %>
+	  	<%= bssel('select-' + prefix, options_from_collection_for_select(quick_select_addresses, :json_url, :short_desc), {include_blank: 'Quick select ' + prefix + '..'}) %>
+		  <script type='text/javascript'>
   	
-	$('#select-<%= prefix %>').change(function(event){
-		var sel = event.currentTarget;
-		if(sel.selectedIndex > 0){
-			$.getJSON(sel.value, function(json){
-				$.each(json, function(key, value){
-					var el = $("#<%= prefix %>_" + key);
-					if(el.length){
-						el.val(value);
-					}
-				});
+			$('#select-<%= prefix %>').change(function(event){
+				var sel = event.currentTarget;
+				if(sel.selectedIndex > 0){
+					$.getJSON(sel.value, function(json){
+						$.each(json, function(key, value){
+							var el = $("#<%= prefix %>_" + key);
+							if(el.length){
+								el.val(value);
+							}
+						});
+					});
+				}
 			});
-		}
-	});
-  </script>
-	
-	
-  <p>
-    Company<br/>
-    <%= bstxt_field(prefix, :company_name, :value => address.company_name) %>
-  </p>
-
-  <p>
-    Attention<br/>
-    <%= bstxt_field(prefix, :attention, :value => address.attention ) %>
-  </p>
-
-  <p>
-    Address line 1<br/>
-    <%= bstxt_field(prefix, :address_line1, :value => address.address_line1) %>
-  </p>
-
-  <p>
-    Address line 2<br/>
-    <%= bstxt_field(prefix, :address_line2, :value => address.address_line2) %>
-  </p>
-
-  <p>
-    Zip code<br/>
-    <%= bstxt_field(prefix, :zip_code, :value => address.zip_code ) %>
-  </p>
-
-  <p>
-    City<br/>
-    <%= bstxt_field(prefix, :city, :value => address.city ) %>
-  </p>
-
-  <p>
-    Country<br/>
-    <%= bscountry_select(prefix, 'country_code', selected: address.country_code
- )%>
- </p>
-
-
-  <p>
-    Phone<br/>
-    <%= bstxt_field(prefix, :phone_number, :value => address.phone_number) %>
-  </p>
-
-  <p>
-    Email<br/>
-    <%= bstxt_field(prefix, :email, :value => address.email) %>
-  </p>
-
+		  </script>
+		</div>
+		<div class='form-group'>
+			<label>Company</label>
+			<%= bstxt_field(prefix, :company_name, :value => address.company_name) %>
+		</div>
+	 	<div class='form-group'>
+			<label>Attention</label>
+			<%= bstxt_field(prefix, :attention, :value => address.attention) %>
+		</div>
+		<div class='form-group'>
+			<label>Address Line 1</label>
+			<%= bstxt_field(prefix, :address_line1, :value => address.address_line1) %>
+		</div>
+		<div class='form-group'>
+			<label>Address Line 2</label>
+			<%= bstxt_field(prefix, :address_line2, :value => address.address_line2) %>
+		</div>
+		<div class='form-group'>
+			<label>Zip Code</label>
+			<%= bstxt_field(prefix, :zip_code, :value => address.zip_code) %>
+		</div>
+		<div class='form-group'>
+			<label>City</label>
+			<%= bstxt_field(prefix, :city, :value => address.city) %>
+		</div>
+		<div class='form-group'>
+			<label>Country</label>
+			<%= bscountry_select(prefix, 'country_code', selected: address.country_code)%>
+		</div>
+		<div class='form-group'>
+			<label>Phone</label>
+			<%= bstxt_field(prefix, :phone_number, :value => address.phone_number) %>
+		</div>
+		<div class='form-group'>
+			<label>Email</label>
+			<%= bstxt_field(prefix, :email, :value => address.email) %>
+		</div>
+	</div>
 </div>
+  
+	

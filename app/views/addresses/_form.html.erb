@@ -1,22 +1,37 @@
 <%= form_for @address do |f| %>
 
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>Default sender</th>
-			<th>Quick select sender</th>
-			<th>Quick select recipient</th>
-		</tr>
-		<tr>
-			<td><%= check_box_tag 'default_address', "1", @current_user.default_address == @address %></td>
-			<td><%= check_box_tag 'quick_select_sender', "1", @record.quick_select_sender %></td>
-			<td><%= check_box_tag 'quick_select_recipient', "1", @record.quick_select_recipient %></td>
-		</tr>
-	</table>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Quick Select Options</div>
+	<div class='panel-body'>
+		<div class='table-responsive'>
+			<table class='table table-striped'>
+				<thead>
+					<tr>
+						<th>Default Sender</th>
+						<th>Quick Select Sender</th>
+						<th>Quick Select Recipient</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><%= bschckbx 'default_address', "1", @current_user.default_address == @address %></td>
+						<td><%= bschckbx 'quick_select_sender', "1", @record.quick_select_sender %></td>
+						<td><%= bschckbx 'quick_select_recipient', "1", @record.quick_select_recipient %></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>	
+	</div>
+</div>
+
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>Address Fields</div>
+	<div class='panel-body'>
+		<%= render :partial => 'form_fields', :locals => {:f => f}%>
+	</div>
 </div>	
 
-
-<%= render :partial => 'form_fields', :locals => {:f => f}%>
  
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
  

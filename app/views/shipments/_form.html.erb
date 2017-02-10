@@ -1,112 +1,137 @@
 <%= form_for @shipment do |f| %>
-  <% if @shipment.errors.any? %>
-    <div id="error_explanation">
-      <h2>
-        <%= pluralize(@shipment.errors.count, "error") %> prohibited
-        this shipment from being saved:
-      </h2>
-      <ul>
-        <% @shipment.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
- 
- 	<div class='table'>
- 		<h2 class='sub-header'>Product</h2>
- 		<table class='table table-striped'>
- 			<tr>
- 				<th>Product</th>
- 				<th>Parcelshop id (if applicable)</th>
- 				<th>Return service (if applicable)</th>
- 				<th>Label action</th>
- 			</tr>
- 			<tr>
- 				<td>
- 					<%= f.bssel :product_id, options_from_collection_for_select(@current_user.products, :id, :name, :selected => @shipment.product_id) %>
- 				</td>
- 				<td>
- 					<%= f.bstxt_field :parcelshop_id %>
- 				</td>
- 				<td>
- 					<%= f.bssel :return, options_for_select( [['No', 0], ['Yes', 1]], :selected => (@shipment.return ? 1 : 0) ) %>
- 				</td>
- 				<td>
- 					<%= f.bssel :label_action, Shipment.label_action_options %>
- 				</td>
- 			</tr>
+<% if @shipment.errors.any? %>
+	<div id="error_explanation">
+	  <h2>
+	    <%= pluralize(@shipment.errors.count, "error") %> prohibited
+	    this shipment from being saved:
+	  </h2>
+	  <ul>
+	    <% @shipment.errors.full_messages.each do |msg| %>
+	      <li><%= msg %></li>
+	    <% end %>
+	  </ul>
+	</div>
+<% end %>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Product</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+	 				<th>Product</th>
+	 				<th>Parcelshop id (if applicable)</th>
+	 				<th>Return service (if applicable)</th>
+	 				<th>Label action</th>
+	 			</tr>
+			</thead>
+ 			<tbody>
+ 				<tr>
+	 				<td>
+	 					<%= f.bssel :product_id, options_from_collection_for_select(@current_user.products, :id, :name, :selected => @shipment.product_id) %>
+	 				</td>
+	 				<td>
+	 					<%= f.bstxt_field :parcelshop_id %>
+	 				</td>
+	 				<td>
+	 					<%= f.bssel :return, options_for_select( [['No', 0], ['Yes', 1]], :selected => (@shipment.return ? 1 : 0) ) %>
+	 				</td>
+	 				<td>
+	 					<%= f.bssel :label_action, Shipment.label_action_options %>
+	 				</td>
+	 			</tr>
+ 			</tbody>
 		</table>
 		<table class='table table-striped'>
- 			<tr>
- 				<th>Delivery instructions</th>
- 				<th>Remarks</th>
- 				<th>Content Description</th>
- 				<th>Reference</th>
- 			</tr>
- 			<tr>
- 				<td>
- 					<%= f.bstxt_field :delivery_instructions %>
- 				</td>
- 				<td>
- 					<%= f.bstxt_field :remarks %>
- 				</td>
- 				<td>
- 					<%= f.bstxt_field :description %>
- 				</td>
- 				<td>
- 					<%= f.bstxt_field :reference %>
- 				</td>
- 			</tr>
+			<thead>
+				<tr>
+	 				<th>Delivery instructions</th>
+	 				<th>Remarks</th>
+	 				<th>Content Description</th>
+	 				<th>Reference</th>
+	 			</tr>
+			</thead>
+ 			<tbody>
+ 				<tr>
+	 				<td>
+	 					<%= f.bstxt_field :delivery_instructions %>
+	 				</td>
+	 				<td>
+	 					<%= f.bstxt_field :remarks %>
+	 				</td>
+	 				<td>
+	 					<%= f.bstxt_field :description %>
+	 				</td>
+	 				<td>
+	 					<%= f.bstxt_field :reference %>
+	 				</td>
+	 			</tr>
+ 			</tbody>
  		</table>
 	</div>
-	<div class='table-responsive'>
-		<h2 class='sub-header'>Packages</h2>
+</div>
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Packages
+	</div>
+	<div class='panel-body'>
 		<table class='table table-striped' id='package-table'>
-			<tr>
-				<th>Length (cm)</th>
-				<th>Width (cm)</th>
-				<th>Height (cm)</th>
-				<th>Weight (kg)</th>
-				<th>Amount</th>
-			</tr>
-			<% i_package = 0 %>
-			<%= f.fields_for :packages do |fp| %>
-			<% i_package += 1 %>
-			<tr id='package-row-<%= i_package %>'>
-				<td>
-					<%= fp.bsnum_field :length %>
-				</td>
-				<td>
-					<%= fp.bsnum_field :width %>
-				</td>
-				<td>
-					<%= fp.bsnum_field :height %>
-				</td>
-				<td>
-					<%= fp.bsnum_field :weight, :step => 'any' %>
-				</td>
-				<td>
-					<%= fp.bsnum_field :amount %>
-				</td>
-			</tr>
-			<% end %>
+			<thead>
+				<tr>
+					<th>Length (cm)</th>
+					<th>Width (cm)</th>
+					<th>Height (cm)</th>
+					<th>Weight (kg)</th>
+					<th>Amount</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% i_package = 0 %>
+				<%= f.fields_for :packages do |fp| %>
+				<% i_package += 1 %>
+				<tr id='package-row-<%= i_package %>'>
+					<td>
+						<%= fp.bsnum_field :length %>
+					</td>
+					<td>
+						<%= fp.bsnum_field :width %>
+					</td>
+					<td>
+						<%= fp.bsnum_field :height %>
+					</td>
+					<td>
+						<%= fp.bsnum_field :weight, :step => 'any' %>
+					</td>
+					<td>
+						<%= fp.bsnum_field :amount %>
+					</td>
+				</tr>
+				<% end %>
+			</tbody>
 		<tfoot>
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><button id='btn-remove-package' <%= 'disabled' if i_package < 2 %> onclick='removePackage()' type='button' class='btn btn-primary btn-block'>Remove</button></td>
-			<td><button onclick='addPackage()' type='button' class='btn btn-primary btn-block'>Add</button></td>	
-		</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><button id='btn-remove-package' <%= 'disabled' if i_package < 2 %> onclick='removePackage()' type='button' class='btn btn-primary btn-block'>Remove Package</button></td>
+				<td><button onclick='addPackage()' type='button' class='btn btn-primary btn-block'>Add Package</button></td>	
+			</tr>
 		</tfoot>
 		</table>
 	</div>
+</div>
 
-
-
-<%= render :partial => 'address_form', :locals => {:prefix => 'sender', :address => (form_address @shipment, 'sender')} %>
-<%= render :partial => 'address_form', :locals => {:prefix => 'recipient', :address => (form_address @shipment, 'recipient')} %>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Addresses</div>
+	<div class='panel-body'>
+		<div class='col-lg-6'>
+			<%= render :partial => 'address_form', :locals => {:prefix => 'sender', :address => (form_address @shipment, 'sender')} %>	
+		</div>
+		<div class='col-lg-6'>
+			<%= render :partial => 'address_form', :locals => {:prefix => 'recipient', :address => (form_address @shipment, 'recipient')} %>
+		</div>		
+	</div>
+</div>
 
 
 
@@ -185,7 +210,6 @@
 	});
 	
 </script>
-
 <% end %>
 
 
