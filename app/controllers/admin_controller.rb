@@ -69,12 +69,18 @@ class AdminController < ApplicationController
   
   def update_shipping_states
     Shipment.update_pending_shipping_states
-    redirect_to admin_tools_path
+    redirect_to :back
   end
   
   def automatic_invoicing
     User.perform_automatic_invoicing
-    redirect_to admin_tools_path
+    redirect_to :back
+  end
+  
+  def fetch_economic_data
+    Invoice.identify_economic_ids
+    Invoice.fetch_economic_data
+    redirect_to :back
   end
 
 end

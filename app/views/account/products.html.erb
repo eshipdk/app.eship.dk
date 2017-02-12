@@ -1,91 +1,97 @@
-<h1 class='page-header'>My products</h1>
+<h1 class='page-header'>Products</h1>
 
 <% if @user.customer_type == 'shipping'%>
 
-
-<select id="product_select">
-	<% @products.each do |code, hash| %>
-		<option value="<%= hash[:product].product_code %>"><%= hash[:product].name %></option>
-	<% end %>	
-</select>
-
-<select id="country_select">
-</select>
-
-<br/><br/>
-
-
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>Product</th>
-				<th>Price</th>
-			</tr>
-		</thead>
-		<tbody id="products">
-		</tbody>
-	</table>
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		<select id="product_select">
+			<% @products.each do |code, hash| %>
+				<option value="<%= hash[:product].product_code %>"><%= hash[:product].name %></option>
+			<% end %>	
+		</select>
+		<select id="country_select">
+		</select>
+	</div>
+	<div class='panel-body'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>Pricing</div>
+			<div class='panel-body'>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Configuration</th>
+							<th>Price</th>
+						</tr>
+					</thead>
+					<tbody id="products">
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>Default Settings</div>
+			<div class='panel-body'>
+				<% current_user.user_products.each do |user_product| %>
+					<% product = user_product.product%>
+					<%= form_for user_product do |f| %>
+					<div style='display: none' class="table-responsive" id='settings-<%= product.code %>'>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Package Length</th><th>Package Width</th><th>Package Height</th><th>Package Weight</th><th>Destination Country</th><th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<%= f.bstxt_field :default_length %>
+									</td>
+									<td>
+										<%= f.bstxt_field :default_width %>
+									</td>
+									<td>
+										<%= f.bstxt_field :default_height %>
+									</td>
+									<td>
+										<%= f.bstxt_field :default_weight %>
+									</td>
+									<td>
+										<%= bscountry_select('user_product', 'default_country', selected: user_product.default_country) %>
+									</td>
+									<td>
+										<button type='submit' class='btn btn-primary'>Update</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+	</div>
 </div>
 
-
-<h3>Default Product Settings</h3>
-<% current_user.user_products.each do |user_product| %>
-	<% product = user_product.product%>
-	<%= form_for user_product do |f| %>
-	<div style='display: none' class="table-responsive" id='settings-<%= product.code %>'>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Diesel Fee</div>
+	<div class='panel-body'>
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>Package Length</th><th>Package Width</th><th>Package Height</th><th>Package Weight</th><th>Destination Country</th><th></th>
+					<th>DK</th>
+					<th>International</th>
 				</tr>
-			</thead>
+			</thead>	
 			<tbody>
 				<tr>
-					<td>
-						<%= f.bstxt_field :default_length %>
-					</td>
-					<td>
-						<%= f.bstxt_field :default_width %>
-					</td>
-					<td>
-						<%= f.bstxt_field :default_height %>
-					</td>
-					<td>
-						<%= f.bstxt_field :default_weight %>
-					</td>
-					<td>
-						<%= bscountry_select('user_product', 'default_country', selected: user_product.default_country) %>
-					</td>
-					<td>
-						<button type='submit' class='btn btn-primary'>Update</button>
-					</td>
+					<td><%= percent PricingScheme.get_diesel_fee_dk %></td>
+					<td><%= percent PricingScheme.get_diesel_fee_inter %></td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
-	<% end %>
-<% end %>
-
-
-
-<h3>Current diesel fee</h3>
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>DK</th>
-				<th>International</th>
-			</tr>
-		</thead>	
-		<tbody>
-			<tr>
-				<td><%= percent PricingScheme.get_diesel_fee_dk %></td>
-				<td><%= percent PricingScheme.get_diesel_fee_inter %></td>
-			</tr>
-		</tbody>
-	</table>
 </div>
+
 
 <script type="text/javascript">
 
@@ -129,6 +135,9 @@
 </script>
 
 <% else %>
-<h3>Label Price: <%= currency @user.unit_price %></h3>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Label Price</div>
+	<div class='panel-body'><%= currency @user.unit_price %></div>
+</div>
 
 <% end %>

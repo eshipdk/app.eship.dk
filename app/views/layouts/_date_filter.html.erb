@@ -1,0 +1,2 @@
+<input value="<%= session[:filter_date_from].to_date.strftime('%d-%m-%Y') %>" class='form-control date-input' name='from' data-provide="datepicker" placeholder="From"/>
+<input value="<%= session[:filter_date_to].to_date.strftime('%d-%m-%Y')  %>" class='form-control date-input' name='to' data-provide="datepicker" placeholder="To" />

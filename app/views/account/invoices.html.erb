@@ -1,48 +1,44 @@
 <h1 class='page-header'>Invoice History</h1>
 
-<%= will_paginate @invoices %>
-<%= display_pagination @invoices %>
-<div class="table-responsive">
- <%= form_tag({:action => 'invoices'}, {:method => :get}) do %>
-  <table class='table table-striped'>
-    <tr>
-      <th>ID</th>
-      <th>Timestamp</th>
-      <th>Number of shipments</th>
-      <th>Total</th>
-    </tr>
-   
-    <tr class='model-filters'>
-    	<td><input class='form-control' type='text' name='id' value='<%= params[:id] %>'/></td>
-    	<td class='date-filter'>
-    		<%= select_date(@dateFrom, {:prefix => 'from', :order => [:day, :month, :year]}, {:class =>'form-control'}) %><br/>
-    		<%= select_date(@dateTo, {:prefix => 'to', :order => [:day, :month, :year]}, {:class => 'form-control'}) %>
-    	</td>
-    	<td></td>
-    	<td><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></td>
-    </tr>
-    
-    <tr>
-    	
-    </tr>
-    <% total = 0 %>
-    <% qty = 0%>
-    <% @invoices.each do |invoice| %>
-    <% total += invoice.amount %>
-    <% qty += invoice.n_shipments %>
-    <tr>
-      <td><%= link_to "#{invoice.id}", my_invoices_show_path(invoice) %></td>
-  	  <td><%= print_datetime invoice.created_at %></td>
-  	  <td><%= invoice.n_shipments %></td>
-      <td><%= currency invoice.amount %></td>
-    </tr>
-    <% end %>
-    <tr>
-    	<td>TOTAL</td>
-    	<td></td>
-    	<td><%= qty %></td>
-    	<td><%= currency total %></td>
-    </tr>
+<%= grid_before @invoices %>
+<%= form_tag({:action => 'invoices'}, {:method => :get}) do %>
+<table class='table table-striped'>
+	<thead>
+	 	<tr>
+	      <th>ID</th>
+	      <th>Timestamp</th>
+	      <th>Number of shipments</th>
+	      <th>Total</th>
+	    </tr>
+     	<tr class='model-filters'>
+	    	<td><input class='form-control' type='text' name='id' value='<%= params[:id] %>'/></td>
+	    	<td class='date-filter'>
+	    		<%= date_filter %>
+	    	</td>
+	    	<td></td>
+	    	<td><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></td>
+	    </tr>
+	</thead>
+	<tbody>
+	 	<% total = 0 %>
+	    <% qty = 0%>
+	    <% @invoices.each do |invoice| %>
+	    <% total += invoice.amount %>
+	    <% qty += invoice.n_shipments %>
+	    <tr>
+	      <td><%= link_to "#{invoice.pretty_id}", my_invoices_show_path(invoice) %></td>
+	  	  <td><%= print_datetime invoice.created_at %></td>
+	  	  <td><%= invoice.n_shipments %></td>
+	      <td><%= currency invoice.amount %></td>
+	    </tr>
+	    <% end %>
+	    <tr>
+	    	<td>TOTAL</td>
+	    	<td></td>
+	    	<td><%= qty %></td>
+	    	<td><%= currency total %></td>
+	    </tr>
+	</tbody>
   </table>
   <% end %>
-</div>
+<%= grid_after @invoices %>

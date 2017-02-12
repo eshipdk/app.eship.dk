@@ -4,9 +4,11 @@
   <title>eShip</title>
   <link rel="shortcut icon" href="<%= asset_path 'favicon.ico' %>" type="image/x-icon" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  <%= stylesheet_link_tag    'application', 'data-turbolinks-track' => true %>
+  <link rel="stylesheet" href="/lib/assets/bootstrap-datepicker.min.css"/>	
+  <%= stylesheet_link_tag 'admin', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <script src="/lib/assets/bootstrap-datepicker.min.js"></script>
 </head>
 <body>
 	<script type="text/javascript">

@@ -1,96 +1,126 @@
-<h1 class='page-header'>User billing: <%= @user.email %></h1>
+<h1 class='page-header'>User Billing: <%= @user.email %></h1>
 
-<h3 class='sub-header'>Current balance</h3>
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>Uninvoiced shipments</th>
-			<th>Billing type</th>
-			<th>Cost</th>
-			<th>Price</th>
-			<th>Diesel Fee</th>
-			<th>Shipments</th>
-			<th>Invoice</th>
-		</tr>
-		<tr>
-			
-			<td><%= @user.n_uninvoiced_shipments %></td>
-			<td><%= @user.billing_type_title %></td>
-			<% cost, price, fee = @user.balance %>
-			<td>
-				<%= currency cost %>
-			</td>
-			<td>
-				<%= currency price %>
-			</td>
-			<td>
-				<%= currency fee %>	
-			</td>
-			<th><%= link_to 'Shipments', user_edit_prices_path(@user) %></th>
-			<td>
-				<% if @user.n_uninvoiced_shipments < 1 %>
-					<% disable_invoice = true%>
-					Cannot create invoice: no shipments pending
-				<% elsif false and issues %>
-					<% disable_invoice = true%>
-					Cannot create invoice: some prices could not be determined (see shipments)
-				<% end %>
-				<%= form_tag invoice_all_path, method: :post do %>
-					<%= hidden_field_tag :user_id, @user.id %>
-					<button <%= disable_invoice ? 'disabled' : '' %> class="btn btn-lg btn-primary btn-block" type="submit">Create invoice</button>
-				<% end %>
-			</td>
-		</tr>
-	</table>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Current Balance</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Uninvoiced shipments</th>
+					<th>Billing type</th>
+					<th>Cost</th>
+					<th>Price</th>
+					<th>Diesel Fee</th>
+					<th>Shipments</th>
+					<th>Invoice</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					
+					<td><%= @user.n_uninvoiced_shipments %></td>
+					<td><%= @user.billing_type_title %></td>
+					<% cost, price, fee = @user.balance %>
+					<td>
+						<%= currency cost %>
+					</td>
+					<td>
+						<%= currency price %>
+					</td>
+					<td>
+						<%= currency fee %>	
+					</td>
+					<th><%= link_to 'Shipments', user_edit_prices_path(@user) %></th>
+					<td>
+						<% if @user.n_uninvoiced_shipments < 1 %>
+							<% disable_invoice = true%>
+							Cannot create invoice: no shipments pending
+						<% elsif false and issues %>
+							<% disable_invoice = true%>
+							Cannot create invoice: some prices could not be determined (see shipments)
+						<% end %>
+						<%= form_tag invoice_all_path, method: :post do %>
+							<%= hidden_field_tag :user_id, @user.id %>
+							<button <%= disable_invoice ? 'disabled' : '' %> class="btn btn-lg btn-primary btn-block" type="submit">Create invoice</button>
+						<% end %>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
-
-<h2 class='sub-header'>History</h2>
-<h3 class='sub-header'>Totals</h3>
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>Total number of labels invoiced</th>
-			<th>Total amount invoiced</th>
-		</tr>
-		<tr>
-			<td><%= @user.total_shipments_invoiced %></td>
-			<td><%= currency @user.total_amount_invoiced %></td>
-		</tr>
-	</table>
-</div>
-
-<h3 class='sub-header'>Invoices</h3>
-<div class='table-responsive'>
-	<%= will_paginate @invoices %>
-	<table class='table table-striped'>
-		<tr>
-			<th>ID</th><th>Timestamp</th><th>Number of labels</th><th>Amount</th><th>Undo invoice</th><th>Sent to e-conomic?</th><th>Captured online?</th>
-		</tr>	
-		<% @invoices.each do |invoice| %>
-		<tr>
-			<td><%= link_to invoice.id, invoice_path(invoice) %></td>
-			<td><%= print_datetime invoice.created_at %></td>
-			<td><%= invoice.n_shipments %></td>
-			<td><%= currency invoice.amount %></td>
-			<td>
-				<%= link_to 'Undo', invoice_path(invoice),
-		              method: :delete,
-		              data: { confirm: 'Do you want to delete this invoice? Assoicated shipments will be marked as uninvoiced.' } %>
-			</td>
-			<td>
-				<%= invoice.sent_to_economic ? "Yes" : "No" %>
-				<%= link_to 'Submit', submit_invoice_path(invoice), method: :post,
-				data: invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {} %>
-			</td>
-			<td>
-				<%= invoice.captured_online ? "Yes" : "No" %>
-				<% if not invoice.captured_online and invoice.can_capture_online %>
-				<%= link_to 'Capture now', capture_invoice_path(invoice), method: :post %>
-				<% end %>	
-			</td>
-		</tr>
-		<% end %>
-	</table>
+<div class='panel panel-default'>
+	<div class='panel-heading'>History</div>
+	<div class='panel-body'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>Totals</div>
+			<div class='panel-body'>
+				<table class='table table-striped'>
+					<thead>
+						<tr>
+							<th>Total number of labels invoiced</th>
+							<th>Total amount invoiced</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><%= @user.total_shipments_invoiced %></td>
+							<td><%= currency @user.total_amount_invoiced %></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>Invoices</div>
+			<div class='panel-body'>
+				<%= grid_before @invoices %>
+				<table class='table table-striped'>
+					<thead>
+						<tr>
+							<th>ID</th><th>Timestamp</th><th>Number of labels</th><th>Amount</th><th>Undo invoice</th><th>Sent to e-conomic?</th><th>Captured online?</th><!-- <th>e-conomic id</th>-->
+						</tr>	
+					</thead>
+					<tbody>
+						<% @invoices.each do |invoice| %>
+							<tr>
+								<td><%= link_to invoice.pretty_id, invoice_path(invoice) %></td>
+								<td><%= print_datetime invoice.created_at %></td>
+								<td><%= invoice.n_shipments %></td>
+								<td><%= currency invoice.amount %></td>
+								<td>
+									<%= link_to 'Undo', invoice_path(invoice),
+							              method: :delete,
+							              data: { confirm: 'Do you want to delete this invoice? Assoicated shipments will be marked as uninvoiced.' } %>
+								</td>
+								<td>
+									<%= invoice.sent_to_economic ? "Yes" : "No" %>
+									<%= link_to 'Submit', submit_invoice_path(invoice), method: :post,
+									data: invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {} %>
+								</td>
+								<td>
+									<%= invoice.captured_online ? "Yes" : "No" %>
+									<% if not invoice.captured_online and invoice.can_capture_online %>
+									<%= link_to 'Capture now', capture_invoice_path(invoice), method: :post %>
+									<% end %>	
+								</td>
+							<!--	<td>
+									<% if invoice.economic_id %>
+										<%= invoice.economic_id%>
+									<% elsif invoice.sent_to_economic %>
+										<%= link_to 'Identify e-conomic id', identify_economic_id_path(invoice), method: :post %>	
+									<% else %>
+										Not sent to e-conomic.
+									<% end %>
+							</td> -->
+							</tr>
+						<% end %>
+					</tbody>					
+				</table>
+				<%= grid_after @invoices%>
+			</div>
+		</div>
+	</div>
 </div>
 
 

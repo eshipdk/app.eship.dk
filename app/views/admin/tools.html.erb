@@ -1,26 +1,43 @@
 <h1 class='page-header'>Tools</h1>
 
-
-
-
-<h2 class="sub-header">Verify billable shipments</h2>
-<div class='import-csv'>
-  <%= form_tag '/admin/tools/verify_billable_shipments', :multipart=>true do %>
-  <%= label_tag(:file, "") %>
-  <%= file_field_tag :file %>
-  <%= submit_tag "Upload" %>
-  <% end %>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Verify Billable Shipments</div>
+	<div class='panel-body'>
+		<div class='import-csv'>
+		  <%= form_tag '/admin/tools/verify_billable_shipments', :multipart=>true do %>
+		  <%= label_tag(:file, "") %>
+		  <%= file_field_tag :file %>
+		  <%= submit_tag "Upload" %>
+		  <% end %>
+		</div>
+	</div>
 </div>
 
 
+<div class='panel panel-default'>
+	<div class='panel-heading'>Cron Jobs</div>
+	<div class='panel-body'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>Update Shipping States</div>
+			<div class='panel-body'>
+				<%= link_to 'Run update', admin_update_shipping_states_path,
+          			method: :post%>
+			</div>
+		</div>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>Perform Automatic Invoicing</div>
+			<div class='panel-body'>
+				<%= link_to 'Run invoicing', admin_automatic_invoicing_path,
+          			method: :post%>
+			</div>
+		</div>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>Fetch e-conomic data</div>
+			<div class='panel-body'>
+				<%= link_to 'Fetch now', admin_economic_fetch_path,
+          			method: :post%>
+			</div>
+		</div>
+	</div>
+</div>
 
-<h2 class="sub-header">Cron jobs</h2>
-
-<h3 class="sub-header">Update shipping states</h3>
-<%= link_to 'Run update', admin_update_shipping_states_path,
-          method: :post%>
-
-
-<h3 class="sub-header">Perform automatic invoicing</h3>
-<%= link_to 'Run invoicing', admin_automatic_invoicing_path,
-          method: :post%>

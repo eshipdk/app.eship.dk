@@ -1,55 +1,50 @@
-<h1 class='page-header'>My shipments
+<h1 class='page-header'>Shipments
 	<span class='pull-right'>
 		<a href='<%= url_for bulk_import_path %>' class='btn btn-default' role='button'>Bulk import</a>
 		<a href='<%= url_for new_shipment_path %>' class='btn btn-primary' role='button'>New shipment</a>	
 	</span>
 	</h1>
 
-<%= will_paginate @shipments %>
 
+<%= grid_before @shipments %>
+<%= form_tag({:action => 'index'}, {:method => :get}) do %>
+<table class='table table-striped'>
+	<thead>
+		<tr>
+	      <th>Shipment</th>
+	      <th>Reference</th>
+	      <th>Recipient</th>
+	      <th>Timestamp</th>
+	      <th>Product</th>
+	      <th>Booking state</th>
+	      <th>Shipping state</th>
+	    </tr>
+	    <tr class='model-filters'>
+	    	<td><input class='form-control' type='text' name='id' value='<%= params[:id] %>'/></td>
+	    	<td><input class='form-control' type='text' name='reference' value='<%= params[:reference] %>' /></td>
+	    	<td><input class='form-control' type='text' name='recipient' value='<%= params['recipient'] %>' /></td>
+	    	<td class='date-filter'>
+	    		<%= date_filter %>
+	    	</td>
+	    	<td></td>
+	    	<td></td>
+	    	<td><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></td>
+	    </tr>
+	</thead>
+    <tbody>
+    	<% @shipments.each do |shipment| %>
+		    <tr>
+		      <td><%= link_to "#{shipment.pretty_id}", shipment_path(shipment) %></td>
+		  	  <td><%= shipment.reference %></td>
+		  	  <td><%= shipment.recipient.company_name %></td>
+		      <td><%= print_datetime shipment.created_at %></td>
+		      <td><%= shipment.product.name %></td>
+		      <td><%= shipment.status.capitalize %></td>
+		      <td><%= shipment.shipping_state.capitalize %></td>
+	    	</tr>
+	    <% end %>
+	</tbody>
+</table>
+<% end %>
+<%= grid_after @shipments %>
 
-<%= display_pagination @shipments %>
-
-<div class="table-responsive">
- <%= form_tag({:action => 'index'}, {:method => :get}) do %>
-  <table class='table table-striped'>
-    <tr>
-      <th>Shipment</th>
-      <th>Reference</th>
-      <th>Recipient</th>
-      <th>Timestamp</th>
-      <th>Product</th>
-      <th>Booking state</th>
-      <th>Shipping state</th>
-    </tr>
-   
-    <tr class='model-filters'>
-    	<td><input class='form-control' type='text' name='id' value='<%= params[:id] %>'/></td>
-    	<td><input class='form-control' type='text' name='reference' value='<%= params[:reference] %>' /></td>
-    	<td><input class='form-control' type='text' name='recipient' value='<%= params['recipient'] %>' /></td>
-    	<td class='date-filter'>
-    		<%= select_date(@dateFrom, {:prefix => 'from', :order => [:day, :month, :year]}, {:class =>'form-control'}) %><br/>
-    		<%= select_date(@dateTo, {:prefix => 'to', :order => [:day, :month, :year]}, {:class => 'form-control'}) %>
-    	</td>
-    	<td></td>
-    	<td></td>
-    	<td><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></td>
-    </tr>
-    
-    <tr>
-    	
-    </tr>
-    <% @shipments.each do |shipment| %>
-    <tr>
-      <td><%= link_to "#{shipment.pretty_id}", shipment_path(shipment) %></td>
-  	  <td><%= shipment.reference %></td>
-  	  <td><%= shipment.recipient.company_name %></td>
-      <td><%= print_datetime shipment.created_at %></td>
-      <td><%= shipment.product.name %></td>
-      <td><%= shipment.status.capitalize %></td>
-      <td><%= shipment.shipping_state.capitalize %></td>
-    </tr>
-    <% end %>
-  </table>
-  <% end %>
-</div>

@@ -1,20 +1,27 @@
 
 
 
-<h1 class="page-header">Credit card subscription</h1>
-<p>This account is registered for automatic payments. Please click the button below to register your credit card.</p>
+<h1 class="page-header">Payment Subscription</h1>
 
-<script type="text/javascript" src="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js" charset="UTF-8"></script>
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		This acccount is registered for automatic payments. Please click the button below to register your payment information.
+	</div>
+	<div class='panel-body'>
+		<script type="text/javascript" src="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js" charset="UTF-8"></script>
   
-<script type="text/javascript">
-    paymentwindow = new PaymentWindow({
-        'merchantnumber': "<%= EShip::EPAY_MERCHANT_NUMBER %>",
-        'amount': "0",
-        'currency': "DKK",
-        'subscription': "1",
-        'callbackurl' : "<%= @callback_url %>",
-        'accepturl' : "<%= @accept_url %>"
-    });
-</script>
-  
-<input type="button" onclick="javascript: paymentwindow.open()" value="Register credit card" />
+		<script type="text/javascript">
+		    paymentwindow = new PaymentWindow({
+		        'merchantnumber': "<%= EShip::EPAY_MERCHANT_NUMBER %>",
+		        'amount': "0",
+		        'currency': "DKK",
+		        'subscription': "1",
+		        'callbackurl' : "<%= @callback_url %>",
+		        'accepturl' : "<%= @accept_url %>"
+		    });
+		</script>
+		  
+		<input type="button" onclick="javascript: paymentwindow.open()" value="Register credit card" />
+
+	</div>
+</div>

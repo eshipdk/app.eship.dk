@@ -69,4 +69,16 @@ class BillingController < ApplicationController
     @users = User.customer.sort_by  {|user| user.n_uninvoiced_shipments}.reverse.find_all {|user| user.n_uninvoiced_shipments > 0}
   end
   
+  def identify_economic_id
+    invoice = Invoice.find params[:id]
+    match(Economic.identify_booked_invoice invoice) do
+      with(_[:error, issue]) do
+        flash[:error] = issue
+      end
+      with(res) do
+      end
+    end
+    redirect_to :back
+  end
+  
 end

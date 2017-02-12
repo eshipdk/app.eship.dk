@@ -1,46 +1,64 @@
-<h1 class='page-header'>My account</h1>
+<h1 class='page-header'>Account</h1>
 
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>Account email</th>
-			<th>eShip API key</th>
-			<th>Cargoflux API key</th>
-			<th>Password</th>
-		</tr>
-		<tr>
-			<td>
-				<%= @current_user.email %>
-			</td>
-			<td>
-				<input class='form-control' type='text' disabled value="<%= @current_user.eship_api_key %>"/>
-			</td>
-			<td>
-				<input clasS='form-control' type='text' disabled value="<%= @current_user.cargoflux_api_key %>"/>
-			</td>
-			<td>
-				<%= link_to "Change password", change_password_path %>
-			</td>
-		</tr>
-	</table>	
-</div>	
-
-<h2 class='sub-header'>Contact information</h2>
-<%= render :partial => '/addresses/display', :locals => {:address => @current_user.contact_address} %>
-
-<h2 class='sub-header'>Payment information</h2>
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>Payment method</th><th></th>
-		</tr>
-		<tr>
-			<td>
-				<%= @current_user.payment_method_title %>
-				<% if @current_user.epay? %>
-					<%= link_to "Update credit card information", epay_subscribe_path %>
-				<% end %>
-			</td>
-		</tr>
-	</table>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Access</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Account email</th>
+					<th>eShip API key</th>
+					<th>Cargoflux API key</th>
+					<th>Password</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<%= @current_user.email %>
+					</td>
+					<td>
+						<input class='form-control' type='text' disabled value="<%= @current_user.eship_api_key %>"/>
+					</td>
+					<td>
+						<input clasS='form-control' type='text' disabled value="<%= @current_user.cargoflux_api_key %>"/>
+					</td>
+					<td>
+						<%= link_to "Change password", change_password_path %>
+					</td>
+				</tr>
+			</tbody>
+		</table>	
+	</div>
 </div>
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>Contact Information</div>
+	<div class='panel-body'>
+		<%= render :partial => '/addresses/display', :locals => {:address => @current_user.contact_address} %>
+	</div>
+</div>
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>Payment Information</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Payment method</th><th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<%= @current_user.payment_method_title %>
+						<% if @current_user.epay? %>
+							<%= link_to "Update credit card information", epay_subscribe_path %>
+						<% end %>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+

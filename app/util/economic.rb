@@ -117,7 +117,7 @@ module Economic
         "deliveryDate"=> invoice.created_at.to_date.to_s
     },
     "references"=> {
-        "eship_invoice_id"=> invoice.id
+        "other"=> invoice.id.to_s
     },
     "layout"=> {
         "layoutNumber"=> 19
@@ -126,8 +126,27 @@ module Economic
   }
   end
   
-  def get url
+  def identify_booked_invoice invoice
+    res = get(BASE_ENDPOINT + "invoices/booked?filter=references.other$eq:#{invoice.id}")
+    col = res['collection']
+    if col.any?
+      invoice.economic_id = col[0]['bookedInvoiceNumber']
+      invoice.save
+    else
+      [:error, "e-conomic invoice with reference #{invoice.id} could not be found."]
+    end
+  end
+  
+  def get_invoice_data invoice
+    res = get(BASE_ENDPOINT + "invoices/booked/#{invoice.economic_id}")
+    pdf = get_raw(res['pdf']['download'])
     
+    File.open("invoices/#{invoice.economic_id}.pdf",'wb') do |filea|
+        filea.puts pdf
+    end
+  end
+  
+  def get_raw url
     endpoint = URI.parse url
     http = Net::HTTP.new(endpoint.host, endpoint.port)
     http.use_ssl = true
@@ -138,8 +157,11 @@ module Economic
                                      'X-AppSecretToken' => AST,
                                      'X-AgreementGrantToken'=> AGT,
                                      'accept' => "application/json"})
-                                   
-     JSON.parse http.request(request).body
+     http.request(request).body
+  end
+  
+  def get url                      
+     JSON.parse(get_raw(url))
   end
   
   def post url, payload

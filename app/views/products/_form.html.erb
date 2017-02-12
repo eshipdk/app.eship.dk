@@ -13,30 +13,38 @@
       </ul>
     </div>
   <% end %>
-  
-<div class='table-responsive'>
-	<table class='table table-striped'>
-	<tr>
-		<th>Name</th><th>Code</th><th>Taxed</th><th>Tracking url prefix (e.g. https://gls-group.eu/DK/da/find-pakke?match=)</th><th></th>
-	</tr>
-	<tr>
-		<td>
-			<%= f.bstxt_field :name%>
-		</td>
-		<td>
-			<%= f.bstxt_field :product_code%>
-		</td>
-		<td>
-			<%= f.bschckbx :taxed %>
-		</td>
-		<td>
-			<%= f.bstxt_field :tracking_url_prefix %>
-		</td>
-		<td>
-			<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-		</td>
-	</tr>
-	</table>
-</div>
+ 
+ <div class='panel panel-default'>
+ 	<div class='panel-heading'>Configuration</div>
+ 	<div class='panel-body'>
+ 		<table class='table table-striped'>
+ 			<thead>
+ 				<tr>
+					<th>Name</th><th>Code</th><th>Taxed</th><th>Tracking url prefix (e.g. https://gls-group.eu/DK/da/find-pakke?match=)</th><th></th>
+				</tr>
+ 			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<%= f.bstxt_field :name%>
+					</td>
+					<td>
+						<%= f.bstxt_field :product_code%>
+					</td>
+					<td>
+						<%= f.bschckbx :taxed %>
+					</td>
+					<td>
+						<%= f.bstxt_field :tracking_url_prefix %>
+					</td>
+					<td>
+						<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+ 	</div>
+ </div>
+
 
 <% end %>

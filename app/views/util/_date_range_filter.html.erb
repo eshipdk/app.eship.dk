@@ -1,22 +1,25 @@
 <%= form_tag request.env['PATH_INFO'], method: 'get' do %>
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>From</th>
-			<th>To</th>
-			<th></th>
-		</tr>
-		<tr class='date-filter'>
-			<td>
-				<%= select_date(@dateFrom, {:prefix => 'from', :order => [:day, :month, :year]}, {:class =>'form-control'}) %>
-			</td>
-			<td>
-				<%= select_date(@dateTo, {:prefix => 'to', :order => [:day, :month, :year]}, {:class => 'form-control'}) %>
-			</td>
-			<td>
-				<button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button>
-			</td>
-		</tr>
-	</table>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Period</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<tr>
+				<th>From</th>
+				<th>To</th>
+				<th></th>
+			</tr>
+			<tr class='date-filter'>
+				<td>
+					<input value="<%= session[:filter_date_from].to_date.strftime('%d-%m-%Y') %>" class='form-control date-input' name='from' data-provide="datepicker" placeholder="From"/>
+				</td>
+				<td>
+					<input value="<%= session[:filter_date_to].to_date.strftime('%d-%m-%Y')  %>" class='form-control date-input' name='to' data-provide="datepicker" placeholder="To" />
+				</td>
+				<td>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button>
+				</td>
+			</tr>
+		</table>
+	</div>
 </div>
 <% end %>

@@ -1,54 +1,74 @@
-<h1 class='page-header'>Invoice #<%= @invoice.id %></h1>
+<h1 class='page-header'>Invoice #<%= @invoice.pretty_id %></h1>
 
 
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<% if @current_user.admin? %>
-				<th>Sent to e-conomic?
-				<%= link_to 'Submit', submit_invoice_path(@invoice), method: :post,
-				data: @invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {}%>
-				</th>
-				<th>Captured online?
-				<% if not @invoice.captured_online and @invoice.can_capture_online %>
-				<%= link_to 'Capture now', capture_invoice_path(@invoice), method: :post %>
-				<% end %>	
-				</th>
-			<% end %>
-			<th>Shipments</th>
-		</tr>
-		<tr>
-			<% if @current_user.admin? %>
-			<td><%= @invoice.sent_to_economic ? "Yes" : "No" %>
-			<td><%= @invoice.captured_online ? "Yes" : "No" %></td>
-			<% end %>
-			</td>
-			<td><%= link_to 'Show shipments', @admin ? invoice_shipments_path(@invoice) : my_invoices_shipments_path(@invoice)  %></td>
-		</tr>
-	</table>
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Details
+	</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<% if @current_user.admin? %>
+						<th>Sent to e-conomic?
+						<%= link_to 'Submit', submit_invoice_path(@invoice), method: :post,
+						data: @invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {}%>
+						</th>
+						<th>Captured online?
+						<% if not @invoice.captured_online and @invoice.can_capture_online %>
+						<%= link_to 'Capture now', capture_invoice_path(@invoice), method: :post %>
+						<% end %>	
+						</th>
+					<% end %>
+					<th>Shipments</th>
+					<th>Download Invoice</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<% if @current_user.admin? %>
+					<td><%= @invoice.sent_to_economic ? "Yes" : "No" %>
+					<td><%= @invoice.captured_online ? "Yes" : "No" %></td>
+					<% end %>
+					</td>
+					<td><%= link_to 'Show shipments', @admin ? invoice_shipments_path(@invoice) : my_invoices_shipments_path(@invoice)  %></td>
+					<td>
+						<% if @invoice.economic_id %>
+							<%= link_to 'PDF', download_invoice_path(@invoice), target: '_blank' %>
+						<% else %>
+							Invoice Not Ready
+						<% end %>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
-<h2 class='sub-header'>Invoice lines</h2>
 
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>Product description</th><th>Quantity</th><th>Unit price (Avg.)</th><th>Total</th>
-		</tr>
-		<% @invoice.rows.each do |row| %>
-		<tr>
-			<td><%= row.description %></td>
-			<td><%= row.qty %></td>
-			<td><%= currency row.unit_price %></td>
-			<td><%= currency row.amount %></td>
-		</tr>
-		<% end %>
-		<tfoot>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Items</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
 			<tr>
-				<td>TOTAL</td>
-				<td/>
-				<td/>
-				<td><%= currency @invoice.amount %></td>
+				<th>Product description</th><th>Quantity</th><th>Unit price (Avg.)</th><th>Total</th>
 			</tr>
-		</tfoot>
-	</table>
+			<% @invoice.rows.each do |row| %>
+			<tr>
+				<td><%= row.description %></td>
+				<td><%= row.qty %></td>
+				<td><%= currency row.unit_price %></td>
+				<td><%= currency row.amount %></td>
+			</tr>
+			<% end %>
+			<tfoot>
+				<tr>
+					<td>TOTAL</td>
+					<td/>
+					<td/>
+					<td><%= currency @invoice.amount %></td>
+				</tr>
+			</tfoot>
+		</table>		
+	</div>
 </div>
+

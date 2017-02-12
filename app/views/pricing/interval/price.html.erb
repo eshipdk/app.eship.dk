@@ -6,24 +6,31 @@
 	</span>
 	</h2>
 <%= form_for @scheme, :url => product_update_price_scheme_path(@user, @product) do |f| %>
-<h3 class='sub-header'>Pricing table</h3>
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th><label for='pricing_scheme_dk_diesel_fee'>Enable diesel fee (DK)</label></th>
-			<th><label for='pricing_scheme_dk_diesel_fee'>Enable diesel fee (International)</label></th>
-		</tr>
-		<tr>
-			<td>
-				<%= bschckbx('pricing_scheme[diesel_fee_dk]', 1, @scheme.diesel_fee_dk_enabled?) %>
-			</td>
-			<td>
-				<%= bschckbx('pricing_scheme[diesel_fee_inter]', 1, @scheme.diesel_fee_inter_enabled?) %>
-			</td>
-		</tr>
-	</table>
-	<%= render :partial => 'pricing/interval/table', :locals => {:countries => @product.cost_scheme.available_countries} %>
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>Diesel Fees</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th><label for='pricing_scheme_dk_diesel_fee'>Enable diesel fee (DK)</label></th>
+					<th><label for='pricing_scheme_dk_diesel_fee'>Enable diesel fee (International)</label></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<%= bschckbx('pricing_scheme[diesel_fee_dk]', 1, @scheme.diesel_fee_dk_enabled?) %>
+					</td>
+					<td>
+						<%= bschckbx('pricing_scheme[diesel_fee_inter]', 1, @scheme.diesel_fee_inter_enabled?) %>
+					</td>
+				</tr>
+			</tbody>			
+		</table>
+	</div>
 </div>
+<%= render :partial => 'pricing/interval/table', :locals => {:countries => @product.cost_scheme.available_countries} %>
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 

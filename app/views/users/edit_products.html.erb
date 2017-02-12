@@ -1,55 +1,64 @@
 <h1>Edit products for user: <%= @user.email %></h1>
 
-
-<div class='table-responsive'>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Products</div>
+	<div class='panel-body'>
+		
   <table class='table table-striped'>
-    <tr>
-      <th>Product</th>
-      <th>Status</th>
-      <th>Action</th>
-      <th>Alias</th>
-      <th>Pricing</th>
-    </tr>
-    <% @products.each do |product| %>
-    <tr>
-      <td><%= product.name %></td>
-        <% if @user.holds_product product %>
-        	<td>Activated</td>
-        	<td>
-        		<%= form_for @user, :url => {:controller => "users", :action => "remove_product"}, method: :post  do |f| %>
-        		<input type='hidden' name='product_id' value='<%= product.id %>'/>
-        
-        		<p>
-          			<button class='btn' type="submit">Deactivate product</button>
-       	 		</p>
-        	<% end %>
-        <% else %>
-        	<td>Not activated</td>
-        	<td>
-    	 		<%= form_for @user, :url => {:controller => "users", :action => "add_product"}, method: :post  do |f| %>
-        		<input type='hidden' name='product_id' value='<%= product.id %>'/>
-        
-        		<p>
-        	  		<button class='btn' type="submit">Activate product</button>
-        		</p>
-         		<% end %>
-    		</td>
-        <% end %>
-      </td>
-      <td>
-      	<% if @user.holds_product product %>      	
-      	<%= form_for @user, :url => {:controller => 'users', :action => 'set_product_alias'}, method: :post do |f| %>
-      	<input type='hidden' name='product_id' value=<%= product.id %>/>
-      	<input type='text' name='alias' value='<%= @user.product_alias product %>'/>
-      	<% end %>
-      	<% end %>
-      </td>
-      <td>
-      	<% if @user.holds_product product %>
-      	<%= link_to 'Configure price', product_edit_price_scheme_path(@user, product) %>
-      	<% end %>
-      </td>
-    </tr>
-    <% end %>
-  </table>
+	  	<thead>
+		 	<tr>
+		      <th>Product</th>
+		      <th>Status</th>
+		      <th>Action</th>
+		      <th>Alias</th>
+		      <th>Pricing</th>
+		    </tr>
+	  	</thead>
+	   	<tbody>
+		   	<% @products.each do |product| %>
+		    <tr>
+		      <td><%= product.name %></td>
+		        <% if @user.holds_product product %>
+		        	<td>Activated</td>
+		        	<td>
+		        		<%= form_for @user, :url => {:controller => "users", :action => "remove_product"}, method: :post  do |f| %>
+		        		<input type='hidden' name='product_id' value='<%= product.id %>'/>
+		        
+		        		<p>
+		          			<button class='btn' type="submit">Deactivate product</button>
+		       	 		</p>
+		        	<% end %>
+		        <% else %>
+		        	<td>Not activated</td>
+		        	<td>
+		    	 		<%= form_for @user, :url => {:controller => "users", :action => "add_product"}, method: :post  do |f| %>
+		        		<input type='hidden' name='product_id' value='<%= product.id %>'/>
+		        
+		        		<p>
+		        	  		<button class='btn' type="submit">Activate product</button>
+		        		</p>
+		         		<% end %>
+		    		</td>
+		        <% end %>
+		      </td>
+		      <td>
+		      	<% if @user.holds_product product %>      	
+		      	<%= form_for @user, :url => {:controller => 'users', :action => 'set_product_alias'}, method: :post do |f| %>
+		      	<input type='hidden' name='product_id' value=<%= product.id %>/>
+		      	<input type='text' name='alias' value='<%= @user.product_alias product %>'/>
+		      	<% end %>
+		      	<% end %>
+		      </td>
+		      <td>
+		      	<% if @user.holds_product product %>
+		      	<%= link_to 'Configure price', product_edit_price_scheme_path(@user, product) %>
+		      	<% end %>
+		      </td>
+		    </tr>
+		    <% end %>
+	   	</tbody>
+	  </table>
+	</div>
 </div>
+
+

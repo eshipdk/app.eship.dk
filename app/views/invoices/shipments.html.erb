@@ -1,28 +1,30 @@
-<h1 class="page-header">Shipments for invoice #<%= @invoice.id %></h1>
-
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>Reference</th>
-				<th>Timestamp</th>
-				<th>Product</th>
-				<th>Shipment value</th>
-				<th>Diesel fee</th>
-			</tr>
-		</thead>
-		<tbody>
-			<% @shipments.each do |shipment| %>
+<h1 class="page-header">Shipments for Invoice #<%= @invoice.id %></h1>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Shipments</div>
+	<div class='panel-body'>
+		<table class="table table-striped">
+			<thead>
 				<tr>
-					<td><%= link_to shipment.pretty_id, @admin ? admin_shipment_path(shipment) : shipment_path(shipment) %></td>
-					<td><%= shipment.reference %></td>
-					<td><%= print_datetime shipment.created_at %></td>
-					<td><%= shipment.product.name %></td>
-					<td><%= currency shipment.final_price %></td>
-					<td><%= currency shipment.final_diesel_fee %></td>
+					<th>ID</th>
+					<th>Reference</th>
+					<th>Timestamp</th>
+					<th>Product</th>
+					<th>Shipment value</th>
+					<th>Diesel fee</th>
 				</tr>
-			<% end %>
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				<% @shipments.each do |shipment| %>
+					<tr>
+						<td><%= link_to shipment.pretty_id, @admin ? admin_shipment_path(shipment) : shipment_path(shipment) %></td>
+						<td><%= shipment.reference %></td>
+						<td><%= print_datetime shipment.created_at %></td>
+						<td><%= shipment.product.name %></td>
+						<td><%= currency shipment.final_price %></td>
+						<td><%= currency shipment.final_diesel_fee %></td>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
 </div>

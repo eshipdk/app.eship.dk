@@ -14,95 +14,108 @@
     </div>
   <% end %>
  
- <div class='table-responsive'>
- 	<h2 class='sub-header'>Profile</h2>
- 	<table class='table table-striped'>
- 		<tr>
- 			<th>Email</th>
- 			<th>Privilege</th>
- 			<th>Cargoflux API key</th>
- 			<th>eShip API key</th>
- 		</tr>
- 		<tr>
- 			<td><%= f.bstxt_field :email %></td>
- 			<td><%= f.bssel :role, User.role_options %></td>
- 			<td><%= f.bstxt_field :cargoflux_api_key %></td>
- 			<td><% if !@user.new_record? %><%= f.bstxt_field :eship_api_key, :disabled => true %><% end %></td>
- 		</tr>
-	</table>
+ <div class='panel panel-default'>
+ 	<div class='panel-heading'>Profile</div>
+ 	<div class='panel-body'>
+ 		<table class='table table-striped'>
+ 			<thead>
+ 				<tr>
+		 			<th>Email</th>
+		 			<th>Privilege</th>
+		 			<th>Cargoflux API key</th>
+		 			<th>eShip API key</th>
+		 		</tr>
+ 			</thead>
+	 		<tbody>
+	 			<tr>
+		 			<td><%= f.bstxt_field :email %></td>
+		 			<td><%= f.bssel :role, User.role_options %></td>
+		 			<td><%= f.bstxt_field :cargoflux_api_key %></td>
+		 			<td><% if !@user.new_record? %><%= f.bstxt_field :eship_api_key, :disabled => true %><% end %></td>
+		 		</tr>
+	 		</tbody>
+		</table>
+	  	<table class='table table-striped'>
+	  		<thead>
+	  			<tr>
+					<th>Password<% if not @user.new_record? %> (Leave blank to keep existing)<% end %></th>
+					<th>Repeat password</th>
+					<th>e-conomic customer</th>
+				</tr>
+	  		</thead>
+			<tbody>
+				<tr>
+					<td><%= f.password_field :password %></td>
+					<td><%= f.password_field :password_confirmation %></td>
+					<td>
+						<%= f.bssel :economic_customer_id, @economic_customers %>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+ 	</div>
+ </div>
+ <div class='panel panel-default'>
+ 	<div class='panel-heading'>Billing</div>
+ 	<div class='panel-body'>
+ 		<table class='table table-striped'>
+ 			<thead>
+ 				<tr>
+ 					<th>
+	  				Billing type
+		  			</th>
+		  			<th>Unit price (for flat rate pricing)</th>
+		  			<th>
+		  				Payment method
+		  			</th>
+		  			<th>
+		  				epay subscription id
+		  			</th>
+		  		</tr>
+ 			</thead>
+	  		<tbody>
+		  		<tr>
+		  			<td>
+		  				<%= f.bssel :billing_type, User.billing_type_options %>
+		  			</td>
+		  			<td>
+		  				<%= f.bsnum_field :unit_price, :step=>'any' %>
+		  			</td>
+		  			<td>
+		  				<%= f.bssel :payment_method, User.payment_method_options %>
+		  			</td>
+		  			<td>
+		  				<%= f.bstxt_field :epay_subscription_id, :disabled => true  %>
+		  			</td>
+		  		</tr>
+	  		</tbody>
+  		</table>
+  		<table class='table table-striped'>
+	  		<thead>
+	  			<tr>
+					<th>Invoice manually</th><th>Invoice by time (X days since last invoice)</th><th>Invoice by balance (more than X,- due) </th>
+				</tr>
+	  		</thead>
+	  		<tbody>
+	  			<tr>
+					<td>
+						<input class="form-control" type="radio" name="user[billing_control]" <%= @user.manual? ? 'checked' : ''%>  value="manual"/>
+					</td>
+					<td>
+						<input id='radio_by_time' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_time? ? 'checked' : ''%> value="by_time"/>
+						<%= f.bsnum_field :invoice_x_days %>
+					</td>
+					<td>
+						<input id='radio_by_balance' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_balance? ? 'checked' : ''%> value="by_balance"/>
+						<%= f.bsnum_field :invoice_x_balance %>
+					</td>
+				</tr>
+	  		</tbody>
+		</table>
+ 	</div>
+ </div>
 
-	
- 
-
-  	<table class='table table-striped'>
-		<tr>
-			<th>Password<% if not @user.new_record? %> (Leave blank to keep existing)<% end %></th>
-			<th>Repeat password</th>
-			<th>e-conomic customer</th>
-		</tr>
-		<tr>
-			<td><%= f.password_field :password %></td>
-			<td><%= f.password_field :password_confirmation %></td>
-			<td>
-				<%= f.bssel :economic_customer_id, @economic_customers %>
-			</td>
-		</tr>
-	</table>
-
-  
-  
-  	<h2 class='sub-header'>Billing</h2>
-  	<table class='table table-striped'>
-  		<tr>
-  			<th>
-  				Billing type
-  			</th>
-  			<th>Unit price (for flat rate pricing)</th>
-  			<th>
-  				Payment method
-  			</th>
-  			<th>
-  				epay subscription id
-  			</th>
-  		</tr>
-  		<tr>
-  			<td>
-  				<%= f.bssel :billing_type, User.billing_type_options %>
-  			</td>
-  			<td>
-  				<%= f.bsnum_field :unit_price, :step=>'any' %>
-  			</td>
-  			<td>
-  				<%= f.bssel :payment_method, User.payment_method_options %>
-  			</td>
-  			<td>
-  				<%= f.bstxt_field :epay_subscription_id, :disabled => true  %>
-  			</td>
-  		</tr>
-	</table>
-	
-	<table class="table table-striped">
-		<tr>
-			<th>Invoice manually</th><th>Invoice by time (X days since last invoice)</th><th>Invoice by balance (more than X,- due) </th>
-		</tr>
-		<tr>
-			<td>
-				<input class="form-control" type="radio" name="user[billing_control]" <%= @user.manual? ? 'checked' : ''%>  value="manual"/>
-			</td>
-			<td>
-				<input id='radio_by_time' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_time? ? 'checked' : ''%> value="by_time"/>
-				<%= f.bsnum_field :invoice_x_days %>
-			</td>
-			<td>
-				<input id='radio_by_balance' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_balance? ? 'checked' : ''%> value="by_balance"/>
-				<%= f.bsnum_field :invoice_x_balance %>
-			</td>
-		</tr>
-	</table>
-  
-  
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-  </div>	
+<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
  
 <% end %>
 

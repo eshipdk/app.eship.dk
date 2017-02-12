@@ -3,52 +3,58 @@
 
 <%= render :partial => 'util/date_range_filter' %>
 
-<h2 class='sub-header'>Turnover in period</h2>
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>User</th>
-			<th>Completed shipment bookings</th>
-			<th>Value of bookings</th>
-			<th>Number of invoices</th>
-			<th>Total amount invoiced</th>
-		</tr>
-		<tr>
-			<th>
-				TOTAL
-			</th>
-			<th>
-				<%= @nShipments %>
-			</th>
-			<th>
-				<%= currency @value %>
-			</th>
-			<th>
-				<%= @nInvoices %>
-			</th>
-			<th>
-				<%= currency @totalInvoiced %>
-			</th>
-		</tr>
-		<% @customerData.each do |row| %>
-		<tr>
-			<td>
-				<%= row['email'] %>
-			</td>
-			<td>
-				<%= row['booked'] %>
-			</td>
-			<td>
-				<%= currency row['value'] %>
-			</td>
-			<td>
-				<%= row['invoices'] %>
-			</td>
-			<td>
-				<%= currency row['invoiced'] %>
-			</td>
-		</tr>
-		<% end %>
-	</table>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Turnover in Period</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>User</th>
+					<th>Completed shipment bookings</th>
+					<th>Value of bookings</th>
+					<th>Number of invoices</th>
+					<th>Total amount invoiced</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>
+						TOTAL
+					</th>
+					<th>
+						<%= @nShipments %>
+					</th>
+					<th>
+						<%= currency @value %>
+					</th>
+					<th>
+						<%= @nInvoices %>
+					</th>
+					<th>
+						<%= currency @totalInvoiced %>
+					</th>
+				</tr>
+				<% @customerData.each do |row| %>
+				<tr>
+					<td>
+						<%= row['email'] %>
+					</td>
+					<td>
+						<%= row['booked'] %>
+					</td>
+					<td>
+						<%= currency row['value'] %>
+					</td>
+					<td>
+						<%= row['invoices'] %>
+					</td>
+					<td>
+						<%= currency row['invoiced'] %>
+					</td>
+				</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
 </div>
 

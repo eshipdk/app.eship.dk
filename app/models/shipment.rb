@@ -34,7 +34,7 @@ class Shipment < ActiveRecord::Base
       id = pretty_id[1..-1].to_i
       return self.where(id: id)
     end
-    return self.where('cargoflux_shipment_id LIKE ?', "#{pretty_id}%")
+    return self.where('cargoflux_shipment_id LIKE ?', "%#{pretty_id}%")
   }
   
 

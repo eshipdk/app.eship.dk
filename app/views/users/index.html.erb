@@ -4,56 +4,58 @@
 	</span>
 	<div class='clearfix'></div>
 	</h1>
-  <%= will_paginate @users %> 
-  <%= display_pagination @users %>
-<div class="table-responsive">
+	
+<%= grid_before @users %>
 
   <table class='table table-striped'>
-    <tr>
-      <th>User</th>
-      <th>Role</th>
-      <th>Edit</th>
-      <th>Contacts</th>
-      <th>Products</th>
-      <th>Shipments</th>
-      <th>Billing</th>
-      <th>Import format</th>
-      <th>Delete</th>
-    </tr>
-    
-    <% @users.each do |user| %>
-    <tr>
-      <td><%= user.email %></td>
-      <td><%= user.role %></td>
-      <td>
-        <%= link_to 'Edit', edit_user_path(user) %>
-      </td>
-      <td>
-      	<%= link_to 'Change', edit_contact_address_user_path(user) %>
-      </td>
-      <td>
-        <%= link_to 'Products', edit_products_user_path(user) %>
-      </td>
-      <td>
-      	<%= link_to 'Shipments', shipments_user_path(user)%>
-      </td>
-      <td>
-      	<%= link_to 'Billing', user_billing_path(user) %>
-      </td>
-      <td>
-        <% if !user.import_format || !user.import_format.complete? %>
-        <span class='warning'>Format is malformed or incomplete.</span>
-        <% end %>
-        <%= link_to 'Edit format', edit_for_user_import_format_path(user) %>
-      </td>
-      <td>
-        <% if user != @current_user %>
-        <%= link_to 'Delete', user_path(user),
-              method: :delete,
-              data: { confirm: 'Are you sure?' } %>
-        <% end %>
-      </td>
-    </tr>
-    <% end %>
+  	<thead>
+	 	<tr>
+	      <th>User</th>
+	      <th>Role</th>
+	      <th>Edit</th>
+	      <th>Contacts</th>
+	      <th>Products</th>
+	      <th>Shipments</th>
+	      <th>Billing</th>
+	      <th>Import format</th>
+	      <th>Delete</th>
+	    </tr>
+  	</thead>
+   	<tbody>
+   		<% @users.each do |user| %>
+		    <tr>
+		      <td><%= user.email %></td>
+		      <td><%= user.role %></td>
+		      <td>
+		        <%= link_to 'Edit', edit_user_path(user) %>
+		      </td>
+		      <td>
+		      	<%= link_to 'Change', edit_contact_address_user_path(user) %>
+		      </td>
+		      <td>
+		        <%= link_to 'Products', edit_products_user_path(user) %>
+		      </td>
+		      <td>
+		      	<%= link_to 'Shipments', shipments_user_path(user)%>
+		      </td>
+		      <td>
+		      	<%= link_to 'Billing', user_billing_path(user) %>
+		      </td>
+		      <td>
+		        <% if !user.import_format || !user.import_format.complete? %>
+		        <span class='warning'>Format is malformed or incomplete.</span>
+		        <% end %>
+		        <%= link_to 'Edit format', edit_for_user_import_format_path(user) %>
+		      </td>
+		      <td>
+		        <% if user != @current_user %>
+		        <%= link_to 'Delete', user_path(user),
+		              method: :delete,
+		              data: { confirm: 'Are you sure?' } %>
+		        <% end %>
+		      </td>
+		    </tr>
+	    <% end %>
+   	</tbody>
   </table>
-</div>
+<%= grid_after @users %>

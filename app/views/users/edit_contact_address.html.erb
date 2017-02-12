@@ -1,10 +1,14 @@
-<h1 class='page-header'>Edit contact address for user: <%= @user.email %></h1>
+<h1 class='page-header'>Edit Contact Address for User: <%= @user.email %></h1>
 
 
 <%= form_for @address, :url => { :action => 'update_contact_address'} do |f| %>
 
-
-<%= render :partial => '/addresses/form_fields', :locals => {:f => f} %>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Address</div>
+	<div class='panel-body'>
+		<%= render :partial => '/addresses/form_fields', :locals => {:f => f} %>
+	</div>
+</div>
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
  

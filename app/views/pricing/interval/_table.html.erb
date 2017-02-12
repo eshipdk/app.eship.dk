@@ -8,47 +8,57 @@ if countries == []
 	<%
 else
 %>
-<table class='table table-striped'>
-	<tr>
-		<th>Country</th>
-		<th>Weight from (&lt;= weight)</th>
-		<th>Weight to (&gt; weight)</th>
-		<th>Value</th>
-		<th class="col-md-1"></th>
-	</tr>
-	<tbody id='matrix'>
-	<% i = 0 %>
-	<% (@scheme.rows.all.sort {|a,b| a.sort_value <=> b.sort_value}).each do |row| %>
-	<tr id='row-<%= i %>'>
-		<td>
-			<%= bscountry_select("pricing_scheme[rows_attributes][" + i.to_s + "]", "country_code", selected: row.s_country_code, only: countries)%>
-		</td>
-		<td>
-			<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'weight_from', :value => row.weight_from)%>
-		</td>
-		<td>
-			<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'weight_to', :value => row.weight_to)%>
-		</td>
-		<td>
-			<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'value', :value => row.value)%>
-		</td>
-		<td>
-			<button onclick='removeRow(<%= i.to_s %>)' type='button' class='btn btn-danger btn-block'>X</button>
-		</td>
-	</tr>
-	<% i+=1 %>
-	<% end %>
-	</tbody>
-	<tfoot>
-	<tr>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td><button onclick='addRow()' type='button' class='btn btn-primary btn-block'>Add</button></td>	
-	</tr>
-	</tfoot>
-</table>	
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Price Configuration
+	</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Country</th>
+					<th>Weight from (&lt;= weight)</th>
+					<th>Weight to (&gt; weight)</th>
+					<th>Value</th>
+					<th class="col-md-1"></th>
+				</tr>
+			</thead>
+			<tbody id='matrix'>
+			<% i = 0 %>
+			<% (@scheme.rows.all.sort {|a,b| a.sort_value <=> b.sort_value}).each do |row| %>
+			<tr id='row-<%= i %>'>
+				<td>
+					<%= bscountry_select("pricing_scheme[rows_attributes][" + i.to_s + "]", "country_code", selected: row.s_country_code, only: countries)%>
+				</td>
+				<td>
+					<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'weight_from', :value => row.weight_from)%>
+				</td>
+				<td>
+					<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'weight_to', :value => row.weight_to)%>
+				</td>
+				<td>
+					<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'value', :value => row.value)%>
+				</td>
+				<td>
+					<button onclick='removeRow(<%= i.to_s %>)' type='button' class='btn btn-danger btn-block'>X</button>
+				</td>
+			</tr>
+			<% i+=1 %>
+			<% end %>
+			</tbody>
+			<tfoot>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><button onclick='addRow()' type='button' class='btn btn-primary btn-block'>Add</button></td>	
+			</tr>
+			</tfoot>
+		</table>	
+
+	</div>
+</div>
 
 
 <table style='display:none'>

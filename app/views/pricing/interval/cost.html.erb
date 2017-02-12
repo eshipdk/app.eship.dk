@@ -1,23 +1,32 @@
 <h1 class='page-header'>Edit cost scheme (<%= @product.name %>)</h1>
 <%= form_for @scheme, :url => {:controller => 'products', :action => 'update_cost_scheme'} do |f| %>
-<h2 class='sub-header'>Pricing table</h2>
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>Diesel fee DK (%)</th>
-			<th>Diesel fee Inter (%)</th>
-		</tr>
-		<tr>
-			<td>
-				<%= bstxt_field('pricing_scheme', 'diesel_fee_dk', value: @scheme.get_diesel_fee_dk) %>
-			</td>
-			<td>
-				<%= bstxt_field('pricing_scheme', 'diesel_fee_inter', value: @scheme.get_diesel_fee_inter) %>
-			</td>
-		</tr>
-	</table>
-	<%= render 'pricing/interval/table' %>
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>Diesel Fees (Global Configuration)</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Diesel fee DK (%)</th>
+					<th>Diesel fee Inter (%)</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<%= bstxt_field('pricing_scheme', 'diesel_fee_dk', value: @scheme.get_diesel_fee_dk) %>
+					</td>
+					<td>
+						<%= bstxt_field('pricing_scheme', 'diesel_fee_inter', value: @scheme.get_diesel_fee_inter) %>
+					</td>
+				</tr>
+			</tbody>
+			
+		</table>
+	</div>
 </div>
+
+<%= render 'pricing/interval/table' %>
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 

@@ -4,8 +4,8 @@
 	</span>
 	<div class='clearfix'></div>
 	</h1>
-<%= will_paginate @products %>
-<div class='table-responsive'>
+
+<%= grid_before @products %>
 	<table class='table table-striped'>
 		<tr>
 			<th>Name</th>
@@ -24,4 +24,5 @@
 		</tr>
 		<% end %>
 	</table>
-</div>
+<%= grid_after @products %>
+	

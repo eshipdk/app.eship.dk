@@ -80,6 +80,23 @@ class AccountController < ApplicationController
     end
     redirect_to my_products_path
   end
+  
+  def invoice_download
+    invoice = Invoice.find params[:id]
+    if invoice.user != @current_user and not @current_user.admin?
+      redirect_to home_path
+    else
+      filename = "#{invoice.economic_id}.pdf"
+      path = Rails.root.join( 'invoices', filename )
+  
+      if File.exists?(path)
+        send_file( path, x_sendfile: true )
+      else
+        raise ActionController::RoutingError, "resource not found"
+      end
+    end
+  end
+  
 private
   def product_settings_params
     params.require(:user_product).permit(:default_length, :default_width, :default_height, :default_weight, :default_country)

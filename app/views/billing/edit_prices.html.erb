@@ -1,47 +1,55 @@
 <%= form_tag(user_update_prices_path(@user), id: 'price-form') do %>
-<h3>Pending shipments</h3>
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>ID</th><th>Product</th><th>Calculated Cost</th><th>Calculated Price</th><th>Adjusted Price</th>
-			<th>Calculated Diesel Fee</th><th>Adjusted Diesel Fee</th>
-		</tr>
-		<% @user.uninvoiced_shipments.each do |shipment| %>
-		<tr>
-			<td>
-				<%= link_to "#{shipment.pretty_id}", admin_shipment_path(shipment) %>
-			</td>
-			<td><%= shipment.product.name %></td>
-			<td>
-				<%= currency shipment.cost %>
-			</td>
-			<td>
-				<%= currency shipment.price %>
-			</td>
-			<td>
-				<%= bstxt_field('shipments[' + shipment.id.to_s + ']', 'price', value: shipment.final_price) %>
-			</td>
-			<td>
-				<%= currency shipment.diesel_fee %>
-			</td>
-			<td>
-				<%= bstxt_field('shipments[' + shipment.id.to_s + ']', 'diesel_fee', value: shipment.final_diesel_fee) %>
-			</td>
-		</tr>
-		<% end %>
-		<tfoot>
-			<tr>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td><button onclick='resetPrices()' type='button' class='btn btn-lg btn-default btn-block'>Reset prices</button></td>
-				<td><button type='submit' class='btn btn-lg btn-primary btn-block'>Update</button></td>
-			</tr>
-		</tfoot>
-	</table>
+<h3>Pending Shipments</h3>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Shipments</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>ID</th><th>Product</th><th>Calculated Cost</th><th>Calculated Price</th><th>Adjusted Price</th>
+					<th>Calculated Diesel Fee</th><th>Adjusted Diesel Fee</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @user.uninvoiced_shipments.each do |shipment| %>
+					<tr>
+						<td>
+							<%= link_to "#{shipment.pretty_id}", admin_shipment_path(shipment) %>
+						</td>
+						<td><%= shipment.product.name %></td>
+						<td>
+							<%= currency shipment.cost %>
+						</td>
+						<td>
+							<%= currency shipment.price %>
+						</td>
+						<td>
+							<%= bstxt_field('shipments[' + shipment.id.to_s + ']', 'price', value: shipment.final_price) %>
+						</td>
+						<td>
+							<%= currency shipment.diesel_fee %>
+						</td>
+						<td>
+							<%= bstxt_field('shipments[' + shipment.id.to_s + ']', 'diesel_fee', value: shipment.final_diesel_fee) %>
+						</td>
+					</tr>
+				<% end %>
+			</tbody>			
+			<tfoot>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><button onclick='resetPrices()' type='button' class='btn btn-lg btn-default btn-block'>Reset prices</button></td>
+					<td><button type='submit' class='btn btn-lg btn-primary btn-block'>Update</button></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 </div>
+
 <script type='text/javascript'>
 	function resetPrices(){
 		$('#price-form').find('[type=text]').each(

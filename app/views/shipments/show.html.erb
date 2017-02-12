@@ -169,6 +169,7 @@
 					<th>Adjusted Shipment Price</th>
 					<th>Calculated Diesel Fee</th>
 					<th>Adjusted Diesel Fee</th>
+					<th>Invoice</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -177,14 +178,18 @@
 					<td><%= currency @shipment.final_price %></td>
 					<td><%= currency @shipment.diesel_fee %></td>
 					<td><%= currency @shipment.final_diesel_fee %></td>
+					<td>
+						<% if @shipment.invoiced? %>
+							<%= link_to "#{@shipment.invoice.pretty_id}", my_invoices_show_path(@shipment.invoice) %>
+						<% else %>
+							Not invoiced
+						<% end %>
+					</td>
 				</tr>
 			</tbody>
 		</table>	
 	</div>	
 </div>	
-<div class='table-responsive'>
-	
-</div>
 <% end %>
  
 </div>

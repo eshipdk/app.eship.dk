@@ -64,4 +64,15 @@ end
     country.translations[I18n.locale.to_s] || country.name
   end
   
+  def grid_before models
+    render :partial => 'layouts/grid_before', :locals => {:models => models}
+  end
+
+  def grid_after models
+    render :partial => 'layouts/grid_after', :locals => {:models => models}
+  end
+  
+  def date_filter
+    render :partial => 'layouts/date_filter'
+  end
 end
