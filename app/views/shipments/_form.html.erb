@@ -15,61 +15,74 @@
 <div class='panel panel-default'>
 	<div class='panel-heading'>Product</div>
 	<div class='panel-body'>
-		<table class='table table-striped'>
-			<thead>
-				<tr>
-	 				<th>Product</th>
-	 				<th>Parcelshop id (if applicable)</th>
-	 				<th>Return service (if applicable)</th>
-	 				<th>Label action</th>
-	 			</tr>
-			</thead>
- 			<tbody>
- 				<tr>
-	 				<td>
-	 					<%= f.bssel :product_id, options_from_collection_for_select(@current_user.products, :id, :name, :selected => @shipment.product_id) %>
-	 				</td>
-	 				<td>
-	 					<%= f.bstxt_field :parcelshop_id %>
-	 				</td>
-	 				<td>
-	 					<%= f.bssel :return, options_for_select( [['No', 0], ['Yes', 1]], :selected => (@shipment.return ? 1 : 0) ) %>
-	 				</td>
-	 				<td>
-	 					<%= f.bssel :label_action, Shipment.label_action_options %>
-	 				</td>
-	 			</tr>
- 			</tbody>
-		</table>
-		<table class='table table-striped'>
-			<thead>
-				<tr>
-	 				<th>Delivery instructions</th>
-	 				<th>Remarks</th>
-	 				<th>Content Description</th>
-	 				<th>Reference</th>
-	 			</tr>
-			</thead>
- 			<tbody>
- 				<tr>
-	 				<td>
-	 					<%= f.bstxt_field :delivery_instructions %>
-	 				</td>
-	 				<td>
-	 					<%= f.bstxt_field :remarks %>
-	 				</td>
-	 				<td>
-	 					<%= f.bstxt_field :description %>
-	 				</td>
-	 				<td>
-	 					<%= f.bstxt_field :reference %>
-	 				</td>
-	 			</tr>
- 			</tbody>
- 		</table>
-	</div>
-</div>
-
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				Essentials
+			</div>
+			<div class='panel-body'>
+				<table class='table table-striped'>
+					<thead>
+						<tr>
+							<th>Product</th>
+							<th>Return Service</th>
+							<th>Label Action</th>
+							<th style="display:none;" id='parcelshop-th'>Parcelshop ID <a target="_blank" id="find-parcelshop-link">Find Parcelshop</a></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+			 					<%= f.bssel :product_id, options_from_collection_for_select(@current_user.products, :id, :name, :selected => @shipment.product_id) %>
+			 					<input type='hidden' name='shipment[parcelshop_id]' value='' />
+			 				</td>
+			 				<td>
+			 					<%= f.bssel :return, options_for_select( [['No', 0], ['Yes', 1]], :selected => (@shipment.return ? 1 : 0) ) %>
+			 				</td>
+			 				<td>
+			 					<%= f.bssel :label_action, Shipment.label_action_options %>
+			 				</td>
+			 				<td style="display:none;" id='parcelshop-td'>
+			 					<%= f.bstxt_field :parcelshop_id %>	
+			 				</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				Details
+			</div>
+			<div class='panel-body'>
+				<table class='table table-striped'>
+					<thead>
+						<tr>
+			 				<th>Delivery instructions</th>
+			 				<th>Remarks</th>
+			 				<th>Content Description</th>
+			 				<th>Reference</th>
+			 			</tr>
+					</thead>
+		 			<tbody>
+		 				<tr>
+			 				<td>
+			 					<%= f.bstxt_field :delivery_instructions %>
+			 				</td>
+			 				<td>
+			 					<%= f.bstxt_field :remarks %>
+			 				</td>
+			 				<td>
+			 					<%= f.bstxt_field :description %>
+			 				</td>
+			 				<td>
+			 					<%= f.bstxt_field :reference %>
+			 				</td>
+			 			</tr>
+		 			</tbody>
+		 		</table>
+			</div>
+		</div>
+		
 <div class='panel panel-default'>
 	<div class='panel-heading'>
 		Packages
@@ -121,6 +134,9 @@
 	</div>
 </div>
 
+	</div>
+</div>
+
 <div class='panel panel-default'>
 	<div class='panel-heading'>Addresses</div>
 	<div class='panel-body'>
@@ -166,21 +182,24 @@
 	}
 	
 	<%
-	default_values = {}
+	product_values = {}
 	current_user.user_products.each do |user_product|
-		default_values[user_product.product_id] = {
+		product_values[user_product.product_id] = {
 				:country => user_product.default_country,
 				:length => user_product.default_length,
 				:width => user_product.default_width,
 				:height => user_product.default_height,
-				:weight => user_product.default_weight
+				:weight => user_product.default_weight,
+				:parcelshops_enabled => user_product.product.has_parcelshops,
+				:find_parcelshop_url => user_product.product.find_parcelshop_url
 			 }
 	end
 	%>
-	var DEFAULT_VALUES = JSON.parse('<%= default_values.to_json.html_safe %>');
+	var PRODUCT_VALUES = JSON.parse('<%= product_values.to_json.html_safe %>');
+	
 
 	function setDestinationCountry(productId){
-		targetCountry = DEFAULT_VALUES[productId]['country'];
+		targetCountry = PRODUCT_VALUES[productId]['country'];
 		if(targetCountry == "") return;
 		
 		$('#recipient_country_code').children().filter(function() {
@@ -190,22 +209,41 @@
 	
 	function setPackageDimensions(productId){
 		while(removePackage());
-		$('#shipment_packages_attributes_0_length').val(DEFAULT_VALUES[productId]['length']);
-		$('#shipment_packages_attributes_0_width').val(DEFAULT_VALUES[productId]['width']);
-		$('#shipment_packages_attributes_0_height').val(DEFAULT_VALUES[productId]['height']);
-		$('#shipment_packages_attributes_0_weight').val(DEFAULT_VALUES[productId]['weight']);
+		$('#shipment_packages_attributes_0_length').val(PRODUCT_VALUES[productId]['length']);
+		$('#shipment_packages_attributes_0_width').val(PRODUCT_VALUES[productId]['width']);
+		$('#shipment_packages_attributes_0_height').val(PRODUCT_VALUES[productId]['height']);
+		$('#shipment_packages_attributes_0_weight').val(PRODUCT_VALUES[productId]['weight']);
+	}
+	
+	function setParcelshopStatus(productId){
+		if(PRODUCT_VALUES[productId]['parcelshops_enabled']){
+			$('#parcelshop-th').show();
+			$('#parcelshop-td').show();
+			$('#find-parcelshop-link').attr('href', PRODUCT_VALUES[productId]['find_parcelshop_url']);
+		}else{
+			$('#parcelshop-th').hide();
+			$('#shipment_parcelshop_id').val('');
+			$('#parcelshop-td').hide();
+			
+		}
+	}
+	
+	function productSelectUpdate(productId){
+		setDestinationCountry(productId);
+		setPackageDimensions(productId);
+		setParcelshopStatus(productId);
 	}
 	
 	$('#shipment_product_id').on('change', function(){		
-		setDestinationCountry(this.value);
-		setPackageDimensions(this.value);
+		productSelectUpdate(this.value);
 	});
 	
 	$(document).ready(function(){
 		destCountrySelector = $('#recipient_country_code');
 		if(destCountrySelector.val() == ""){ //Only set default values if this is a new shipment
-			setDestinationCountry($('#shipment_product_id').val());
-			setPackageDimensions($('#shipment_product_id').val());
+			productSelectUpdate($('#shipment_product_id').val());
+		}else{
+			setParcelshopStatus($('#shipment_product_id').val());
 		}
 	});
 	
