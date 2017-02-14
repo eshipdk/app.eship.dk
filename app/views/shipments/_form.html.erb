@@ -24,8 +24,13 @@
 					<thead>
 						<tr>
 							<th>Product</th>
-							<th>Return Service</th>
-							<th>Label Action</th>
+							<th>Return Service <div class='tip' data-toggle='tooltip' 
+								title='If you are in the receiving end of a shipment then it is most likely a return service.
+										E.g. if a customer is returning damaged goods. Note that sender/recipient addresses are
+										not reversed and that your address should thus be assigned as recipient below.'></th>
+							<th>Label Action<div class='tip' data-toggle='tooltip'
+								title="How to handle the shipping label.
+								[Print]: Automatically send the label to the printing service. [Email]: Automatically send the label by email to the sender."></div></th>
 							<th style="display:none;" id='parcelshop-th'>Parcelshop ID <a target="_blank" id="find-parcelshop-link">Find Parcelshop</a></th>
 						</tr>
 					</thead>
@@ -42,7 +47,7 @@
 			 					<%= f.bssel :label_action, Shipment.label_action_options %>
 			 				</td>
 			 				<td style="display:none;" id='parcelshop-td'>
-			 					<%= f.bstxt_field :parcelshop_id %>	
+			 					<%= f.bstxt_field :parcelshop_id, {placeholder: 'OPTIONAL: Leave blank to use closest'} %>	
 			 				</td>
 						</tr>
 					</tbody>
@@ -57,10 +62,14 @@
 				<table class='table table-striped'>
 					<thead>
 						<tr>
-			 				<th>Delivery instructions</th>
-			 				<th>Remarks</th>
-			 				<th>Content Description</th>
-			 				<th>Reference</th>
+			 				<th>Delivery Instructions <div class='tip' data-toggle="tooltip"
+			 					title='Instructions pertaining to the delivery. E.g. "Please do [not] leave the package if I am not home."'></div></th>
+			 				<th>Content Description<div class='tip' data-toggle='tooltip'
+			 					title='Description of the package content. E.g. "Contains fragile electronics. Handle with care."'></div></th>
+			 				<th>Remarks <div class='tip' data-toggle='tooltip'
+			 					title='Other remarks that do not belong in the previous categories.'></div></th>
+			 				<th>Reference<div class='tip' data-toggle='tooltip'
+			 					title='Your reference for future queries. E.g. relevant order number.'></div></th>
 			 			</tr>
 					</thead>
 		 			<tbody>
@@ -69,10 +78,10 @@
 			 					<%= f.bstxt_field :delivery_instructions %>
 			 				</td>
 			 				<td>
-			 					<%= f.bstxt_field :remarks %>
+			 					<%= f.bstxt_field :description %>
 			 				</td>
 			 				<td>
-			 					<%= f.bstxt_field :description %>
+			 					<%= f.bstxt_field :remarks %>
 			 				</td>
 			 				<td>
 			 					<%= f.bstxt_field :reference %>

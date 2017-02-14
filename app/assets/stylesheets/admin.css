@@ -254,3 +254,13 @@ table button.btn{
 .img-link.tools {
 	background-image: url(/images/icons/settings-5.png);
 }
+
+.tip {
+	background-image: url(/images/icons/info.png);
+    background-size: 21px;
+    background-repeat: no-repeat;
+    width: 21px;
+    height: 21px;
+    float: right;
+    cursor: pointer;
+}
