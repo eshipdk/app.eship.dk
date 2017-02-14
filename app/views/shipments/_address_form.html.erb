@@ -26,7 +26,9 @@
 			<%= bstxt_field(prefix, :company_name, :value => address.company_name) %>
 		</div>
 	 	<div class='form-group'>
-			<label>Attention</label>
+			<label>Attention <span style='display:none' class='required' id='label-attention-<%= prefix %>'>*
+					<span class='tip' data-toggle='tooltip'
+						title='When using products that send to parcelshops the Attention field should contain the name of the actual recipient while the Company field should contain the name of the parcelshop.'></span></label>
 			<%= bstxt_field(prefix, :attention, :value => address.attention) %>
 		</div>
 		<div class='form-group'>

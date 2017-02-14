@@ -230,11 +230,12 @@
 			$('#parcelshop-th').show();
 			$('#parcelshop-td').show();
 			$('#find-parcelshop-link').attr('href', PRODUCT_VALUES[productId]['find_parcelshop_url']);
+			$('#label-attention-recipient').show();
 		}else{
 			$('#parcelshop-th').hide();
 			$('#shipment_parcelshop_id').val('');
 			$('#parcelshop-td').hide();
-			
+			$('#label-attention-recipient').hide();
 		}
 	}
 	
