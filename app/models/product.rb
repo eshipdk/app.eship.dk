@@ -55,6 +55,10 @@ class Product < ActiveRecord::Base
     new_scheme.save
   end
   
+  def available_countries user
+    price_scheme(user).available_countries
+  end
+  
   #Defines which class to model the pricing scheme based on the product code.
   def pricing_scheme_class 
     case product_code

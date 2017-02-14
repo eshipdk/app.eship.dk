@@ -200,7 +200,8 @@
 				:height => user_product.default_height,
 				:weight => user_product.default_weight,
 				:parcelshops_enabled => user_product.product.has_parcelshops,
-				:find_parcelshop_url => user_product.product.find_parcelshop_url
+				:find_parcelshop_url => user_product.product.find_parcelshop_url,
+				:available_countries => user_product.product.available_countries(current_user)
 			 }
 	end
 	%>
@@ -237,10 +238,17 @@
 		}
 	}
 	
+	function setAvailableCountries(productId){
+		$('#recipient_country_code').find('option').each(function(){
+			$(this).toggleOption($.inArray($(this).val(), PRODUCT_VALUES[productId]['available_countries']) > -1);
+		});
+	}
+	
 	function productSelectUpdate(productId){
 		setDestinationCountry(productId);
 		setPackageDimensions(productId);
 		setParcelshopStatus(productId);
+		setAvailableCountries(productId);
 	}
 	
 	$('#shipment_product_id').on('change', function(){		
@@ -253,6 +261,7 @@
 			productSelectUpdate($('#shipment_product_id').val());
 		}else{
 			setParcelshopStatus($('#shipment_product_id').val());
+			setAvailableCountries($('#shipment_product_id').val());
 		}
 	});
 	

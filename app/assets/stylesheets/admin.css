@@ -264,3 +264,9 @@ table button.btn{
     float: right;
     cursor: pointer;
 }
+
+.required {
+	color: red;
+	font-size: 21px;
+	line-height: 0;
+}
