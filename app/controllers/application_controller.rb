@@ -13,6 +13,12 @@ class ApplicationController < ActionController::Base
 
   protected
   def authenticate_user
+
+    #temporary measure until non-ssl can be removed completely
+    if Rails.env == 'production' and request.protocol != 'https://'
+      redirect_to 'https://app.eship.dk/'
+    end
+    
     if session[:user_id]
       # set current user object to @current_user object variable
       @current_user = User.find session[:user_id]

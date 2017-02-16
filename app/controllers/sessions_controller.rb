@@ -5,6 +5,11 @@ class SessionsController < ApplicationController
   before_filter :save_login_state, :only => [:index, :login_attempt]
 
   def index
+    #temporary measure until non-ssl can be removed completely
+    if Rails.env == 'production' and request.protocol != 'https://'
+      redirect_to 'https://app.eship.dk/'
+      return
+    end
     render 'login'
   end
 
