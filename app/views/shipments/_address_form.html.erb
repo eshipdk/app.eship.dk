@@ -23,7 +23,7 @@
 		</div>
 		<div class='form-group'>
 			<label>Company / Recipient Name <span class='required'>*</span></label>
-			<%= bstxt_field(prefix, :company_name, :value => address.company_name) %>
+			<%= bstxt_field(prefix, :company_name, :value => address.company_name, :required => true) %>
 		</div>
 	 	<div class='form-group'>
 			<label>Attention <span style='display:none' class='required' id='label-attention-<%= prefix %>'>*
@@ -33,7 +33,7 @@
 		</div>
 		<div class='form-group'>
 			<label>Address Line 1 <span class='required'>*</span></label>
-			<%= bstxt_field(prefix, :address_line1, :value => address.address_line1) %>
+			<%= bstxt_field(prefix, :address_line1, :value => address.address_line1, :required => true) %>
 		</div>
 		<div class='form-group'>
 			<label>Address Line 2</label>
@@ -41,15 +41,15 @@
 		</div>
 		<div class='form-group'>
 			<label>Zip Code <span class='required'>*</span></label>
-			<%= bstxt_field(prefix, :zip_code, :value => address.zip_code) %>
+			<%= bstxt_field(prefix, :zip_code, :value => address.zip_code, :required => true) %>
 		</div>
 		<div class='form-group'>
 			<label>City <span class='required'>*</span></label>
-			<%= bstxt_field(prefix, :city, :value => address.city) %>
+			<%= bstxt_field(prefix, :city, :value => address.city, :required => true) %>
 		</div>
 		<div class='form-group'>
 			<label>Country <span class='required'>*</span></label>
-			<%= bscountry_select(prefix, 'country_code', selected: address.country_code)%>
+			<%= bscountry_select(prefix, 'country_code', selected: address.country_code, :required => true)%>
 		</div>
 		<div class='form-group'>
 			<label>Phone</label>
@@ -57,7 +57,7 @@
 		</div>
 		<div class='form-group'>
 			<label>Email <span class='required'>*</span></label>
-			<%= bstxt_field(prefix, :email, :value => address.email) %>
+			<%= bstxt_field(prefix, :email, :value => address.email, :required => true) %>
 		</div>
 	</div>
 </div>

@@ -231,11 +231,13 @@
 			$('#parcelshop-td').show();
 			$('#find-parcelshop-link').attr('href', PRODUCT_VALUES[productId]['find_parcelshop_url']);
 			$('#label-attention-recipient').show();
+			$('#recipient_attention').attr('required', true);
 		}else{
 			$('#parcelshop-th').hide();
 			$('#shipment_parcelshop_id').val('');
 			$('#parcelshop-td').hide();
 			$('#label-attention-recipient').hide();
+			$('#recipient_attention').attr('required', false);
 		}
 	}
 	
