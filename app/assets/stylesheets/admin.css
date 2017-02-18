@@ -192,6 +192,7 @@ table button.btn{
 	background-position: right;
 	background-size: 26px;
 	font-size: 12px;
+	display: inline;
 }
 
 

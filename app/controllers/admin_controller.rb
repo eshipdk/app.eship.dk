@@ -1,9 +1,13 @@
+include Reporting
 class AdminController < ApplicationController
   before_filter :authenticate_admin
   before_filter :filter_dates, :only => :dashboard
 
   def dashboard
     
+    @report = Reporting.generate_booking_report(@dateFrom, @dateTo)
+    
+    return
     customers = User.customer
     #customers = User.all
     @customerData = []
