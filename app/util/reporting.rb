@@ -30,8 +30,9 @@ module Reporting
     
     data = Shipment.group([group_by, 'shipping_state > 1'])
             .where('created_at >= DATE(?)', from)
-            .where('created_at <= DATE(?)', to)
+            .where('created_at < DATE(?) + 1', to)
             .count
+
     res = {}
     date = from
     while date <= to
