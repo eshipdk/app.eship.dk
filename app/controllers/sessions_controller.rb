@@ -14,7 +14,11 @@ class SessionsController < ApplicationController
   end
 
   def home
-    redirect_to '/shipments'
+    if User.find(session[:user_id]).admin?
+      redirect_to '/admin/dashboard'
+    else
+      redirect_to '/shipments'
+    end
   end
 
   def login_attempt
@@ -22,7 +26,7 @@ class SessionsController < ApplicationController
     if authorized_user
       session[:user_id] = authorized_user.id
       flash[:notice] = "Wow Welcome again, you logged in as #{authorized_user.email}"
-      redirect_to '/shipments'
+      redirect_to '/'
     else
       flash[:notice] = "Invalid email or password"
       flash[:color]= "invalid"
