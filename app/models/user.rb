@@ -73,9 +73,7 @@ class User < ActiveRecord::Base
   end
 
   def name
-    if economic_customer_id
-      economic_customer_name
-    elsif contact_address.company
+    if contact_address.company
       contact_address.company
     else
       email

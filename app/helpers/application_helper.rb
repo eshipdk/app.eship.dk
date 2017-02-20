@@ -45,7 +45,11 @@ end
   end
   
   def currency value, currency = ' kr.', round_to = 2
-    "<span class='currency-value'>#{number_with_precision(value, :precision => round_to).gsub('.', ',')}#{currency}</span>".html_safe
+    if value
+      "<span class='currency-value'>#{number_with_precision(value, :precision => round_to).gsub('.', ',')}#{currency}</span>".html_safe
+    else
+      ''
+    end
   end
   
   def percent value, round_to = 2

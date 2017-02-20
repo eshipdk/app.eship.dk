@@ -13,7 +13,7 @@
 			<tbody>
 				<% @users.each do |user| %>
 				<tr>
-					<td><%= user.name %></td>
+					<td><%= link_to user.name, user_path(user) %></td>
 					<td><%= print_date user.last_invoice_date %></td>
 					<td><%= user.n_uninvoiced_shipments %></td>
 					<td><%= link_to 'Billing', user_billing_path(user) %></td>
