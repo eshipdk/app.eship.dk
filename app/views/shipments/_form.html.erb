@@ -27,7 +27,9 @@
 							<th>Return Service <div class='tip' data-toggle='tooltip' 
 								title='If you are in the receiving end of a shipment then it is most likely a return service.
 										E.g. if a customer is returning damaged goods. Note that sender/recipient addresses are
-										not reversed and that your address should thus be assigned as recipient below.'></th>
+										not reversed and that your address should thus be assigned as recipient below.
+										The option BOTH will generate a normal booking from sender to recipient and a
+										return booking from recipient to sender.'></th>
 							<th>Label Action<div class='tip' data-toggle='tooltip'
 								title="How to handle the shipping label.
 								[Print]: Automatically send the label to the printing service. [Email]: Automatically send the label by email to the sender."></div></th>
@@ -41,7 +43,7 @@
 			 					<input type='hidden' name='shipment[parcelshop_id]' value='' />
 			 				</td>
 			 				<td>
-			 					<%= f.bssel :return, options_for_select( [['No', 0], ['Yes', 1]], :selected => (@shipment.return ? 1 : 0) ) %>
+			 					<%= f.bssel :return, options_for_select( [['No', 0], ['Yes', 1], ['Both', :both]], :selected => (@shipment.return ? 1 : 0) ) %>
 			 				</td>
 			 				<td>
 			 					<%= f.bssel :label_action, Shipment.label_action_options %>

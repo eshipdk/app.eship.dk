@@ -19,28 +19,25 @@
   
 <div class='panel panel-default'>
 	<div class='panel-heading'>
-		Product
-	</div>
+		Status
+	</div>	
 	<div class='panel-body'>
 		<table class='table table-striped'>
 			<thead>
 		 		<tr>
-			      <th>ID</th>
-			      <th>Booking state</th>
-			      <th>Shipping state</th>
-			      <th>Invoiced</th>
-			      <th>Timestamp</th>
-			      <th>Product</th>
-			      <th>Parcelshop id</th>
-			      <th>AWB</th>
-			      <th>Document</th>
-			   	  <th>Label action</th>
-			      <th>Action</th>
-			    </tr>
-			</thead>
-		   	<tbody>
-   		 		<tr>
-		    		<td>#<%= @shipment.pretty_id %></td>
+		 			<th>ID</th>
+		 			<th>Booking State</th>
+		 			<th>Shipping State</th>
+		 			<th>Invoiced</th>
+		 			<th>Timestamp</th>
+		 			<th>AWB</th>
+		 			<th>Document</th>
+		 			<th>Label Action</th>
+		 		</tr>	
+ 			</thead>
+ 			<tbody>
+ 				<tr>
+ 					<td>#<%= @shipment.pretty_id %></td>
 			      	<td><%= @shipment.status.capitalize %></td>
 			      	<td><%= @shipment.shipping_state.capitalize %></td>
 			      	<td><%= @shipment.invoiced ? "Yes" : "No" %></td>
@@ -48,8 +45,13 @@
 			      		<script type='text/javascript'>var autoReload = true;</script>
 			      	<% end %>
 			      	<td><%= @shipment.created_at %></td>
-			      	<td><%= @shipment.product.name %></td>
-			      	<td><%= @shipment.parcelshop_id %></td>
+			      	<td>
+			        	<% if @shipment.can_print %>
+			        		<%= link_to "Download label", @shipment.document_url, :target => '_blank' %>
+			        	<% else %>
+			        		-
+			        	<% end %>
+			      	</td>
 			      	<td>
 			        	<% if @shipment.can_print %>
 			        		<%= link_to @shipment.awb, @shipment.tracking_url, :target => '_blank' %>
@@ -58,14 +60,7 @@
 			        	<% end %>
 			      	</td>
 			      	<td>
-			        	<% if @shipment.can_print %>
-			        		<%= link_to "Download label", @shipment.document_url, :target => '_blank' %>
-			        	<% else %>
-			        		-
-			        	<% end %>
-			      	</td>
-			      	<td><%= @shipment.label_action_title %></td>
-			      	<td>
+			      		<%= @shipment.label_action_title %>(
 				        <% if @shipment.can_print %>
 				        	<% if @shipment.label_action == 'print' %>
 					        	<% if @shipment.recent_label_pending? %>
@@ -80,7 +75,34 @@
 				        <% else %>
 				        -
 				        <% end %>
+				        )
 			      	</td>	
+ 				</tr>
+ 			</tbody>
+ 		</table>	
+	</div>	
+</div>
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Product
+	</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+		 		<tr>
+			      <th>Product</th>
+			      <th>Return Service</th>
+			      <th>Parcelshop id</th>
+			    </tr>
+			</thead>
+		   	<tbody>
+   		 		<tr>
+		    		
+			      	<td><%= @shipment.product.name %></td>
+			      	<td><%= @shipment.return ? 'Yes' : 'No' %></td>
+			      	<td><%= @shipment.parcelshop_id %></td>
+			  
+			      	
 		    	</tr>
 		   	</tbody>
 	  </table>
@@ -104,6 +126,7 @@
 	  </table>
 	</div>
 </div>
+
 <div class='panel panel-default'>
 	<div class='panel-heading'>
 		Packages

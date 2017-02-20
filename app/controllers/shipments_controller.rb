@@ -87,11 +87,13 @@ class ShipmentsController < ApplicationController
     @shipment.recipient_address_id = recipient.id
     @shipment.user_id = @current_user.id
     
-    
 
     if @shipment.save
       if @shipment.price_configured?
         Cargoflux.submit @shipment
+        if shipment_params['return'] == 'both'
+          book_return_shipment @shipment
+        end    
         redirect_to :action => 'index'
       else
         @shipment.status = 'failed'
@@ -146,6 +148,9 @@ class ShipmentsController < ApplicationController
     
     if shipment.price_configured?
       Cargoflux.submit shipment
+      if shipment_params['return'] == 'both'
+        book_return_shipment shipment
+      end    
     else
       shipment.status = 'failed'
       shipment.save
@@ -238,6 +243,28 @@ class ShipmentsController < ApplicationController
                                   :address_line2,:zip_code,
                                   :city, :phone_number,
                                   :email, :country_code)
+  end
+  
+  # Make an identical booking with return service
+  # and the addresses reversed
+  def book_return_shipment original_shipment
+    shipment = original_shipment.dup
+    shipment.status = :initiated
+    shipment.cargoflux_shipment_id = nil
+    # Reverse addresses
+    shipment.recipient = original_shipment.sender
+    shipment.sender = original_shipment.recipient
+    
+    shipment.return = true
+    
+    packages = []
+    original_shipment.packages.each do |package|
+      packages.append package.dup
+    end
+    shipment.packages = packages
+    
+    shipment.save
+    Cargoflux.submit shipment
   end
 
 end
