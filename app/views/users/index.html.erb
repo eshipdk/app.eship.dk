@@ -11,6 +11,7 @@
   	<thead>
 	 	<tr>
 	      <th>User</th>
+	      <th>Email</th>
 	      <th>Role</th>
 	      <th>Delete</th>
 	    </tr>
@@ -20,6 +21,7 @@
 		    <tr>
 		      <td><%= link_to user.name, user_path(user) %></td>
 		      <td><%= user.role %></td>
+		      <td><%= user.email %></td>
 		      <td>
 		        <% if user != @current_user %>
 		        <%= link_to 'Delete', user_path(user),
