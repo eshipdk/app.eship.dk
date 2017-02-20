@@ -1,4 +1,5 @@
 include Reporting
+require 'csv'
 class AdminController < ApplicationController
   before_filter :authenticate_admin
   before_filter :filter_dates, :only => :dashboard
@@ -62,8 +63,12 @@ class AdminController < ApplicationController
     
     ids = []
     lines.each do |line|
-      ids << line[0]
+      id = line[0]
+      if id
+        ids << line[0]
+      end
     end
+
     
     all_shipments = Shipment.where(:cargoflux_shipment_id => ids)
     known_ids = all_shipments.map{|s| s.cargoflux_shipment_id}
