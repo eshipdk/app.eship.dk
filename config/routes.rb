@@ -118,6 +118,10 @@ Rails.application.routes.draw do
   post 'admin/tools/update_shipping_states', to: 'admin#update_shipping_states', as: 'admin_update_shipping_states'
   post 'admin/tools/automatic_invoicing', to: 'admin#automatic_invoicing', as: 'admin_automatic_invoicing'
   post 'admin/tools/fetch_economic_data', to: 'admin#fetch_economic_data', as: 'admin_economic_fetch'
+  
+  
+  #Affiliate
+  get 'affiliate/dashboard', to: 'affiliate#dashboard', as: 'affiliate_dashboard'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

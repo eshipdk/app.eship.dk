@@ -20,6 +20,11 @@ module Economic
     customers['collection']
   end
   
+  def get_customer_name id
+    customer = get(BASE_ENDPOINT + "customers/#{id}")
+    customer['name']
+  end
+  
   
   def submit_invoice invoice
     match(invoice_payload(invoice)) do

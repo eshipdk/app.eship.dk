@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   validates :password, :confirmation => true #password_confirmation attr
   validates_length_of :password, :in => 6..20, :on => :create
   validates_length_of :password, :in => 6..20, :on => :update, :if => :password
-  enum role: [:admin, :customer]
+  enum role: [:admin, :customer, :affiliate]
   enum billing_type: [:free, :flat_price, :advanced] #flat_price: Pays a flat fee per label ordered. advanced: use pricing schemes per product
   enum billing_control: [:manual, :by_time, :by_balance]
   enum payment_method: [:bank_transfer, :epay]
@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
   has_many :pricing_schemes, :dependent => :destroy
   has_one :import_format, :dependent => :destroy
   has_one :user_setting,  :dependent => :destroy
+  has_one :affiliate_user, :class_name => 'User', :foreign_key => 'affiliate_id'
   belongs_to :default_address, :class_name => 'Address' , :foreign_key => 'address_id'
   belongs_to :contact_address, :class_name => 'Address', :foreign_key => 'contact_address_id'
 
@@ -49,11 +50,11 @@ class User < ActiveRecord::Base
   end
 
   def roles
-    [["Admin", :admin], ["Customer", :customer]]
+    [["Admin", :admin], ["Customer", :customer], ['Affiliate', :affiliate]]
   end
   
   def self.role_options
-    {'Admin' => :admin, 'Customer' => :customer}
+    {'Admin' => :admin, 'Customer' => :customer, 'Affiliate' => :affiliate}
   end
   
   def self.billing_type_options
@@ -68,6 +69,24 @@ class User < ActiveRecord::Base
         'Flat price'
     when 'advanced'
         'Advanced'
+    end
+  end
+
+  def name
+    if economic_customer_id
+      economic_customer_name
+    elsif contact_address.company
+      contact_address.company
+    else
+      email
+    end
+  end
+  
+  def economic_customer_name
+    if economic_customer_id
+       Economic.get_customer_name economic_customer_id   
+    else
+      'None'  
     end
   end
 
@@ -332,6 +351,21 @@ class User < ActiveRecord::Base
     end
     s
   end
+  
+  def self.get_affiliate_user_options
+    h = {'None' => nil}
+    User.affiliate.each{|x| h[x.name] = x.id}
+    return h
+  end
+  
+  
+  # BEGIN AFFILIATE
+  
+  def affiliated_users
+    User.where(affiliate_user: self)
+  end
+  
+  # END AFFILIATE
 
   private
 

@@ -14,8 +14,11 @@ class SessionsController < ApplicationController
   end
 
   def home
-    if User.find(session[:user_id]).admin?
+    user = User.find(session[:user_id])
+    if user.admin?
       redirect_to '/admin/dashboard'
+    elsif user.affiliate?
+      redirect_to '/affiliate/dashboard'
     else
       redirect_to '/shipments'
     end

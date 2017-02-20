@@ -29,8 +29,9 @@ class ApplicationController < ActionController::Base
       return false
     end
   end
+  
   def authenticate_admin
-    user_authenticated = authenticate_user;
+    user_authenticated = authenticate_user
     if user_authenticated  and not @current_user.role=='admin'
       redirect_to home_path
       return false
@@ -41,6 +42,16 @@ class ApplicationController < ActionController::Base
     end
       return user_authenticated
   end
+  
+  def authenticate_affiliate
+    user_authenticated = authenticate_user
+    if user_authenticated and not ['admin', 'affiliate'].include? @current_user.role
+      redirect_to home_path
+      return false
+    end
+    return user_authenticated
+  end
+  
   def save_login_state
     if session[:user_id]
       redirect_to(:controller => 'sessions', :action => 'home')

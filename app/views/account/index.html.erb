@@ -7,22 +7,26 @@
 			<thead>
 				<tr>
 					<th>Account email</th>
+					<% if !current_user.affiliate? %>
 					<th>eShip API key</th>
 					<th>Cargoflux API key</th>
+					<% end %>
 					<th>Password</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td>
-						<%= @current_user.email %>
+						<%= @current_user.name %>
 					</td>
+					<% if !current_user.affiliate? %>
 					<td>
 						<input class='form-control' type='text' disabled value="<%= @current_user.eship_api_key %>"/>
 					</td>
 					<td>
 						<input clasS='form-control' type='text' disabled value="<%= @current_user.cargoflux_api_key %>"/>
 					</td>
+					<% end %>
 					<td>
 						<%= link_to "Change password", change_password_path %>
 					</td>
@@ -39,6 +43,8 @@
 	</div>
 </div>
 
+
+<% if !current_user.affiliate? %>
 <div class='panel panel-default'>
 	<div class='panel-heading'>Payment Information</div>
 	<div class='panel-body'>
@@ -61,4 +67,5 @@
 		</table>
 	</div>
 </div>
+<% end %>
 

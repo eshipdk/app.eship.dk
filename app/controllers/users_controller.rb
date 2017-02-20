@@ -13,11 +13,13 @@ class UsersController < ApplicationController
 
   def new
     @economic_customers = Economic.get_customer_options
+    @affiliate_users = User.get_affiliate_user_options
     @user = User.new
   end
 
   def edit
     @economic_customers = Economic.get_customer_options
+    @affiliate_users = User.get_affiliate_user_options
     @user = User.find(params[:id])
   end
 
@@ -46,7 +48,7 @@ class UsersController < ApplicationController
       params.delete :password_confirmation
     end
     if @user.update(params)
-      redirect_to :action => 'index'
+      redirect_to user_path(@user)
     else
       render 'edit'
     end
@@ -82,7 +84,7 @@ class UsersController < ApplicationController
     address.update address_params
     address.save
     
-    redirect_to :action => :index
+    redirect_to user_path(user)
   end
 
   def add_product
@@ -135,16 +137,17 @@ class UsersController < ApplicationController
     user.save
     render :text => 'ok'
   end
+  
 
   private
 
   def user_params
-    params.require(:user).permit(:email,:cargoflux_api_key,
+    p = params.require(:user).permit(:email,:cargoflux_api_key,
                                    :password,:password_confirmation,
                                    :role,:billing_type,:unit_price,
                                    :economic_customer_id, :billing_control,
                                    :invoice_x_days, :invoice_x_balance,
-                                   :payment_method)
+                                   :payment_method, :affiliate_id)
   end
     
   def address_params

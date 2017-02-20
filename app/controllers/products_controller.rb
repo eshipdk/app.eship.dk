@@ -96,7 +96,7 @@ class ProductsController < ApplicationController
     product = Product.find params[:product_id]
     user = User.find params[:id]
     if not user.holds_product product
-      flash[:error] = 'User ' + user.email + ' can not access product ' + product.name
+      flash[:error] = 'User ' + user.name + ' can not access product ' + product.name
       redirect_to :action => :index
       return
     end
@@ -114,7 +114,7 @@ class ProductsController < ApplicationController
     @product = Product.find params[:product_id]
     @user = User.find params[:id]
     if not @user.holds_product @product
-      flash[:error] = 'User ' + @user.email + ' can not access product ' + @product.name
+      flash[:error] = 'User ' + @user.name + ' can not access product ' + @product.name
       redirect_to :action => :index
       return
     end
@@ -133,7 +133,7 @@ class ProductsController < ApplicationController
       @product = Product.find params[:product_id]
       @user = User.find params[:id]
       if not @user.holds_product @product
-        flash[:error] = 'User ' + @user.email + ' can not access product ' + @product.name
+        flash[:error] = 'User ' + @user.name + ' can not access product ' + @product.name
         redirect_to :action => :index
         return
       end

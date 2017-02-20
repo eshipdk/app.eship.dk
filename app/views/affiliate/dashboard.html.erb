@@ -1,0 +1,23 @@
+<h1 class='page-header'>Dashboard</h1>
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Affiliated Users
+	</div>
+	<div class='panel-body'>
+		<table class='panel panel-striped'>
+			<thead>
+				<tr>
+					<th>User</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% current_user.affiliated_users.each do |user| %>
+				<tr>
+					<td><%= user.name %></td>
+				</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+</div>

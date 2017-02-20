@@ -1,0 +1,184 @@
+<h1 class='page-header'><%= @user.name %> (<%= @user.role %>)</h1>
+
+<% if !@user.affiliate? %>
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Billing
+		<span class='pull-right'>
+			<a href='<%= url_for user_billing_path(@user) %>' class='btn btn-default' role='button'>Go To Billing</a>			
+		</span>
+	</div>
+</div>
+
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Shippings
+		<span class='pull-right'>
+			<a href='<%= url_for shipments_user_path(@user) %>' class='btn btn-default' role='button'>Go To Shipments</a>			
+		</span>
+	</div>
+</div>
+<% end %>
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		User Account
+		<span class='pull-right'>
+			<a href='javascript:void(0);' type="button" class="btn btn-default" data-toggle="collapse" 
+			data-target="#settings">
+				Toggle</a>	
+		</span>
+	</div>
+	<div class='panel-body collapse' id='settings'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				Profile
+				<span class='pull-right'>
+					<a href='javascript:void(0);' type="button" class="btn btn-default" data-toggle="collapse" data-target="#profile">
+						Toggle</a>
+					<a href='<%= url_for edit_user_path(@user) %>' class='btn btn-default' role='button'>Edit</a>			
+				</span>
+			</div>
+			<div class='panel-body collapse' id='profile'>
+				<table class='table table-striped'>
+					<thead>
+						<tr>
+							<th>Email</th>
+							<th>Role</th>
+							<th>Cargoflux API Key</th>
+							<th>eShip API Key</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><%= @user.email %></td>
+							<td><%= @user.role %></td>
+							<td><%= @user.cargoflux_api_key %></td>
+							<td><%= @user.eship_api_key %></td>
+						</tr>
+					</tbody>
+				</table>
+				<table class='table table-striped'>
+					<thead>
+						<tr>
+							<th>E-conomic User</th>
+							<th>Affiliate</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<%= @user.economic_customer_name %>
+							</td>
+							<td>
+								<% if @user.affiliate_user %>
+								<%= @user.affiliate_user.name %>
+								<% else %>
+								Not affiliated
+								<% end %>	
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				Contact Address
+				<span class='pull-right'>
+					<a href='javascript:void(0);' type="button" class="btn btn-default" 
+					data-toggle="collapse" data-target="#contact">
+						Toggle</a>
+					<a href='<%= url_for edit_contact_address_user_path(@user) %>' class='btn btn-default' role='button'>Edit</a>			
+				</span>
+			</div>
+			<div class='panel-body collapse' id='contact'>
+				<%= render :partial => 'addresses/display', :locals => {:address => @user.contact_address}%>
+			</div>
+		</div>
+		
+		<% if !@user.affiliate? %>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				Billing Configuration
+				<span class='pull-right'>
+					<a href='javascript:void(0);' type="button" class="btn btn-default" 
+					data-toggle="collapse" data-target="#billing_settings">
+						Toggle</a>
+					<a href='<%= url_for edit_user_path(@user) %>' class='btn btn-default' role='button'>Edit</a>			
+				</span>
+			</div>
+			<div class='panel-body collapse' id='billing_settings'>
+				<table class='table table-striped'>
+					<thead>
+						<tr>
+							<th>Billing Type</th>
+							<th>Billing Control</th>
+							<th>Unit Price (for flat pricing)</th>
+							<th>Payment Method</th>
+							<th>epay Subscription ID</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><%= @user.billing_type%></td>
+							<td>
+								<% if @user.manual? %>
+									Manual invoicing
+								<% elsif @user.by_time? %>
+									<%= @user.invoice_x_days %> day interval
+								<% elsif @user.by_balance? %>
+									Limit <%= currency @user.invoice_x_balance %>
+								<% end %>
+							</td>
+							<td><%= currency @user.unit_price%></td>
+							<td><%= @user.payment_method%></td>
+							<td><%= @user.epay_subscription_id%></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				Customer Products
+				<span class='pull-right'>
+					<a href='javascript:void(0);' type="button" class="btn btn-default" 
+					data-toggle="collapse" data-target="#products">
+						Toggle</a>
+					<a href='<%= url_for edit_products_user_path(@user) %>' class='btn btn-default' role='button'>Edit</a>			
+				</span>
+			</div>
+			<div class='panel-body collapse' id='products'>
+				<table class='table table-striped'>
+					<thead>
+						<tr>
+							<th>Product</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @user.products.each do |product| %>
+						<tr>
+							<td><%= product.name %></td>
+						</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				Data Import Format
+				<span class='pull-right'>
+					<a href='<%= url_for edit_for_user_import_format_path(@user) %>' class='btn btn-default' role='button'>Edit</a>			
+				</span>
+			</div>
+		</div>
+		<% end %>
+
+	</div>
+</div>

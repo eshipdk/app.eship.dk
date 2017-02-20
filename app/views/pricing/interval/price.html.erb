@@ -1,4 +1,4 @@
-<h2 class='page-header'>Edit price scheme (<%= @user.email %>, <%= @product.name %>)
+<h2 class='page-header'>Edit price scheme (<%= @user.name %>, <%= @product.name %>)
 	<span class='pull-right'>
 		<%= link_to 'Reset to default', product_default_price_scheme_path(@user, @product), method: :patch,
 				data: { confirm: 'Are you sure you want to reset prices to default values?' },
