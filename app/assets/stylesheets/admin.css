@@ -271,3 +271,7 @@ table button.btn{
 	font-size: 21px;
 	line-height: 0;
 }
+
+.table.table-striped{
+	border: 1px solid #ddd;
+}
