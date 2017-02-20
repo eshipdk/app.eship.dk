@@ -20,8 +20,8 @@
    		<% @users.each do |user| %>
 		    <tr>
 		      <td><%= link_to user.name, user_path(user) %></td>
-		      <td><%= user.role %></td>
 		      <td><%= user.email %></td>
+		      <td><%= user.role %></td>
 		      <td>
 		        <% if user != @current_user %>
 		        <%= link_to 'Delete', user_path(user),
