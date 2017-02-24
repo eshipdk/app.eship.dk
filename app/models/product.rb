@@ -58,34 +58,23 @@ class Product < ActiveRecord::Base
   def available_countries user
     price_scheme(user).available_countries
   end
-  
-  #Defines which class to model the pricing scheme based on the product code.
-  def pricing_scheme_class 
-    case product_code
-    when 'glsb'
-      return GlsbPricing
-    when 'glsp'
-      return GlspPricing
-    when 'glsboc'
-      return GlsbocPricing
-    when 'glspoc'
-      return GlspocPricing
-    when 'glsproc'
-      return GlsprocPricing
-    when 'OC_glsproc'
-      return OcGlsprocPricing
-    when 'OC_pne'
-      return PnbpsPricing
-    when 'pnmh'
-      return PnmhPricing
-    when 'pnmc'
-      return PnmcPricing
-    when 'OC_pnpe'
-      return PndpdcPricing
-    when 'glspri'
-      return GlspriPricing
-    else
-      raise PriceConfigException.new("Pricing scheme does not exist for product: " + name)
+
+  def pricing_scheme_class_name
+    "#{product_code.downcase.camelcase}Pricing"
+  end
+
+  # Returns the class representing this product's pricing scheme.
+  # The class name is the camel casing of the product code.
+  # If the class does not exist already, an anonymous class
+  # is returned based on the IntervalTable pricing scheme.
+  def pricing_scheme_class
+    class_name = pricing_scheme_class_name
+    begin
+      return Object.const_get(class_name)
+    rescue NameError
+      klass = Class.new(IntervalTable)
+      Object.const_set(class_name, klass)
+      return Object.const_get(class_name)
     end
   end
   
