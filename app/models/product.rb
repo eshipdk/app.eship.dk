@@ -60,7 +60,7 @@ class Product < ActiveRecord::Base
   end
 
   def pricing_scheme_class_name
-    "#{product_code.downcase.camelcase}Pricing"
+    "#{original_code.downcase.camelcase}Pricing"
   end
 
   # Returns the class representing this product's pricing scheme.

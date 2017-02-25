@@ -16,7 +16,7 @@ class ProductsController < ApplicationController
 
   def create
     @product = Product.new(product_params)
-
+    @product.original_code = @product.product_code
     if @product.save
       redirect_to :action => :index
     else
