@@ -244,11 +244,14 @@ class ShipmentsController < ApplicationController
                                   :city, :phone_number,
                                   :email, :country_code)
   end
-  
+
   # Make an identical booking with return service
   # and the addresses reversed
   def book_return_shipment original_shipment
     shipment = original_shipment.dup
+    if original_shipment.product.return_product
+      shipment.product = original_shipment.product.return_product
+    end
     shipment.status = :initiated
     shipment.cargoflux_shipment_id = nil
     # Reverse addresses

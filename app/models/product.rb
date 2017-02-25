@@ -1,6 +1,7 @@
 class Product < ActiveRecord::Base
-  
-  
+
+  belongs_to :return_product, :class_name => 'Product', :foreign_key => 'return_product_id'
+
   def cost_scheme
     c = pricing_scheme_class
   
@@ -81,5 +82,15 @@ class Product < ActiveRecord::Base
   def code
     product_code
   end
+
+  def self.options
+    h = {'None'=>nil
+        }
+    Product.all.each do |p|
+      h[p.name] = p.id
+    end
+    return h
+  end
+
   
 end
