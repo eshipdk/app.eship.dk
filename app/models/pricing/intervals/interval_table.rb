@@ -170,8 +170,10 @@ class IntervalTable < PricingScheme
       if hash.key? title
         hash[title][:price] += shipment.final_price
         hash[title][:count] += 1
+        hash[title][:cost] += shipment.cost
       else
-        hash[title] = {:price => shipment.final_price, :count => 1}
+        hash[title] = {:price => shipment.final_price, :count => 1,
+                       :cost => shipment.cost}
       end
     end
     rows = []
@@ -182,6 +184,7 @@ class IntervalTable < PricingScheme
       row.product_code = shipments[0].product.product_code
       row.qty = value[:count]
       row.unit_price = (row.amount / row.qty).round(2)
+      row.cost = value[:cost]
       rows.push(row)
     end
     
@@ -192,6 +195,7 @@ class IntervalTable < PricingScheme
       row.product_code = 'diesel_fee'
       row.qty = 1
       row.unit_price = row.amount
+      row.cost = fee_dk
       rows.push(row)
     end
     
@@ -202,6 +206,7 @@ class IntervalTable < PricingScheme
       row.product_code = 'diesel_fee'
       row.qty = 1
       row.unit_price = row.amount
+      row.cost = row.amount
       rows.push(row)
     end
 

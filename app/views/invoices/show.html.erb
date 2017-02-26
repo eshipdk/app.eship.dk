@@ -1,16 +1,14 @@
 <h1 class='page-header'>Invoice #<%= @invoice.pretty_id %></h1>
 
-
 <div class='panel panel-default'>
   <div class='panel-heading'>
-	Details
+    Admin Panel
   </div>
   <div class='panel-body'>
-	<table class='table table-striped'>
-	  <thead>
-		<tr>
-		  <% if @current_user.admin? %>
-		  <th>Sent to e-conomic?
+    <table class='table table-striped'>
+      <thead>
+        <tr>
+           <th>Sent to e-conomic?
             <% if @invoice.editable? %>
 			<%= link_to 'Submit', submit_invoice_path(@invoice), method: :post,
 				data: @invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {}%>
@@ -21,7 +19,40 @@
 			<%= link_to 'Capture now', capture_invoice_path(@invoice), method: :post %>
 			<% end %>	
 		  </th>
-		  <% end %>
+          <th>Netto</th>
+          <th>Gross</th>
+          <th>Cost</th>
+          <th>Profit</th>
+          <th>House Commission</th>
+          <th>Affiliate Commission</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= @invoice.sent_to_economic ? "Yes" : "No" %>
+		  <td><%= @invoice.captured_online ? "Yes" : "No" %></td>
+          <td><%= currency @invoice.amount %></td>
+          <td><%= currency @invoice.gross_amount %></td>
+          <td><%= currency @invoice.cost %></td>
+          <td><%= currency @invoice.profit%></td>
+          <td><%= currency @invoice.house_commission %></td>
+          <td><%= currency @invoice.affiliate_commission %></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+
+<div class='panel panel-default'>
+  <div class='panel-heading'>
+	Details
+  </div>
+  <div class='panel-body'>
+	<table class='table table-striped'>
+	  <thead>
+		<tr>
 		  <th>Shipments</th>
 		  <th>Download Invoice</th>
           <th>Payment Registered?</th>
@@ -29,11 +60,6 @@
 	  </thead>
 	  <tbody>
 		<tr>
-		  <% if @current_user.admin? %>
-		  <td><%= @invoice.sent_to_economic ? "Yes" : "No" %>
-		  <td><%= @invoice.captured_online ? "Yes" : "No" %></td>
-		  <% end %>
-		  </td>
 		  <td><%= link_to 'Show shipments', @admin ? invoice_shipments_path(@invoice) : my_invoices_shipments_path(@invoice)  %></td>
 		  <td>
 			<% if @invoice.economic_id %>

@@ -49,6 +49,7 @@
 		</table>
 	</div>
 </div>
+
 <div class='panel panel-default'>
 	<div class='panel-heading'>History</div>
 	<div class='panel-body'>
@@ -58,14 +59,23 @@
 				<table class='table table-striped'>
 					<thead>
 						<tr>
-							<th>Total number of labels invoiced</th>
-							<th>Total amount invoiced</th>
+							<th>Shipments Invoiced</th>
+							<th>Netto</th>
+                            <th>Gross</th>
+                            <th>Profit</th>
+                            <th>House Commission</th>
+                            <th>Affiliate Commission</th>
 						</tr>
 					</thead>
+                    <% totals = @user.get_totals %>
 					<tbody>
 						<tr>
-							<td><%= @user.total_shipments_invoiced %></td>
-							<td><%= currency @user.total_amount_invoiced %></td>
+						  <td><%= totals.n_shipments %></td>
+                          <td><%= currency totals.netto %></td>
+                          <td><%= currency totals.gross %></td>
+                          <td><%= currency totals.profit %></td>
+                          <td><%= currency totals.house_commission %></td>
+                          <td><%= currency totals.affiliate_commission %></td>
 						</tr>
 					</tbody>
 				</table>
@@ -78,7 +88,7 @@
 				<table class='table table-striped'>
 					<thead>
 						<tr>
-						  <th>ID</th><th>Timestamp</th><th>Number of labels</th><th>Amount</th><th>Undo invoice</th>
+						  <th>ID</th><th>Timestamp</th><th>Shipments</th><th>Netto</th><th>Undo invoice</th>
                           <th>Sent to e-conomic?</th><th>Captured online?</th>
                           <th>Paid?</th>
 						</tr>	

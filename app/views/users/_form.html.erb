@@ -119,6 +119,30 @@
  	</div>
  </div>
 
+ <div class='panel panel-default'>
+   <div class='panel-heading'>
+     Affiliate Commission
+   </div>
+   <div class='panel-body'>
+     <table class='table table-striped'>
+       <thead>
+         <tr>
+           <th>Affilliate Commission Rate (rate [0 1])</th>
+           <th>Base House Amount (DKK)</th>
+           <th>Minimum Invoice Amount (DKK)</th>
+         </tr>
+       </thead>
+       <tbody>
+         <tr>
+           <td><%= f.bsnum_field :affiliate_commission_rate, :step => 'any' %></td>
+           <td><%= f.bsnum_field :affiliate_base_house_amount, :step => 'any' %></td>
+           <td><%= f.bsnum_field :affiliate_minimum_invoice_amount, :step => 'any' %></td>
+         </tr>
+       </tbody>
+     </table>
+   </div>
+ </div>
+
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
  
 <% end %>

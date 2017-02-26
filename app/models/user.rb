@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
   has_many :pricing_schemes, :dependent => :destroy
   has_one :import_format, :dependent => :destroy
   has_one :user_setting,  :dependent => :destroy
-  has_one :affiliate_user, :class_name => 'User', :foreign_key => 'affiliate_id'
+  belongs_to :affiliate_user, :class_name => 'User', :foreign_key => 'affiliate_id'
   belongs_to :default_address, :class_name => 'Address' , :foreign_key => 'address_id'
   belongs_to :contact_address, :class_name => 'Address', :foreign_key => 'contact_address_id'
 
@@ -169,7 +169,7 @@ class User < ActiveRecord::Base
     invoice = Invoice.new()
     invoice.user = self
     invoice.n_shipments = n
-   
+
     product_taxed = {'diesel_fee' => true}
     product_groups = {}
     shipments.each do |shipment|
@@ -181,7 +181,7 @@ class User < ActiveRecord::Base
         product_groups[product_code]['shipments'].push(shipment)
       end
     end
-   
+
     group_rows = {}
     product_groups.each do |product_code, group|
       product = group['product']
@@ -203,39 +203,51 @@ class User < ActiveRecord::Base
         group_rows[product_code] = [row]
       end
     end
-   
+
+    if affiliate_user
+      invoice.affiliate = affiliate_user
+    end
+
     invoice.save
     amount = 0
     tax_amount = 0
+    cost = 0
     group_rows.each do |product_code, rows|
       rows.each do |row|
         row.invoice = invoice
         row.save
         amount += row.amount
+        cost += row.cost
         if product_taxed[row.product_code]
           tax_amount += row.amount * 0.25
         end
       end
     end
     invoice.amount = amount
+    invoice.cost = cost
     invoice.gross_amount = amount + tax_amount
+
+    # Commissions
+    invoice.compute_commissions
+
     invoice.save
-   
+
     shipments.each do |shipment|
       shipment.invoiced = true
       shipment.invoice = invoice
-      shipment.save  
+      shipment.save
     end
     return invoice
  end
-  
-  
-  def total_shipments_invoiced
-    invoices.sum(:n_shipments)
-  end
-  
-  def total_amount_invoiced
-    invoices.sum(:amount)
+
+
+  def get_totals
+    invoices.select("sum(n_shipments) as n_shipments, sum(amount) as netto, " +
+                    "sum(gross_amount) as gross, sum(cost) as cost, " +
+                    "sum(profit) as profit, " +
+                    "sum(house_commission) as house_commission, " +
+                    "sum(affiliate_commission) as affiliate_commission, " +
+                    "sum(1) as count").to_a.first
   end
   
   def product_alias product
@@ -387,4 +399,3 @@ class User < ActiveRecord::Base
   
   
 end
-

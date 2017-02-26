@@ -5,9 +5,9 @@ class AdminController < ApplicationController
   before_filter :filter_dates, :only => :dashboard
 
   def dashboard
-    
-    @report = Reporting.generate_booking_report(@dateFrom, @dateTo)
-    
+
+    @booking_report = Reporting.generate_booking_report(@dateFrom, @dateTo)
+    @invoice_report = Reporting.generate_invoice_report(@dateFrom, @dateTo)
     return
     customers = User.customer
     #customers = User.all

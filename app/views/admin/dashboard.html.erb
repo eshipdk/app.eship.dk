@@ -1,15 +1,25 @@
 <h1 class='page-header'>Dashboard</h1>
 
 
+<%= render :partial => 'util/date_range_filter', :locals => {:nopanel => true } %>
 <div class='panel panel-default'>
 	<div class='panel-heading'>
 		Total Bookings
 	</div>
-	<div class='panel-body'>
-		<%= render :partial => 'util/booking_report', :locals => {:report => @report} %>
-		<%= render :partial => 'util/date_range_filter' %>
+	<div class='panel-body'>  
+	  <%= render :partial => 'util/booking_report', :locals => {:report => @booking_report } %>
 	</div>
 </div>
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Invoice Data
+	</div>
+	<div class='panel-body'>  
+	  <%= render :partial => 'util/invoice_report', :locals => {:report => @invoice_report } %>
+	</div>
+</div>
+
 
 
 

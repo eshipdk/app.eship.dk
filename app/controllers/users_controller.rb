@@ -143,11 +143,14 @@ class UsersController < ApplicationController
 
   def user_params
     p = params.require(:user).permit(:email,:cargoflux_api_key,
-                                   :password,:password_confirmation,
-                                   :role,:billing_type,:unit_price,
-                                   :economic_customer_id, :billing_control,
-                                   :invoice_x_days, :invoice_x_balance,
-                                   :payment_method, :affiliate_id)
+                                     :password,:password_confirmation,
+                                     :role,:billing_type,:unit_price,
+                                     :economic_customer_id, :billing_control,
+                                     :invoice_x_days, :invoice_x_balance,
+                                     :payment_method, :affiliate_id,
+                                     :affiliate_commission_rate,
+                                     :affiliate_base_house_amount,
+                                     :affiliate_minimum_invoice_amount)
   end
     
   def address_params

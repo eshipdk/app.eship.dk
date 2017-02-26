@@ -1,7 +1,10 @@
 <%= form_tag request.env['PATH_INFO'], method: 'get' do %>
+<% nopanel = nopanel %>
+<% if not nopanel %>
 <div class='panel panel-default'>
 	<div class='panel-heading'>Period</div>
 	<div class='panel-body'>
+      <% end %>
 		<table class='table table-striped'>
 			<tr>
 				<th>From</th>
@@ -20,6 +23,8 @@
 				</td>
 			</tr>
 		</table>
+        <% if not nopanel %>
 	</div>
 </div>
+<% end %>
 <% end %>
