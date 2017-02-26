@@ -31,7 +31,7 @@ module Reporting
 
 
 
-  def generate_report from, to, model, select,  extra_group, f_reader
+  def generate_report from, to, model, select,  extra_group, extra_where, f_reader
 
     match(get_granularity(from, to)) do
       with(_[from2, granularity, group_by]) do
@@ -48,7 +48,10 @@ module Reporting
         rows = model.group(groups)
                  .where('created_at >= DATE(?)', from)
                  .where('created_at < DATE(?) + 1', to)
-                 .select("(#{group_index}) as g")
+        if extra_where
+          rows = rows.where(extra_where)
+        end
+        rows = rows.select("(#{group_index}) as g")
                  .select(select).to_a
 
         data = {}
@@ -90,7 +93,7 @@ module Reporting
     }
     select = 'count(*) as count'
     return generate_report from, to, Shipment, select,
-                           'shipping_state > 1', fread
+                           'shipping_state > 1', false, fread
   end
 
 
@@ -111,7 +114,8 @@ module Reporting
              'sum(cost) as cost, sum(profit) as profit, ' +
              'sum(house_commission) as house_commission, ' +
              'sum(affiliate_commission) as affiliate_commission'
-    return generate_report from, to, Invoice, select, false, fread
+    return generate_report from, to, Invoice, select, false,
+                           'economic_id IS NOT NULL', fread
   end
 
 
