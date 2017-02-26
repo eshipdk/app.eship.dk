@@ -37,7 +37,10 @@ class AccountController < ApplicationController
   end
   
   def invoices
-    @invoices = @current_user.invoices.where(['invoices.created_at > ? AND invoices.created_at < ?', @dateFrom, @dateTo])
+    @invoices = @current_user.invoices
+                  .where(['invoices.created_at > ? AND invoices.created_at < ?',
+                          @dateFrom, @dateTo])
+                  .where('economic_id IS NOT NULL')
     if params[:id] and params[:id].to_i > 0
        @invoices = @invoices.where('id = ?', params[:id]) 
     end
