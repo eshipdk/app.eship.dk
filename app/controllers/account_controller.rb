@@ -86,14 +86,8 @@ class AccountController < ApplicationController
     if invoice.user != @current_user and not @current_user.admin?
       redirect_to home_path
     else
-      filename = "#{invoice.economic_id}.pdf"
-      path = Rails.root.join( 'invoices', filename )
-  
-      if File.exists?(path)
-        send_file( path, x_sendfile: true )
-      else
-        raise ActionController::RoutingError, "resource not found"
-      end
+      pdf = Economic.get_pdf_data invoice
+      send_data pdf, filename: "#{invoice.economic_id}.pdf"
     end
   end
   

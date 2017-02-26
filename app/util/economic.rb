@@ -143,13 +143,14 @@ module Economic
   end
   
   def get_invoice_data invoice
-    res = get(BASE_ENDPOINT + "invoices/booked/#{invoice.economic_id}")
-    pdf = get_raw(res['pdf']['download'])
-    
-    File.open("invoices/#{invoice.economic_id}.pdf",'wb') do |filea|
-        filea.puts pdf
-    end
+    get(BASE_ENDPOINT + "invoices/booked/#{invoice.economic_id}")
   end
+
+  def get_pdf_data invoice
+    data = get_invoice_data invoice
+    return get_raw(data['pdf']['download'])
+  end
+
   
   def get_raw url
     endpoint = URI.parse url
