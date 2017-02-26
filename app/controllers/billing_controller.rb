@@ -42,24 +42,32 @@ class BillingController < ApplicationController
   # Submit invoice draft to e-conomic
   def submit_invoice
     invoice = Invoice.find(params[:id])
-    match(Economic.submit_invoice(invoice)) do
-      with(_[:error, issue]) do
-        flash[:error] = issue
+    if invoice.editable?
+      match(Economic.submit_invoice(invoice)) do
+        with(_[:error, issue]) do
+          flash[:error] = issue
+        end
+        with(res) do
+        end
       end
-      with(res) do
-      end
+    else
+      flash[:error] = 'This invoice is already booked.'
     end
     redirect_to user_billing_path(invoice.user)
   end
   
   def capture_invoice
     invoice = Invoice.find(params[:id])
-    match(Epay.capture_invoice(invoice)) do
-      with(_[:error, issue]) do
-        flash[:error] = issue
+    if invoice.capturable?
+      match(Epay.capture_invoice(invoice)) do
+        with(_[:error, issue]) do
+          flash[:error] = issue
+        end
+        with(res) do
+        end
       end
-      with(res) do
-      end
+    else
+      flash[:error] = 'This invoice can not be captured.'
     end
     redirect_to :back
   end

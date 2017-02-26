@@ -25,6 +25,7 @@ module Epay
       res = Savon.client(wsdl: PAYMENT_ENDPOINT).call(:capture, message: params).body
       if res[:capture_response][:capture_result]
         invoice.captured_online = true
+        invoice.paid = true
         invoice.save
         return res
       else

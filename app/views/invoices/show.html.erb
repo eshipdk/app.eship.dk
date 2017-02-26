@@ -2,73 +2,85 @@
 
 
 <div class='panel panel-default'>
-	<div class='panel-heading'>
-		Details
-	</div>
-	<div class='panel-body'>
-		<table class='table table-striped'>
-			<thead>
-				<tr>
-					<% if @current_user.admin? %>
-						<th>Sent to e-conomic?
-						<%= link_to 'Submit', submit_invoice_path(@invoice), method: :post,
-						data: @invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {}%>
-						</th>
-						<th>Captured online?
-						<% if not @invoice.captured_online and @invoice.can_capture_online %>
-						<%= link_to 'Capture now', capture_invoice_path(@invoice), method: :post %>
-						<% end %>	
-						</th>
-					<% end %>
-					<th>Shipments</th>
-					<th>Download Invoice</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<% if @current_user.admin? %>
-					<td><%= @invoice.sent_to_economic ? "Yes" : "No" %>
-					<td><%= @invoice.captured_online ? "Yes" : "No" %></td>
-					<% end %>
-					</td>
-					<td><%= link_to 'Show shipments', @admin ? invoice_shipments_path(@invoice) : my_invoices_shipments_path(@invoice)  %></td>
-					<td>
-						<% if @invoice.economic_id %>
-							<%= link_to 'PDF', download_invoice_path(@invoice), target: '_blank' %>
-						<% else %>
-							Invoice Not Ready
-						<% end %>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+  <div class='panel-heading'>
+	Details
+  </div>
+  <div class='panel-body'>
+	<table class='table table-striped'>
+	  <thead>
+		<tr>
+		  <% if @current_user.admin? %>
+		  <th>Sent to e-conomic?
+            <% if @invoice.editable? %>
+			<%= link_to 'Submit', submit_invoice_path(@invoice), method: :post,
+				data: @invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {}%>
+            <% end %>
+		  </th>
+		  <th>Captured online?
+			<% if @invoice.capturable? %>
+			<%= link_to 'Capture now', capture_invoice_path(@invoice), method: :post %>
+			<% end %>	
+		  </th>
+		  <% end %>
+		  <th>Shipments</th>
+		  <th>Download Invoice</th>
+          <th>Payment Registered?</th>
+        </tr>
+	  </thead>
+	  <tbody>
+		<tr>
+		  <% if @current_user.admin? %>
+		  <td><%= @invoice.sent_to_economic ? "Yes" : "No" %>
+		  <td><%= @invoice.captured_online ? "Yes" : "No" %></td>
+		  <% end %>
+		  </td>
+		  <td><%= link_to 'Show shipments', @admin ? invoice_shipments_path(@invoice) : my_invoices_shipments_path(@invoice)  %></td>
+		  <td>
+			<% if @invoice.economic_id %>
+			<%= link_to 'PDF', download_invoice_path(@invoice), target: '_blank' %>
+			<% else %>
+			Invoice Not Ready
+			<% end %>
+		  </td>
+          <td>
+            <%= @invoice.paid? ? "Yes" : "No" %>
+          </td>
+		</tr>
+	  </tbody>
+	</table>
+  </div>
 </div>
 
 <div class='panel panel-default'>
-	<div class='panel-heading'>Items</div>
-	<div class='panel-body'>
-		<table class='table table-striped'>
-			<tr>
-				<th>Product description</th><th>Quantity</th><th>Unit price (Avg.)</th><th>Total</th>
-			</tr>
-			<% @invoice.rows.each do |row| %>
-			<tr>
-				<td><%= row.description %></td>
-				<td><%= row.qty %></td>
-				<td><%= currency row.unit_price %></td>
-				<td><%= currency row.amount %></td>
-			</tr>
-			<% end %>
-			<tfoot>
-				<tr>
-					<td>TOTAL</td>
-					<td/>
-					<td/>
-					<td><%= currency @invoice.amount %></td>
-				</tr>
-			</tfoot>
-		</table>		
-	</div>
+  <div class='panel-heading'>Items</div>
+  <div class='panel-body'>
+	<table class='table table-striped'>
+	  <tr>
+		<th>Product description</th><th>Quantity</th><th>Unit price (Avg.)</th><th>Total</th>
+	  </tr>
+	  <% @invoice.rows.each do |row| %>
+	  <tr>
+		<td><%= row.description %></td>
+		<td><%= row.qty %></td>
+		<td><%= currency row.unit_price %></td>
+		<td><%= currency row.amount %></td>
+	  </tr>
+	  <% end %>
+	  <tfoot>
+		<tr>
+		  <td>Subtotal</td>
+		  <td/>
+		  <td/>
+		  <td><%= currency @invoice.amount %></td>
+		</tr>
+        <tr>
+          <td>Grand Total</td>
+          <td/>
+          <td/>
+          <td><%= currency @invoice.gross_amount %></td>
+        </tr>
+	  </tfoot>
+	</table>		
+  </div>
 </div>
 

@@ -78,7 +78,9 @@
 				<table class='table table-striped'>
 					<thead>
 						<tr>
-							<th>ID</th><th>Timestamp</th><th>Number of labels</th><th>Amount</th><th>Undo invoice</th><th>Sent to e-conomic?</th><th>Captured online?</th><!-- <th>e-conomic id</th>-->
+						  <th>ID</th><th>Timestamp</th><th>Number of labels</th><th>Amount</th><th>Undo invoice</th>
+                          <th>Sent to e-conomic?</th><th>Captured online?</th>
+                          <th>Paid?</th>
 						</tr>	
 					</thead>
 					<tbody>
@@ -89,21 +91,30 @@
 								<td><%= invoice.n_shipments %></td>
 								<td><%= currency invoice.amount %></td>
 								<td>
+                                  <% if invoice.editable? %>
 									<%= link_to 'Undo', invoice_path(invoice),
 							              method: :delete,
-							              data: { confirm: 'Do you want to delete this invoice? Assoicated shipments will be marked as uninvoiced.' } %>
+							            data: { confirm: 'Do you want to delete this invoice? Assoicated shipments will be marked as uninvoiced.' } %>
+                                    <% else %>
+                                    -
+                                    <% end %>
 								</td>
 								<td>
-									<%= invoice.sent_to_economic ? "Yes" : "No" %>
+								  <%= invoice.sent_to_economic ? "Yes" : "No" %>
+                                  <% if invoice.editable? %>
 									<%= link_to 'Submit', submit_invoice_path(invoice), method: :post,
-									data: invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {} %>
+									    data: invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {} %>
+                                    <% end %>
 								</td>
 								<td>
 									<%= invoice.captured_online ? "Yes" : "No" %>
-									<% if not invoice.captured_online and invoice.can_capture_online %>
+									<% if invoice.capturable? %>
 									<%= link_to 'Capture now', capture_invoice_path(invoice), method: :post %>
 									<% end %>	
 								</td>
+                                <td>
+                                  <%= invoice.paid?  ? "Yes" : "No" %>
+                                </td>
 							<!--	<td>
 									<% if invoice.economic_id %>
 										<%= invoice.economic_id%>

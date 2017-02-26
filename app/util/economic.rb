@@ -136,6 +136,7 @@ module Economic
     col = res['collection']
     if col.any?
       invoice.economic_id = col[0]['bookedInvoiceNumber']
+      invoice.gross_amount = col[0]['grossAmount']
       invoice.save
     else
       [:error, "e-conomic invoice with reference #{invoice.id} could not be found."]

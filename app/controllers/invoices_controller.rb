@@ -16,13 +16,18 @@ class InvoicesController < ApplicationController
   
   def destroy
     invoice = Invoice.find(params[:id])
-    shipments = invoice.shipments
-    for shipment in shipments do
-      shipment.invoiced = false
-      shipment.invoice = nil
-      shipment.save
+    if invoice.editable?
+      shipments = invoice.shipments
+      for shipment in shipments do
+        shipment.invoiced = false
+        shipment.invoice = nil
+        shipment.save
+      end
+      invoice.destroy
+    else
+      flash[:error] = 'Cannot delete this invoice.'
     end
-    invoice.destroy
+   
     redirect_to :back
   end
   
