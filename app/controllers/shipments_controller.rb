@@ -267,7 +267,12 @@ class ShipmentsController < ApplicationController
     shipment.packages = packages
     
     shipment.save
-    Cargoflux.submit shipment
+    if shipment.price_configured?
+      Cargoflux.submit shipment
+    else
+      shipment.status = :failed
+      shipment.save
+    end
   end
 
 end
