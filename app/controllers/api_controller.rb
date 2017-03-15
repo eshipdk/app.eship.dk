@@ -125,16 +125,24 @@ class ApiController < ApplicationController
       .where(label_action: Shipment.label_actions[:print])
       .limit(5)
 
+
     recently_registered = []
     ready_shipments.each do |shipment|
-      if shipment.recent_label_pending?
-        recently_registered.push shipment
+      # To ensure that the same shipment is not printed by two concurrent
+      # clients it is locked pessimistically for the procedure determining
+      # whether to print it.
+      # The same procedure also flags it as printed so the queued client
+      # will not print it as well.
+      shipment.with_lock do
+        if shipment.recent_label_pending?
+          recently_registered.push shipment
+        end
+        shipment.label_pending = false
+        shipment.save!
       end
-      shipment.label_pending = false
-      shipment.save
     end
 
-    render :text => {'labels' => recently_registered.map(&:document_url), 
+    render :text => {'labels' => recently_registered.map(&:document_url),
                       'awbs' => recently_registered.map(&:awb),
                       'ids' => recently_registered.map(&:cargoflux_shipment_id),
                       'references' => recently_registered.map(&:reference),
@@ -148,12 +156,14 @@ class ApiController < ApplicationController
     response = {}
     shipments = []
     error_shipments.each do |shipment|
-
-      shipment.label_pending = false
-      errorShipment = {'id' => shipment.id, 'shipping_id' => shipment.cargoflux_shipment_id, 'errors' => shipment.get_error}
-      shipments.push errorShipment
-
-     shipment.save
+      shipment.with_lock do
+        if shipment.label_pending
+          shipment.label_pending = false
+          errorShipment = {'id' => shipment.id, 'shipping_id' => shipment.cargoflux_shipment_id, 'errors' => shipment.get_error}
+          shipments.push errorShipment
+        end
+        shipment.save!
+      end
     end
 
     render :text => {'shipments'=>shipments}.to_json,  :content_type => 'application/json'
