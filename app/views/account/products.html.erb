@@ -1,7 +1,5 @@
 <h1 class='page-header'>Products</h1>
 
-<% if @user.customer_type == 'shipping'%>
-
 <div class='panel panel-default'>
 	<div class='panel-heading'>
 		<select id="product_select">
@@ -13,6 +11,7 @@
 		</select>
 	</div>
 	<div class='panel-body'>
+        <% if @user.customer_type == 'shipping'%>
 		<div class='panel panel-default'>
 			<div class='panel-heading'>Pricing</div>
 			<div class='panel-body'>
@@ -28,6 +27,12 @@
 				</table>
 			</div>
 		</div>
+        <% else %>
+        <div class='panel panel-default'>
+	      <div class='panel-heading'>Label Price</div>
+	      <div class='panel-body'><%= currency @user.unit_price %></div>
+        </div>
+        <% end %>
 		<div class='panel panel-default'>
 			<div class='panel-heading'>Default Settings</div>
 			<div class='panel-body'>
@@ -72,6 +77,7 @@
 	</div>
 </div>
 
+<% if @user.customer_type == 'shipping'%> 
 <div class='panel panel-default'>
 	<div class='panel-heading'>Diesel Fee</div>
 	<div class='panel-body'>
@@ -91,7 +97,7 @@
 		</table>
 	</div>
 </div>
-
+<% end %>
 
 <script type="text/javascript">
 
@@ -134,10 +140,3 @@
 	$(document).ready(selectProduct);
 </script>
 
-<% else %>
-<div class='panel panel-default'>
-	<div class='panel-heading'>Label Price</div>
-	<div class='panel-body'><%= currency @user.unit_price %></div>
-</div>
-
-<% end %>

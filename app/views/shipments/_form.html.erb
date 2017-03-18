@@ -208,12 +208,12 @@
 	end
 	%>
 	var PRODUCT_VALUES = JSON.parse('<%= product_values.to_json.html_safe %>');
+    var CUSTOMER_TYPE = '<%= current_user.customer_type %>';
 	
 
 	function setDestinationCountry(productId){
-		targetCountry = PRODUCT_VALUES[productId]['country'];
-		if(targetCountry == "") return;
-		
+	    targetCountry = PRODUCT_VALUES[productId]['country'];
+		if(targetCountry == "") return;		
 		$('#recipient_country_code').children().filter(function() {
 			return this.value == targetCountry; 
 		}).attr('selected', true);
@@ -244,6 +244,7 @@
 	}
 	
 	function setAvailableCountries(productId){
+        if(CUSTOMER_TYPE!='shipping') return;        
 		$('#recipient_country_code').find('option').each(function(){
 			$(this).toggleOption($.inArray($(this).val(), PRODUCT_VALUES[productId]['available_countries']) > -1);
 		});
