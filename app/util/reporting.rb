@@ -89,7 +89,7 @@ module Reporting
       shipped = data.key?(ks) ? data[ks].count : 0
       return {'idle' => initiated,
               'shipped' => shipped,
-              'totel' => initiated + shipped}
+              'total' => initiated + shipped}
     }
     select = 'count(*) as count'
     return generate_report from, to, Shipment, select,

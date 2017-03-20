@@ -4,11 +4,19 @@
 <%= render :partial => 'util/date_range_filter', :locals => {:nopanel => true } %>
 <div class='panel panel-default'>
 	<div class='panel-heading'>
-		Total Bookings
+	  Total Bookings:
+      <span class='pull-right'>
+      <% total = 0
+         for date in @booking_report.keys
+            total += @booking_report[date]['total']
+         end
+         %>
+      <%= total %>
+      </span>
 	</div>
 	<div class='panel-body'>  
 	  <%= render :partial => 'util/booking_report', :locals => {:report => @booking_report } %>
-	</div>
+	</div> 
 </div>
 
 <div class='panel panel-default'>
