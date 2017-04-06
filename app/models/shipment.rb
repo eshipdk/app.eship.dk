@@ -216,7 +216,7 @@ class Shipment < ActiveRecord::Base
     when 'free'
       price = 0
     when 'flat_price'
-      price = user.unit_price
+      price = user.unit_price * get_label_qty
     when 'advanced'
       begin
         scheme = product.price_scheme user
@@ -269,6 +269,14 @@ class Shipment < ActiveRecord::Base
       end
     end
     return weight
+  end
+
+  def get_label_qty
+    qty = 0
+    packages.each do |package|
+      qty += package.amount
+    end
+    return qty
   end
   
   def price_configured?

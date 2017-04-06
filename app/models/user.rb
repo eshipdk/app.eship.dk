@@ -195,9 +195,10 @@ class User < ActiveRecord::Base
         qty = 0
         group_shipments.each do |shipment|
           row.amount += shipment.final_price
-          qty += 1
+          qty += shipment.get_label_qty
         end
         row.qty = qty
+        row.cost = 0
         row.unit_price = row.amount / row.qty
         row.product_code = 'label_fee'
         group_rows[product_code] = [row]
