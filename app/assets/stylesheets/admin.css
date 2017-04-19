@@ -256,6 +256,26 @@ table button.btn{
 	background-image: url(/images/icons/settings-5.png);
 }
 
+.cc{
+    width: 75px;
+    height: 55px;
+    float: left;
+    background-repeat: no-repeat;
+}
+
+.visa {
+    background-image: url(/images/icons/visa.png);
+}
+
+.mastercard{
+    background-image: url(/images/icons/mastercard.png);
+}
+
+.dkort {
+    background-image: url(/images/icons/dkort.png)
+}
+
+
 .tip {
 	background-image: url(/images/icons/info.png);
     background-size: 21px;
@@ -274,4 +294,10 @@ table button.btn{
 
 .table.table-striped{
 	border: 1px solid #ddd;
+}
+
+
+.hide-left .main{
+    margin-left: 0 !important;
+    width: 100% !important;
 }

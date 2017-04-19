@@ -346,11 +346,7 @@ class User < ActiveRecord::Base
   
   
   def verify_epay_subscription
-    if epay? and epay_subscription_id == nil
-      return false
-    else
-      return true
-    end
+    not(epay? and epay_subscription_id == nil)
   end
   
   def settings

@@ -5,9 +5,13 @@ class ApplicationController < ActionController::Base
   
   DEFAULT_PER_PAGE = 20
   
-  helper_method :current_user
+  helper_method :current_user, :show_left
   def current_user
     @current_user ||= User.find_by(id: session[:user])
+  end
+
+  def show_left
+    current_user.verify_epay_subscription
   end
   
 

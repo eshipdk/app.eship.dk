@@ -19,21 +19,8 @@ class AccountController < ApplicationController
   end
   
   def products
-    product_groups = @current_user.products
-    @products = {}
-    @user = @current_user
-    product_groups.each do |product|
-      product_hash = {:product => product}
-      country_products = {}
-      price_scheme = product.price_scheme @current_user
-      countries = price_scheme.available_countries
-      countries.each do |country|
-        country_products[country] = price_scheme.product_rows country
-      end
-      product_hash[:countries] = countries
-      product_hash[:country_products] = country_products
-      @products[product.product_code] = product_hash
-    end
+    register_products
+    @settings = true
   end
   
   def invoices
@@ -73,6 +60,9 @@ class AccountController < ApplicationController
     end
     @callback_url =  EShip::HOST_ADDRESS + "users/#{@current_user.id}/epay_subscribe"
     @accept_url = EShip::HOST_ADDRESS + "account"
+
+    register_products
+    @settings = false
   end
   
   def update_product
@@ -98,5 +88,22 @@ private
   def product_settings_params
     params.require(:user_product).permit(:default_length, :default_width, :default_height, :default_weight, :default_country)
   end
-  
+
+  def register_products
+    product_groups = @current_user.products
+    @products = {}
+    @user = @current_user
+    product_groups.each do |product|
+      product_hash = {:product => product}
+      country_products = {}
+      price_scheme = product.price_scheme @current_user
+      countries = price_scheme.available_countries
+      countries.each do |country|
+        country_products[country] = price_scheme.product_rows country
+      end
+      product_hash[:countries] = countries
+      product_hash[:country_products] = country_products
+      @products[product.product_code] = product_hash
+    end
+  end
 end

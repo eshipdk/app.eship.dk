@@ -1,13 +1,76 @@
 
 
 
-<h1 class="page-header">Payment Subscription</h1>
+<h1 class="page-header">Subscription</h1>
 
 <div class='panel panel-default'>
-	<div class='panel-heading'>
-		This acccount is registered for automatic payments. Please click the button below to register your payment information.
-	</div>
-	<div class='panel-body'>
+  <div class='panel-heading'>
+    Register Payment Subscription
+  </div>
+  <div class='panel-body'>
+    Before using our services we ask you to register your payment information. Please review the subscription details below.<br/>
+    <br/>
+    <div class='panel panel-default'>
+      <div class='panel-heading'>
+        Products & Prices
+        <span class='pull-right'>
+			<a href='javascript:void(0);' type="button" class="btn btn-default" data-toggle="collapse" 
+			data-target="#prices">
+				Toggle</a>	
+		</span>
+      </div>
+      <div class='panel-body collapse' id="prices">
+        <%= render 'account/products' %>
+      </div>
+    </div>
+    <div class='panel panel-default'>
+      <div class='panel-heading'>
+        Contact & Billing Address
+      </div>
+      <div class='panel-body'>
+        The address below has been registered for your account. Please review and verify its correctness before proceeding.<br/><br/>
+        <%= render :partial => 'addresses/display', :locals => {:address => current_user.contact_address } %> 
+  
+      </div>
+    </div>
+    <div class='panel panel-default'>
+      <div class='panel-heading'>
+        Payment
+      </div>
+      <div class='panel-body'>
+        <div>We accept the following payment methods:</div>
+        <div>
+          <div class='cc visa'></div>
+          <div class='cc mastercard'></div>
+          <div class='cc dkort'></div>
+        </div>
+      </div>
+    </div>
+    <div class='panel panel-default'>
+      <div class='panel-heading'>
+        Subscribe
+      </div>
+      <div class='panel-body'>
+        Before subscribing, please read our <a target='_blank' href='https://eship.dk/handelsbetingelser'>terms and conditions</a>.
+        <div class='form-group'>
+           <div class='checkbox'>
+            <label>
+              <input type='checkbox' id='confirm_address'/>
+              I confirm the correctness of the contact information supplied above.
+            </label>
+          </div>
+          <div class='checkbox'>
+            <label>
+              <input type='checkbox' id='terms_and_conditions'/>
+              I accept the <a target='_blank' href='https://eship.dk/handelsbetingelser'>terms and conditions</a>.
+            </label>
+          </div>
+          <div class='checkbox'>
+            <label>
+              <input type='checkbox' id='subscription_conditions'/>
+              I accept the <a target='_blank' href='https://eship.dk/handelsbetingelser'>terms of subscription</a>.
+            </label>
+          </div>
 		<script type="text/javascript" src="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js" charset="UTF-8"></script>
   
 		<script type="text/javascript">
@@ -20,8 +83,16 @@
 		        'accepturl' : "<%= @accept_url %>"
 		    });
 		</script>
-		  
-		<input type="button" onclick="javascript: paymentwindow.open()" value="Register credit card" />
-
-	</div>
+		<button id='btn-subscribe' class='btn btn-primary' disabled onclick='paymentwindow.open()'>Subscribe</button>	
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script type='text/javascript'>
+  function updateSubscribeButton(){
+     $('#btn-subscribe').prop('disabled', $('input:checked').length < 3);
+  }
+  $('input').change(updateSubscribeButton);
+</script>

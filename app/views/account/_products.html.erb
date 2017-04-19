@@ -1,0 +1,143 @@
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		<select id="product_select">
+			<% @products.each do |code, hash| %>
+				<option value="<%= hash[:product].product_code %>"><%= hash[:product].name %></option>
+			<% end %>	
+		</select>
+		<select id="country_select">
+		</select>
+	</div>
+	<div class='panel-body'>
+        <% if @user.customer_type == 'shipping'%>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>Pricing</div>
+			<div class='panel-body'>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Configuration</th>
+							<th>Price</th>
+						</tr>
+					</thead>
+					<tbody id="products">
+					</tbody>
+				</table>
+			</div>
+		</div>
+        <% else %>
+        <div class='panel panel-default'>
+	      <div class='panel-heading'>Label Price</div>
+	      <div class='panel-body'><%= currency @user.unit_price %></div>
+        </div>
+        <% end %>
+        <% if @settings %>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>Default Settings</div>
+			<div class='panel-body'>
+				<% current_user.user_products.each do |user_product| %>
+					<% product = user_product.product%>
+					<%= form_for user_product do |f| %>
+					<div style='display: none' class="table-responsive" id='settings-<%= product.code %>'>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Package Length</th><th>Package Width</th><th>Package Height</th><th>Package Weight</th><th>Destination Country</th><th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<%= f.bstxt_field :default_length %>
+									</td>
+									<td>
+										<%= f.bstxt_field :default_width %>
+									</td>
+									<td>
+										<%= f.bstxt_field :default_height %>
+									</td>
+									<td>
+										<%= f.bstxt_field :default_weight %>
+									</td>
+									<td>
+										<%= bscountry_select('user_product', 'default_country', selected: user_product.default_country) %>
+									</td>
+									<td>
+										<button type='submit' class='btn btn-primary'>Update</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+        <% end %>
+	</div>
+</div>
+
+<% if @user.customer_type == 'shipping'%> 
+<div class='panel panel-default'>
+	<div class='panel-heading'>Diesel Fee</div>
+	<div class='panel-body'>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>DK</th>
+					<th>International</th>
+				</tr>
+			</thead>	
+			<tbody>
+				<tr>
+					<td><%= percent PricingScheme.get_diesel_fee_dk %></td>
+					<td><%= percent PricingScheme.get_diesel_fee_inter %></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<% end %>
+
+<script type="text/javascript">
+
+	productData = <%= raw @products.to_json %>;
+
+	function selectProduct(){
+		selected = $('#product_select').val();
+		var hash = productData[selected];
+		var countrySelect = $('#country_select');
+		countrySelect.html('');
+		for(var i=0; i<hash['countries'].length; i++){
+			countrySelect
+	          .append($('<option>', { value : hash['countries'][i]})
+	          .text(hash['countries'][i]));
+		}
+		selectCountry();
+		
+		$('#product_select').children().each(function(){
+			code = $(this).val();
+			elem = $('#settings-' + code);
+			if(code == selected){
+				elem.show();
+			}else{
+				elem.hide();
+			}
+		});
+	}
+	
+	function selectCountry(){
+		var products = productData[$('#product_select').val()]['country_products'][$('#country_select').val()];
+		var html = "";
+		for(var i=0; i<products.length; i++){
+			html += "<tr><td>" + products[i].title + "</td><td>" + currency(products[i].price) + "</td></tr>";
+		}
+		$('#products').html(html);
+	}
+
+	$('#product_select').change(selectProduct);
+	$('#country_select').change(selectCountry);
+	$(document).ready(selectProduct);
+</script>
+
