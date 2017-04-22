@@ -7,8 +7,8 @@ module CsvImporter
   
   def import_csv content, user
 
-    separator = user.import_format.importer == 'interline' ? ',' : ';'
-    lines = CSV.parse content, {:col_sep => separator}
+    delimiter = user.import_format.delimiter
+    lines = CSV.parse content, {:col_sep => delimiter, :skip_blanks => true}
     
     validation = validate_csv_values lines, user
 
