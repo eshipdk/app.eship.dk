@@ -32,8 +32,55 @@
 </div>
 <%= render :partial => 'pricing/interval/table', :locals => {:countries => @product.cost_scheme.available_countries} %>
 
+<div class="panel panel-default">
+	<div class="panel-heading">Markup configuration</div>
+	<div class="panel-body">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Country</th>
+					<th>Weight from</th>
+					<th>Weight to</th>
+					<th>Cost</th>
+					<th>Markup</th>
+					<th>Active</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% markup_rows = @scheme.get_markup_rows %>
+
+				<% markup_rows.each do |row| %>
+				<tr>
+					<td>
+						<%= row.cost_break.country_code %>
+					</td>
+					<td>
+						<%= row.cost_break.weight_from %>
+					</td>
+					<td>
+						<%= row.cost_break.weight_to %>
+					</td>
+					<td>
+						<%= currency row.cost_break.value %>
+					</td>
+					<td>
+						<%= bstxt_field("pricing_scheme[markup_rows_attributes][#{row.id}]", 'markup', :value => row.markup)%>
+					</td>
+					<td>
+						<%= bschckbx("pricing_scheme[markup_rows_attributes][#{row.id}][active]", '1', row.active)%>
+					</td>
+					
+				</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 
 <% end%>
+
 
 

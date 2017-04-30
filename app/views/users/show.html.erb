@@ -19,6 +19,36 @@
 		</span>
 	</div>
 </div>
+
+
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Customer Products
+		<span class='pull-right'>
+			<a href='javascript:void(0);' type="button" class="btn btn-default" 
+			data-toggle="collapse" data-target="#products">
+				Toggle</a>
+			<a href='<%= url_for edit_products_user_path(@user) %>' class='btn btn-default' role='button'>Edit</a>			
+		</span>
+	</div>
+	<div class='panel-body collapse' id='products'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Product</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @user.products.each do |product| %>
+				<tr>
+					<td><%= product.name %></td>
+				</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+</div>
 <% end %>
 
 <div class='panel panel-default'>
@@ -142,33 +172,6 @@
 			</div>
 		</div>
 		
-		<div class='panel panel-default'>
-			<div class='panel-heading'>
-				Customer Products
-				<span class='pull-right'>
-					<a href='javascript:void(0);' type="button" class="btn btn-default" 
-					data-toggle="collapse" data-target="#products">
-						Toggle</a>
-					<a href='<%= url_for edit_products_user_path(@user) %>' class='btn btn-default' role='button'>Edit</a>			
-				</span>
-			</div>
-			<div class='panel-body collapse' id='products'>
-				<table class='table table-striped'>
-					<thead>
-						<tr>
-							<th>Product</th>
-						</tr>
-					</thead>
-					<tbody>
-						<% @user.products.each do |product| %>
-						<tr>
-							<td><%= product.name %></td>
-						</tr>
-						<% end %>
-					</tbody>
-				</table>
-			</div>
-		</div>
 		
 		<div class='panel panel-default'>
 			<div class='panel-heading'>

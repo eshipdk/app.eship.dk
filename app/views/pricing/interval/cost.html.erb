@@ -26,7 +26,109 @@
 	</div>
 </div>
 
-<%= render 'pricing/interval/table' %>
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Price Configuration
+	</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Country</th>
+					<th>Weight from (&lt;= weight)</th>
+					<th>Weight to (&gt; weight)</th>
+					<th>Cost DKK</th>
+					<th>Default Markup DKK</th>
+					<th class="col-md-1">Remove</th>
+				</tr>
+			</thead>
+			<tbody id='matrix'>
+			<% i = 0 %>
+			<% (@scheme.rows.all.sort {|a,b| a.sort_value <=> b.sort_value}).each do |row| %>
+			<tr>
+				<td>
+					<%= row.s_country_code %>
+				</td>
+				<td>
+					<%= row.weight_from %>					
+				</td>
+				<td>
+					<%= row.weight_to %>					
+				</td>
+				<td>
+					<%= hidden_field("pricing_scheme[rows_attributes][#{i}]", 'id', :value => row.id)%>
+					<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'value', :value => row.value)%>
+				</td>
+				<td>
+					<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'default_markup', :value => row.default_markup)%>
+				</td>
+				<td>
+					<%= bschckbx("pricing_scheme[rows_attributes][#{i}][remove]", '1') %>
+				</td>
+			</tr>
+			<% i+=1 %>
+			<% end %>
+			</tbody>
+			<tfoot>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><button onclick='addRow()' type='button' class='btn btn-primary btn-block'>Add</button></td>	
+			</tr>
+			</tfoot>
+		</table>	
+
+	</div>
+</div>
+
+
+<table style='display:none'>
+	<tr id='base-row'>
+		<td>
+			<%= bscountry_select("pricing_scheme[rows_attributes][{{x}}]", "country_code")%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'weight_from')%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'weight_to')%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'value')%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'default_markup')%>
+		</td>
+		<td>
+			<button onclick='removeRow({{x}})' type='button' class='btn btn-danger btn-block'>X</button>
+		</td>
+	</tr>
+</table>
+
+<script type='text/javascript'>
+	var nRows = <%= i %>;
+	
+	var baseRow = $('#base-row');
+	var baseRowHtml = baseRow.html();
+	baseRow.remove();
+	function addRow(){
+		nRows++;
+		var html = baseRowHtml.replace(new RegExp('{{x}}', 'g'), nRows )
+		var newRow = document.createElement('tr')
+		newRow.id = 'row-' + nRows;
+		newRow.innerHTML = html;
+		$('#matrix').append(newRow);
+	}
+	
+	function removeRow(i){
+		var row = $('#row-' + i);
+		row.remove();
+	}
+</script>
+
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 

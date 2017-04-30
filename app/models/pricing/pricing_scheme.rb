@@ -120,5 +120,10 @@ class PricingScheme < ActiveRecord::Base
     val = get_extras_val :diesel_fee_inter
     val == nil ? false : val
   end
+
+  # assumes to be called by a price scheme to get related cost scheme  
+  def get_cost_scheme
+    PricingScheme.where(:type => type, :pricing_type => PricingScheme.pricing_types[:cost]).first
+  end
   
 end

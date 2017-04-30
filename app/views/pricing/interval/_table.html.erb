@@ -27,20 +27,22 @@ else
 			<% i = 0 %>
 			<% (@scheme.rows.all.sort {|a,b| a.sort_value <=> b.sort_value}).each do |row| %>
 			<tr id='row-<%= i %>'>
+				
 				<td>
-					<%= bscountry_select("pricing_scheme[rows_attributes][" + i.to_s + "]", "country_code", selected: row.s_country_code, only: countries)%>
+					<%= hidden_field("pricing_scheme[rows_attributes][#{i}]", 'id', :value => row.id)%>
+					<%= bscountry_select("pricing_scheme[rows_attributes][#{i}]", "country_code", selected: row.s_country_code, only: countries)%>
 				</td>
 				<td>
-					<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'weight_from', :value => row.weight_from)%>
+					<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'weight_from', :value => row.weight_from)%>
 				</td>
 				<td>
-					<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'weight_to', :value => row.weight_to)%>
+					<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'weight_to', :value => row.weight_to)%>
 				</td>
 				<td>
-					<%= bstxt_field("pricing_scheme[rows_attributes][" + i.to_s + "]", 'value', :value => row.value)%>
+					<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'value', :value => row.value)%>
 				</td>
 				<td>
-					<button onclick='removeRow(<%= i.to_s %>)' type='button' class='btn btn-danger btn-block'>X</button>
+					<%= bschckbx("pricing_scheme[rows_attributes][#{i}][remove]", '1') %>
 				</td>
 			</tr>
 			<% i+=1 %>

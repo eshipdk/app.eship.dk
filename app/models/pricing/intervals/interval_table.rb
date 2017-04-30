@@ -2,8 +2,9 @@
 class IntervalTable < PricingScheme
   
   
-  has_many :rows, :class_name => :IntervalRow, :dependent => :destroy
-  accepts_nested_attributes_for :rows, :allow_destroy => true
+  has_many :rows, :class_name => :IntervalRow, :dependent => :destroy 
+  
+  has_many :markup_rows, :class_name => :MarkupRow, :dependent => :destroy
   
     
   
@@ -18,15 +19,41 @@ class IntervalTable < PricingScheme
   
   def handle_update params
     
-    for i in 0.. rows.length - 1
-      rows[i].mark_for_destruction
-    end
-
     begin
-      attrs = get_attrs params
-      validate_overlapping_intervals attrs
-      update attrs
-    rescue ActionController::ParameterMissing 
+      mrow_attrs = params.require(:pricing_scheme).require(:markup_rows_attributes)
+      mrow_attrs.each do |id, vals|
+        mrow = MarkupRow.find id
+        mrow.markup = vals[:markup]
+        mrow.active = vals[:active]
+        mrow.save
+      end
+    rescue ActionController::ParameterMissing
+    end
+    
+    begin
+      row_attrs = params.require(:pricing_scheme).require(:rows_attributes)            
+      row_attrs.each do |i,vals|        
+        if vals[:id]
+          row = IntervalRow.find vals[:id]
+          if vals[:remove]
+            row.destroy
+          else
+            row.value = vals[:value]
+            row.default_markup = vals[:default_markup]
+            row.save
+          end          
+        else
+          row = IntervalRow.new
+          row.country_code = vals[:country_code]
+          row.weight_from = vals[:weight_from]
+          row.weight_to = vals[:weight_to]
+          row.value = vals[:value]
+          row.default_markup = vals[:default_markup] ? vals[:default_markup] : 0
+          row.interval_table = self          
+          row.save
+        end
+      end
+    rescue ActionController::ParameterMissing
     end
     
     save
@@ -128,6 +155,22 @@ class IntervalTable < PricingScheme
         end
       end
       return val
+  end
+  
+  def get_markup_rows
+    cost_scheme = get_cost_scheme      
+    mrows = []
+    cost_scheme.rows.each do |crow|
+      mrow = MarkupRow.where(:interval_table => self, :cost_break => crow).first
+      if mrow == nil
+        mrow = MarkupRow.new
+        mrow.interval_table = self
+        mrow.cost_break = crow
+        mrow.save
+      end
+      mrows.append mrow
+    end
+    return mrows
   end
   
   
