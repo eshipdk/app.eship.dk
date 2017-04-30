@@ -145,16 +145,20 @@ class IntervalTable < PricingScheme
         begin
           row = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, package.weight, package.weight]).first!
           package_class = "#{row.weight_from} - #{row.weight_to} kg"
-          if classes.key? package_class
-            classes[package_class] += package.amount
-          else
-            classes[package_class] = package.amount
-          end
         rescue ActiveRecord::RecordNotFound
-          issue = "WARNING: No price configured for country #{shipment.recipient.country_code}, weight #{package.weight} (shipment id #{shipment.pretty_id} user #{shipment.user.email})"
-          Rails.logger.warn issue
-          raise PriceConfigException.new issue
+          if shipment.final_price.blank? or shipment.cost.blank?
+            issue = "WARNING: No price configured for country #{shipment.recipient.country_code}, weight #{package.weight} (shipment id #{shipment.pretty_id} user #{shipment.user.email})"
+            Rails.logger.warn issue
+            raise PriceConfigException.new issue
+          else
+            package_class = "#{package.weight} kg"
+          end
         end
+        if classes.key? package_class
+          classes[package_class] += package.amount
+        else
+          classes[package_class] = package.amount
+        end        
       end
       
       classes.sort.map do |k, v|
