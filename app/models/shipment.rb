@@ -42,7 +42,7 @@ class Shipment < ActiveRecord::Base
     #Label customers pay for all bookings. Shipping customers only pay for
     #shipments after they have been delivered so that extra charges may be included.
     if user.customer_type == 'shipping'
-      return self.complete.where(['invoiced = false AND (shipping_state = 3)', false])
+      return self.complete.where(['invoiced = false AND (shipping_state IN (2, 3, 5))', false])
     else
       return self.complete.where(['invoiced = ?', false])
     end
