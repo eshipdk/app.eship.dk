@@ -301,6 +301,10 @@ class Shipment < ActiveRecord::Base
     end
   end
   
+  def has_package_prices
+    return packages[0].price != nil
+  end
+  
   def self.update_pending_shipping_states
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"
     

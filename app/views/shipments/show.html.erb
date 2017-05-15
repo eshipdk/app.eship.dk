@@ -197,7 +197,9 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td><%= currency @shipment.price %></td>
+					<td>
+						<%= render :partial => 'shipments/calculated_price', :locals => {:shipment => @shipment } %>
+					</td>
 					<td><%= currency @shipment.final_price %></td>
 					<td><%= currency @shipment.diesel_fee %></td>
 					<td><%= currency @shipment.final_diesel_fee %></td>

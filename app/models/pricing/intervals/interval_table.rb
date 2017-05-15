@@ -142,12 +142,22 @@ class IntervalTable < PricingScheme
   end
   
   def get_price shipment
-    
       val = 0
+      title = "#{shipment.product.name}: #{shipment.recipient.country_code}"
       shipment.packages.each do |package|
         begin
           row = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, package.weight, package.weight]).first!
-          val += row.value * package.amount
+          if self.pricing_type == 'cost'
+            package.cost = row.value * package.amount
+            package.save
+            val += package.cost
+          else
+            package.price = row.value * package.amount
+            package_class = "(#{row.weight_from} - #{row.weight_to} kg)"
+            package.title = "#{title}#{package_class}"
+            package.save
+            val += package.price
+          end
         rescue ActiveRecord::RecordNotFound
           issue = "WARNING: No price configured for country #{shipment.recipient.country_code}, weight #{package.weight} (shipment id #{shipment.pretty_id} user #{shipment.user.email})"
           Rails.logger.warn issue
@@ -180,49 +190,84 @@ class IntervalTable < PricingScheme
     fee_inter = 0
     hash = {}
     shipments.each do |shipment|
-      
-      title = "#{shipment.product.name}: #{shipment.recipient.country_code}"
-      
-      classes = {}
-      shipment.packages.each do |package|
-        begin
-          row = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, package.weight, package.weight]).first!
-          package_class = "#{row.weight_from} - #{row.weight_to} kg"
-        rescue ActiveRecord::RecordNotFound
-          if shipment.final_price.blank? or shipment.cost.blank?
-            issue = "WARNING: No price configured for country #{shipment.recipient.country_code}, weight #{package.weight} (shipment id #{shipment.pretty_id} user #{shipment.user.email})"
-            Rails.logger.warn issue
-            raise PriceConfigException.new issue
+      package_total = 0  
+      if shipment.has_package_prices
+        # NEW INVOICE METHOD WITH INDIVIDUAL PRICES FOR PACKAGES  
+        # ALSO ADDS A "MANUAL DISCOUNT" LINE TO HANDLE UPDATED
+        # FINAL PRICE VALUES
+        shipment.packages.each do |package|
+          title = package.title
+           if hash.key? title
+              hash[title][:price] += package.price
+              hash[title][:count] += package.amount
+              hash[title][:cost] += package.cost
+            else
+              hash[title] = {:price => package.price, :count => package.amount,
+                             :cost => package.cost}
+            end
+        end
+        if shipment.final_price < shipment.price
+          # Register manual discount
+          title = 'Manual Discount'
+          if hash.key? title
+            hash[title][:price] += shipment.final_price - shipment.price
+            hash[title][:count] += 1
+            hash[title][:cost] += package.cost
           else
-            package_class = "#{package.weight} kg"
+            hash[title] = {:price => shipment.final_price - shipment.price, :count => 1,
+                            :cost => 0}
           end
         end
-        if classes.key? package_class
-          classes[package_class] += package.amount
+      else
+        # OLD INVOICE METHOD
+        title = "#{shipment.product.name}: #{shipment.recipient.country_code}"
+        
+        classes = {}
+        shipment.packages.each do |package|
+          begin
+            row = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, package.weight, package.weight]).first!
+            package_class = "#{row.weight_from} - #{row.weight_to} kg"
+          rescue ActiveRecord::RecordNotFound
+            if shipment.final_price.blank? or shipment.cost.blank?
+              issue = "WARNING: No price configured for country #{shipment.recipient.country_code}, weight #{package.weight} (shipment id #{shipment.pretty_id} user #{shipment.user.email})"
+              Rails.logger.warn issue
+              raise PriceConfigException.new issue
+            else
+              package_class = "#{package.weight} kg"
+            end
+          end
+          if classes.key? package_class
+            classes[package_class] += package.amount
+          else
+            classes[package_class] = package.amount
+          end        
+        end
+        
+        classes.sort.map do |k, v|
+          title += " (#{k})"
+        end
+        
+        if hash.key? title
+          hash[title][:price] += shipment.final_price
+          hash[title][:count] += 1
+          hash[title][:cost] += shipment.cost
         else
-          classes[package_class] = package.amount
-        end        
+          hash[title] = {:price => shipment.final_price, :count => 1,
+                         :cost => shipment.cost}
+        end
       end
       
-      classes.sort.map do |k, v|
-        title += " (#{k})"
-      end
-      
+      # -------------------------------------------------------------
+      # FROM THIS LINE BELOW FUNCTIONALITY IS IDENTICAL FOR OLD VS NEW
+      # -------------------------------------------------------------  
       if shipment.recipient.country_code == 'DK'
-       fee_dk += shipment.final_diesel_fee
+         fee_dk += shipment.final_diesel_fee
       else
         fee_inter += shipment.final_diesel_fee
       end
-      
-      if hash.key? title
-        hash[title][:price] += shipment.final_price
-        hash[title][:count] += 1
-        hash[title][:cost] += shipment.cost
-      else
-        hash[title] = {:price => shipment.final_price, :count => 1,
-                       :cost => shipment.cost}
-      end
     end
+    
+     
     rows = []
     hash.each do |title, value|
       row = InvoiceRow.new
