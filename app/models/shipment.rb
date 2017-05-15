@@ -309,7 +309,7 @@ class Shipment < ActiveRecord::Base
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"
     
     from_time = DateTime.now() - 360.days
-    pending_shipments = Shipment.where(['shipping_state in (1, 2) AND created_at > ?', from_time])
+    pending_shipments = Shipment.where(['shipping_state in (1, 2, 5) AND created_at > ?', from_time])
     
     Rails.logger.warn "Number of shipments to update: #{pending_shipments.length}"
     for shipment in pending_shipments
