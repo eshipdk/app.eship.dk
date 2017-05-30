@@ -104,7 +104,7 @@ class IntervalTable < PricingScheme
     set_extras_val(:diesel_fee_dk, dfe.key?(:diesel_fee_dk))
     set_extras_val(:diesel_fee_inter, dfe.key?(:diesel_fee_inter))
     begin
-      validate_available_intervals (get_attrs params)
+      validate_available_intervals(get_attrs(params))
     rescue ActionController::ParameterMissing
     end
     handle_update params
@@ -170,7 +170,7 @@ class IntervalTable < PricingScheme
   def get_markup_rows
     cost_scheme = get_cost_scheme      
     mrows = []
-    cost_scheme.rows.each do |crow|
+    cost_scheme.rows.order(:country_code, :weight_from).each do |crow|
       mrow = MarkupRow.where(:interval_table => self, :cost_break => crow).first
       if mrow == nil
         mrow = MarkupRow.new
