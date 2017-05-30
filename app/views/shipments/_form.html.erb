@@ -257,9 +257,11 @@
 		setAvailableCountries(productId);
 	}
 	
+	<% if @shipment.id == nil %>
 	$('#shipment_product_id').on('change', function(){		
 		productSelectUpdate(this.value);
 	});
+	<% end %>
 	
 	$(document).ready(function(){
 		destCountrySelector = $('#recipient_country_code');
