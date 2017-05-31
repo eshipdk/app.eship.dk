@@ -33,7 +33,7 @@ end
   end
   
   def bschckbx(name, value = 1, checked = false, options={})
-    check_box_tag(name, value, checked, options.merge(class: 'form-control', style: 'width: 34px;'))
+    check_box_tag(name, value, checked, options.merge(class:  options.key?(:class) ? (options[:class] + ' form-control') : 'form-control', style: 'width: 34px;'))
   end
   
   def print_datetime datetime

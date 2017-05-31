@@ -44,7 +44,7 @@
 					<th>Cost</th>
 					<th>Default Markup</th>
 					<th>Markup <span class="pull-right"><button onclick="copyDefaultMarkup();" type="button" class="btn btn-primary">Use defaults</button></span></th>
-					<th>Active</th>
+					<th><label for="markup-active-all">Active</label><input type="checkbox" id="markup-active-all" onclick="toggleMarkupActiveAll()"/></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -73,7 +73,7 @@
 						<%= bstxt_field("pricing_scheme[markup_rows_attributes][#{row.id}]", 'markup', :value => row.markup, :id => "markup-#{i}")%>
 					</td>
 					<td>
-						<%= bschckbx("pricing_scheme[markup_rows_attributes][#{row.id}][active]", '1', row.active)%>
+						<%= bschckbx("pricing_scheme[markup_rows_attributes][#{row.id}][active]", '1', row.active, {:class => 'markup-active'})%>
 					</td>
 					
 				</tr>
@@ -91,6 +91,37 @@
 			$('#markup-' + i).val($('#default-markup-' + i).val());
 		}
 	}
+	
+	function isAllMarkupActive(){
+		return $.grep($('.markup-active'), function(checkbox){
+			return !checkbox.checked;
+		}).length == 0;
+	}
+	
+	function updateMarkupActiveAll(){		
+		if(isAllMarkupActive()){
+			$('#markup-active-all').prop('checked', true);
+		}else{
+			$('#markup-active-all').prop('checked', false);
+		}
+	}
+	
+	function toggleMarkupActiveAll(){
+		if(isAllMarkupActive()){
+			$('.markup-active').prop('checked', false);
+		}else{
+			$('.markup-active').prop('checked', true);
+		}
+	}
+	
+	
+	$('.markup-active').change(function(){
+		updateMarkupActiveAll()
+	});
+	
+	$(document).ready(function(){
+		updateMarkupActiveAll();
+	});
 </script>
 
 
