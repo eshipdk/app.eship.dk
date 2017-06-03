@@ -2,7 +2,7 @@
 class IntervalRow  < ActiveRecord::Base
   
   belongs_to :interval_table
-  has_many :markup_row, :foreign_key => 'cost_break_id', :dependent => :destroy
+  has_many :markup_rows, :foreign_key => 'cost_break_id', :dependent => :destroy
   
   validates :country_code, :presence => true
   validates :weight_from, :presence => true

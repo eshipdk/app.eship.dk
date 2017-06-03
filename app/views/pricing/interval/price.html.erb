@@ -30,8 +30,10 @@
 		</table>
 	</div>
 </div>
-<%= render :partial => 'pricing/interval/table', :locals => {:countries => @product.cost_scheme.available_countries} %>
 
+<% if false %>
+<%= render :partial => 'pricing/interval/table', :locals => {:countries => @product.cost_scheme.available_countries} %>
+<% end %>
 <div class="panel panel-default">
 	<div class="panel-heading">Markup configuration</div>
 	<div class="panel-body">

@@ -114,25 +114,32 @@ class IntervalTable < PricingScheme
   
   def available_countries
     countries = Set.new
-    for row in rows
-      countries.add row.country_code
+    for row in markup_rows
+      if row.active
+          countries.add(row.cost_break.country_code)
+      end
+      
     end
     return countries.to_a
   end
   
   def product_rows country
     res = []
-    rows.where('country_code LIKE ?', country).each do |row|
-      res.push({:title => "#{country} #{row.weight_from} kg - #{row.weight_to} kg", :price => row.value})
-    end
+    markup_rows.each do |row|
+      if row.cost_break.country_code == country
+        res.push({:title => "#{country} #{row.cost_break.weight_from} kg - #{row.cost_break.weight_to} kg", 
+        :price => row.markup + row.cost_break.value})
+      end
+    end    
     return res
   end
   
   def price_configured? shipment
-    shipment.packages.each do |package|
-      if not rows.exists?(['country_code LIKE ? and weight_from <= ? and weight_to > ?', shipment.recipient.country_code, package.weight, package.weight])
+    shipment.packages.each do |package|      
+      if not  markup_rows.joins(:cost_break).where(['active = 1 AND country_code LIKE ? AND weight_from <= ? AND weight_to > ?',
+          shipment.recipient.country_code, package.weight, package.weight]).exists?
         return false
-      end
+      end     
     end
     return true
   end
@@ -144,17 +151,25 @@ class IntervalTable < PricingScheme
   def get_price shipment
       val = 0
       title = "#{shipment.product.name}: #{shipment.recipient.country_code}"
+      
+      if self.pricing_type == 'cost'
+        cost_scheme = self
+      else
+        cost_scheme = get_cost_scheme
+      end
+      
       shipment.packages.each do |package|
         begin
-          row = rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?', shipment.recipient.country_code, package.weight, package.weight]).first!
+          cost_row = get_cost_row cost_scheme, shipment, package
           if self.pricing_type == 'cost'
-            package.cost = row.value * package.amount
+            package.cost = cost_row.value * package.amount
             package.save
             val += package.cost
-          else
-            package.price = row.value * package.amount
-            package_class = "(#{row.weight_from} - #{row.weight_to} kg)"
-            package.title = "#{title}#{package_class}"
+          else     
+            markup_row = get_markup_row cost_row
+            package.price = (markup_row.markup + cost_row.value) * package.amount
+            package_class = "(#{cost_row.weight_from} - #{cost_row.weight_to} kg)"
+            package.title = "#{title} #{package_class}"
             package.save
             val += package.price
           end
@@ -164,7 +179,16 @@ class IntervalTable < PricingScheme
           raise PriceConfigException.new issue
         end
       end
-      return val
+      return val 
+  end
+  
+  def get_cost_row cost_scheme, shipment, package    
+    return cost_scheme.rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?',
+      shipment.recipient.country_code, package.weight, package.weight]).first!
+  end
+  
+  def get_markup_row cost_row
+    return MarkupRow.where(:cost_break => cost_row, :interval_table => self, :active => true).first!    
   end
   
   def get_markup_rows
