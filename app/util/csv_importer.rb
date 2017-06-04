@@ -21,7 +21,7 @@ module CsvImporter
         end
         
         if user.import_format.importer == 'interline'
-          hash = interline_csv_row_hash user, row
+          hash = interline_csv_row_hash user, row, i
           interline_service = hash['description']
           hash['description'] = ''
         else
@@ -52,7 +52,7 @@ module CsvImporter
     values.each_with_index do |row, index|
       line_number = index + 1
 
-      if row.length < user.import_format.min_cols
+      if row.length < user.import_format.min_cols        
         raise import_error "No. of columns (#{row.length}) does not match import format (#{user.import_format.min_cols})", line_number
       end
 
@@ -65,7 +65,7 @@ module CsvImporter
     return {'error'=>false}
   end
   
-  def interline_csv_row_hash user, row
+  def interline_csv_row_hash user, row, line
     shipment_type = row_val user, row, 'product_code'
     is_return = 0
     label_action = 'print'
@@ -84,11 +84,11 @@ module CsvImporter
       product_code = 'glsb'
       is_return = 1
     when '4'
-      raise 'Express10Service not supported.'
+      raise import_error 'Express10Service not supported.', line
     when '5'
-      raise 'Express12Service not supported.'
+      raise import_error 'Express12Service not supported.', line
     else
-      raise 'Shipment type unknown: ' + shipment_type  
+      raise import_error 'Shipment type unknown: ' + shipment_type, line
     end
     
     hash = default_csv_row_hash user, row
@@ -184,7 +184,7 @@ module CsvImporter
   end
   
   def import_error msg, line_number
-    {'error' => true, 'msg'=>msg + " - line #{line_number}"}.to_s
+    CsvImportException.new(msg + " - line #{line_number}")
   end
   
   def create_shipment hash, user

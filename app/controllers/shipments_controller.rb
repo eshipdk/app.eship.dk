@@ -116,15 +116,56 @@ class ShipmentsController < ApplicationController
 
   end
 
+
   def upload_csv
     uploaded_file = params[:file]
     file_content = uploaded_file.read
-    res = CsvImporter.import_csv file_content, @current_user
-
+    
+    # Issue: How do we determine the input encoding?
+    # There exists no correct solution. Instead, we attempt to guess it using a naive heuristic.
+    # If the input text is utf-8 encoded then decoding it as ascii will probably result in
+    # a more complex (measured as longer) output than the original input.
+    file_content_utf8 = file_content.force_encoding(Encoding::UTF_8).encode(Encoding::UTF_8)
+    file_content_ascii = file_content.force_encoding(Encoding::ISO_8859_1).encode(Encoding::UTF_8)
+    if file_content_utf8.length == file_content_ascii.length
+      file_content = file_content_ascii
+    else
+      file_content = file_content_utf8
+    end       
+       
+    
+    if false
+    raise file_content
+    raise file_content.valid_encoding?.to_s
+    
+    file_content_utf8 = file_content.force_encoding(Encoding::UTF_8)    
+    file_content_ascii = file_content.force_encoding(Encoding::ISO_8859_1)
+    count_a = count_unknowns file_content_utf8
+    count_b = count_unknowns file_content_ascii
+    raise file_content_utf8 + ' ::: ' + file_content_ascii
+    
+    file_content_utf8 = file_content.encode(Encoding::UTF_8, invalid: :replace, undef: :replace, :replace => '?')
+    file_content_ascii = file_content.encode(Encoding::ISO_8859_1, invalid: :replace, undef: :replace, :replace => '?')
+    raise file_content_ascii
+    file_content_ascii = file_content.force_encoding(Encoding::ISO_8859_1).encode(Encoding::UTF_8)
+    if file_content_ascii.length < file_content.length
+      raise 'ascii'
+      file_content = file_content_ascii
+    end
+    raise 'utf'
+    end
+    
+    begin
+      res = CsvImporter.import_csv file_content, @current_user
+    rescue CsvImportException => e
+      res = {'error' => true, 'msg' => e.issue}
+    end
     if res['error']
       flash[:error] = res['msg']
+      redirect_to :action => 'bulk_import'
+    else
+      redirect_to :action => 'index'
     end
-    redirect_to :action => 'index'
   end
 
   def update

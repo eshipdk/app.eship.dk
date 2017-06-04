@@ -195,8 +195,8 @@ class ApiController < ApplicationController
     end
     begin
       res = CsvImporter.import_csv csv, @current_user
-    rescue Exception => e
-      api_error e.to_s
+    rescue CsvImportException => e
+      api_error e.issue
       return
     end
     if res['error']
