@@ -263,7 +263,19 @@
 	});
 	<% end %>
 	
+  	jQuery.fn.toggleOption = function( show ) {
+	    jQuery( this ).toggle( show );
+	    if( show ) {
+	        if( jQuery( this ).parent( 'span.toggleOption' ).length )
+	            jQuery( this ).unwrap( );
+	    } else {
+	        if( jQuery( this ).parent( 'span.toggleOption' ).length == 0 )
+	            jQuery( this ).wrap( '<span class="toggleOption" style="display: none;" />' );
+	    }
+	};
+	
 	$(document).ready(function(){
+		
 		destCountrySelector = $('#recipient_country_code');
 		if(destCountrySelector.val() == ""){ //Only set default values if this is a new shipment
 			productSelectUpdate($('#shipment_product_id').val());
@@ -271,6 +283,7 @@
 			setParcelshopStatus($('#shipment_product_id').val());
 			setAvailableCountries($('#shipment_product_id').val());
 		}
+	
 	});
 	
 </script>
