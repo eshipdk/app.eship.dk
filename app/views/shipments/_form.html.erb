@@ -245,8 +245,8 @@
 	
 	function setAvailableCountries(productId){
         if(CUSTOMER_TYPE!='shipping') return;        
-		$('#recipient_country_code').find('option').each(function(){
-			$(this).toggleOption($.inArray($(this).val(), PRODUCT_VALUES[productId]['available_countries']) > -1);
+		$('#recipient_country_code').find('option').each(function(){			
+			toggleOption($(this), $.inArray($(this).val(), PRODUCT_VALUES[productId]['available_countries']) > -1);
 		});
 	}
 	
@@ -263,19 +263,8 @@
 	});
 	<% end %>
 	
-  	jQuery.fn.toggleOption = function( show ) {
-	    jQuery( this ).toggle( show );
-	    if( show ) {
-	        if( jQuery( this ).parent( 'span.toggleOption' ).length )
-	            jQuery( this ).unwrap( );
-	    } else {
-	        if( jQuery( this ).parent( 'span.toggleOption' ).length == 0 )
-	            jQuery( this ).wrap( '<span class="toggleOption" style="display: none;" />' );
-	    }
-	};
 	
-	$(document).ready(function(){
-		
+	$(document).ready(function(){	
 		destCountrySelector = $('#recipient_country_code');
 		if(destCountrySelector.val() == ""){ //Only set default values if this is a new shipment
 			productSelectUpdate($('#shipment_product_id').val());

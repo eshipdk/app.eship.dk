@@ -19,16 +19,27 @@
 
 
 $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip(); 
-    
-    jQuery.fn.toggleOption = function( show ) {
-	    jQuery( this ).toggle( show );
-	    if( show ) {
-	        if( jQuery( this ).parent( 'span.toggleOption' ).length )
-	            jQuery( this ).unwrap( );
-	    } else {
-	        if( jQuery( this ).parent( 'span.toggleOption' ).length == 0 )
-	            jQuery( this ).wrap( '<span class="toggleOption" style="display: none;" />' );
-	    }
-	};
+    $('[data-toggle="tooltip"]').tooltip();       
 });
+
+function toggleOption(element, show){
+	element.toggle(show);
+	if(show){
+		if(element.parent('span.toggleOption').length){ element.unwrap()};
+	}else{
+		if(element.parent('span.toggleOption').length == 0){ element.wrap('<span class="toggleOption" style="display: none;" />' );}
+	}
+}
+
+
+	
+/*jQuery.fn.toggleOption = function( show ) {
+    jQuery( this ).toggle( show );
+    if( show ) {
+        if( jQuery( this ).parent( 'span.toggleOption' ).length )
+            jQuery( this ).unwrap( );
+    } else {
+        if( jQuery( this ).parent( 'span.toggleOption' ).length == 0 )
+            jQuery( this ).wrap( '<span class="toggleOption" style="display: none;" />' );
+    }
+};*/
