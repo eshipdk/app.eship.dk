@@ -16,12 +16,15 @@ class InvoicesController < ApplicationController
   
   def destroy
     invoice = Invoice.find(params[:id])
-    if invoice.editable?
-      shipments = invoice.shipments
-      for shipment in shipments do
-        shipment.invoiced = false
-        shipment.invoice = nil
-        shipment.save
+    if invoice.editable?   
+      invoice.shipments.each do |s|
+        s.invoiced = false
+        s.invoice = nil
+        s.save
+      end
+      invoice.additional_charges.each do |c|
+        c.invoice = nil
+        c.save
       end
       invoice.destroy
     else

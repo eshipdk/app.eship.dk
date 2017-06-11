@@ -1,5 +1,6 @@
 include Reporting
 require 'csv'
+require 'roo'
 class AdminController < ApplicationController
   before_filter :authenticate_admin
   before_filter :filter_dates, :only => :dashboard
@@ -90,6 +91,51 @@ class AdminController < ApplicationController
     Invoice.identify_economic_ids
     Invoice.fetch_economic_data
     redirect_to :back
+  end
+  
+  def process_additional_charges
+    uploaded_file = params[:file]
+    spreadsheet = Roo::Spreadsheet.open(uploaded_file)    
+    
+    @charges = []
+    header = spreadsheet.row(1).map{|x| x.downcase}
+    (2..spreadsheet.last_row).each do |i|
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+      awb = row['pakke nr.']
+      
+      if awb
+        service = row['beskrivelse']
+        cost = row['beløb']
+        price = row['pris']
+        if not price
+          price = cost
+        end
+        shipment = Shipment.where(awb: awb).first!
+        user = shipment.user
+        @charges.push(ChargeDraft.new(shipment, user, cost, price, service))
+      end      
+    end
+  end
+  
+  def approve_additional_charges
+    user_ids = params[:user]
+    shipment_ids = params[:shipment]
+    services = params[:service]
+    costs = params[:cost]
+    prices = params[:price]
+    (0..user_ids.length-1).each do |i|
+      charge = AdditionalCharge.new      
+      shipment = Shipment.find shipment_ids[i]      
+      charge.user_id = user_ids[i]
+      charge.cost = costs[i]
+      charge.price = prices[i]
+      charge.description = "#{shipment.awb}: #{services[i]}"
+      charge.product_code = 'service_charge'
+      charge.shipment_id = shipment.id
+      charge.save
+    end
+    flash[:success] = "#{user_ids.length} additional service charges saved."
+    redirect_to admin_tools_path
   end
 
 end

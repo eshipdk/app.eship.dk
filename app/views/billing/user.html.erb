@@ -6,12 +6,12 @@
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>Uninvoiced shipments</th>
+					<th>Shipments <%= link_to 'Edit', user_edit_prices_path(@user) %></th>
+					<th>Additional Charges <%= link_to 'Edit', user_edit_additional_charges_path(@user)%></th>
 					<th>Billing type</th>
 					<th>Cost</th>
 					<th>Price</th>
-					<th>Diesel Fee</th>
-					<th>Shipments</th>
+					<th>Diesel Fee</th>					
 					<th>Invoice</th>
 				</tr>
 			</thead>
@@ -19,6 +19,7 @@
 				<tr>
 					
 					<td><%= @user.n_uninvoiced_shipments %></td>
+					<td><%= @user.n_uninvoiced_additional_charges %></td>
 					<td><%= @user.billing_type_title %></td>
 					<% cost, price, fee = @user.balance %>
 					<td>
@@ -30,7 +31,7 @@
 					<td>
 						<%= currency fee %>	
 					</td>
-					<th><%= link_to 'Shipments', user_edit_prices_path(@user) %></th>
+					
 					<td>
 						<% if @user.n_uninvoiced_shipments < 1 %>
 							<% disable_invoice = true%>

@@ -13,6 +13,20 @@
 	</div>
 </div>
 
+<div class='panel panel-default'>
+	<div class='panel-heading'>Process Additional Charges</div>
+	<div class='panel-body'>
+		<div class='import-csv'>
+		  <%= form_tag '/admin/tools/process_additional_charges', :multipart=>true do %>
+		  <%= label_tag(:file, "") %>
+		  <%= file_field_tag :file %>
+		  <%= submit_tag "Upload" %>
+		  <% end %>
+		</div>
+	</div>
+</div>
+
+
 
 <div class='panel panel-default'>
 	<div class='panel-heading'>Cron Jobs</div>

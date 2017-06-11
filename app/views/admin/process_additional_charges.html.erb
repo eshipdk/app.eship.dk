@@ -1,0 +1,51 @@
+<%= form_tag '/admin/tools/approve_additional_charges' do %>
+<h1 class='page-header'>
+	Additional Charges
+	<span class='pull-right'><button type='submit' class='btn btn-primary'>Approve</button></span>
+</h1>
+
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Approve charges (<%= @charges.length %>)
+		
+	</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Shipment</th>
+					<th>User</th>
+					<th>Service</th>
+					<th>Cost</th>
+					<th>Price</th>
+				</tr>
+			</thead>
+			<tbody>
+			<% @charges.each do |c| %>
+			<input type='hidden' name='user[]' value='<%= c.user.id %>'/>
+			<input type='hidden' name='cost[]' value='<%= c.cost %>'/>
+			<input type='hidden' name='service[]' value='<%= c.service %>'/>
+			<input type='hidden' name='shipment[]' value='<%= c.shipment.id %>'/>
+			<tr>
+				<td>
+					<%= c.shipment.awb %>
+				</td>
+				<td>
+					<%= c.user.name %>
+				</td>
+				<td>
+					<%= c.service %>
+				</td>
+				<td>
+					<%= currency c.cost %>
+				</td>
+				<td>
+					<input type='text' class='form-control' name='price[]' value='<%= c.price %>'/>
+				</td>
+			</tr>
+			<% end %>
+			</tbody>
+		</table>
+	</div>
+</div>
+<% end %>

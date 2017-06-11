@@ -102,8 +102,10 @@ Rails.application.routes.draw do
   #Billing
   get 'billing/user/:id', to: 'billing#user', as: 'user_billing'
   get 'billing/user/:id/edit_prices', to: 'billing#edit_prices', as: 'user_edit_prices'
+  get 'billing/user/:id/edit_additional_charges', to: 'billing#edit_additional_charges', as: 'user_edit_additional_charges'
   post 'billing/invoice', to: 'billing#invoice', as: 'invoice_all'
   post 'billing/user/:id/update_prices', to: 'billing#update_prices', as: 'user_update_prices'
+  post 'billing/user/:id/update_additional_charges', to: 'billing#update_additional_charges', as: 'user_update_additional_charges'
   post 'billing/invoice/:id/submit', to:'billing#submit_invoice', as: 'submit_invoice'
   post 'billing/invoice/:id/capture', to: 'billing#capture_invoice', as: 'capture_invoice' 
   post 'billing/invoice/:id/identify', to: 'billing#identify_economic_id', as: 'identify_economic_id'
@@ -118,7 +120,8 @@ Rails.application.routes.draw do
   post 'admin/tools/update_shipping_states', to: 'admin#update_shipping_states', as: 'admin_update_shipping_states'
   post 'admin/tools/automatic_invoicing', to: 'admin#automatic_invoicing', as: 'admin_automatic_invoicing'
   post 'admin/tools/fetch_economic_data', to: 'admin#fetch_economic_data', as: 'admin_economic_fetch'
-  
+  post 'admin/tools/process_additional_charges', to: 'admin#process_additional_charges', as: 'admin_process_additional_charges'
+  post 'admin/tools/approve_additional_charges', to: 'admin#approve_additional_charges', as: 'admin_approve_additional_charges'
   
   #Affiliate
   get 'affiliate/dashboard', to: 'affiliate#dashboard', as: 'affiliate_dashboard'

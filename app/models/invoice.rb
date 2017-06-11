@@ -3,6 +3,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :user
   belongs_to :affiliate, :class_name => 'User', :foreign_key => 'affiliate_id'
   has_many :shipments
+  has_many :additional_charges
   has_many :rows, :class_name => 'InvoiceRow', :dependent => :destroy
   
   def pretty_id

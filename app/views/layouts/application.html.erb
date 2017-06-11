@@ -47,6 +47,21 @@
 
 			    </div>
 		    <% end %>
+		    <% if flash[:success] %>
+		    	<div class='alert alert-success'>
+				    <strong>Success!</strong>
+				    <ul>
+				    	<% if flash[:success].is_a?(String) %>
+				    		<li><%= flash[:success] %></li>
+				    	<% else %>
+					    	<% flash[:success].each do |e| %>
+				    		<li><%= e %></li>
+					    	<% end %>
+				    	<% end %>
+				    </ul>
+
+			    </div>
+		    <% end %>
     	 	<%= yield %>
           
         </div>

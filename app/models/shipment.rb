@@ -4,6 +4,7 @@ class Shipment < ActiveRecord::Base
   belongs_to :user
   belongs_to :product
   belongs_to :invoice
+  has_many :additional_charges
   belongs_to :sender, :class_name => 'Address', :foreign_key => 'sender_address_id', :dependent => :destroy
   belongs_to :recipient, :class_name => 'Address', :foreign_key => 'recipient_address_id', :dependent => :destroy
   has_many :packages, :dependent => :destroy
@@ -304,6 +305,7 @@ class Shipment < ActiveRecord::Base
   def has_package_prices
     return packages[0].price != nil
   end
+    
   
   def self.update_pending_shipping_states
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"

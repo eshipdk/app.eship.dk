@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
   has_many :pricing_schemes, :dependent => :destroy
   has_one :import_format, :dependent => :destroy
   has_one :user_setting,  :dependent => :destroy
+  has_many :additional_charges, :dependent => :destroy
   belongs_to :affiliate_user, :class_name => 'User', :foreign_key => 'affiliate_id'
   belongs_to :default_address, :class_name => 'Address' , :foreign_key => 'address_id'
   belongs_to :contact_address, :class_name => 'Address', :foreign_key => 'contact_address_id'
@@ -115,7 +116,18 @@ class User < ActiveRecord::Base
   
   
   def balance
-    calc_value uninvoiced_shipments
+    shipment_cost, shipment_price, diesel_fees = calc_value uninvoiced_shipments
+    additional_cost, additional_price = additional_charge_balance
+    return shipment_cost + additional_cost, shipment_price + additional_price, diesel_fees
+  end
+  
+  def additional_charge_balance
+    sums = additional_charges.select('SUM(cost) as total_cost, SUM(price) as total_price').where(:invoice_id => nil).first
+    if sums.total_cost == nil
+      return 0, 0
+    else
+      return sums.total_cost, sums.total_price
+    end
   end
   
   def balance_price
@@ -160,7 +172,16 @@ class User < ActiveRecord::Base
     uninvoiced_shipments.count
   end
   
+  def uninvoiced_additional_charges
+    additional_charges.where(:invoice_id => nil)
+  end
+  
+  def n_uninvoiced_additional_charges
+    uninvoiced_additional_charges.count
+  end
+  
   def do_invoice
+    
     shipments = uninvoiced_shipments
     n = shipments.count
     if n < 1
@@ -170,6 +191,7 @@ class User < ActiveRecord::Base
     invoice.user = self
     invoice.n_shipments = n
 
+    # Shipments
     product_taxed = {'diesel_fee' => true}
     product_groups = {}
     shipments.each do |shipment|
@@ -204,6 +226,23 @@ class User < ActiveRecord::Base
         group_rows[product_code] = [row]
       end
     end
+    
+    # Additional charges
+    charges = uninvoiced_additional_charges
+    charges.each do |charge|
+      if not group_rows.key?charge.product_code
+        group_rows[charge.product_code] = []
+        product_taxed[charge.product_code] = true
+      end
+      row = InvoiceRow.new
+      row.amount = charge.price
+      row.cost = charge.cost
+      row.qty = 1
+      row.product_code = charge.product_code
+      row.unit_price = row.amount
+      row.description = charge.description      
+      group_rows[charge.product_code].push(row)
+    end
 
     if affiliate_user
       invoice.affiliate = affiliate_user
@@ -237,6 +276,11 @@ class User < ActiveRecord::Base
       shipment.invoiced = true
       shipment.invoice = invoice
       shipment.save
+    end
+    
+    charges.each do |charge|
+      charge.invoice = invoice
+      charge.save
     end
     return invoice
  end

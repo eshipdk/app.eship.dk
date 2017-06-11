@@ -12,6 +12,7 @@
 	<thead>
 		<tr>
 	      <th>Shipment</th>
+	      <th>AWB</th>
 	      <th>Reference</th>
 	      <th>Recipient</th>
 	      <th>Timestamp</th>
@@ -21,6 +22,7 @@
 	    </tr>
 	    <tr class='model-filters'>
 	    	<td><input class='form-control' type='text' name='id' value='<%= params[:id] %>'/></td>
+	    	<td><input class='form-control' type='text' name='awb' value='<%= params[:awb] %>'></td>
 	    	<td><input class='form-control' type='text' name='reference' value='<%= params[:reference] %>' /></td>
 	    	<td><input class='form-control' type='text' name='recipient' value='<%= params['recipient'] %>' /></td>
 	    	<td class='date-filter'>
@@ -35,6 +37,7 @@
     	<% @shipments.each do |shipment| %>
 		    <tr>
 		      <td><%= link_to "#{shipment.pretty_id}", shipment_path(shipment) %></td>
+		      <td><%= shipment.awb %></td>
 		  	  <td><%= shipment.reference %></td>
 		  	  <td><%= shipment.recipient.company_name %></td>
 		      <td><%= print_datetime shipment.created_at %></td>

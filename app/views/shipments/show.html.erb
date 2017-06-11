@@ -212,7 +212,29 @@
 					</td>
 				</tr>
 			</tbody>
-		</table>	
+		</table>
+		<% if @shipment.additional_charges.length > 0 %>
+		
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Additional Service Charge</th>
+					<% if current_user.admin? %><th>Cost</th><% end %>
+					<th>Price</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @shipment.additional_charges.each do |c| %>
+					<tr>
+						<td><%= c.description %></td>
+						<% if current_user.admin? %><td><%= currency c.cost %></td><% end %>
+						<td><%= currency c.price %></td>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+		<% end %>
+		
 	</div>	
 </div>	
 <% end %>

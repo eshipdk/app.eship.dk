@@ -16,6 +16,9 @@ class ShipmentsController < ApplicationController
     if params[:recipient] != nil and params[:recipient] != ''
       @shipments = @shipments.filter_recipient_name(params['recipient'])
     end
+    if params[:awb] != nil and params[:awb] != ''
+      @shipments = @shipments.where('awb LIKE ?', "%#{params[:awb]}%")
+    end
     @shipments = @shipments.order(id: :desc).paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
   end
 

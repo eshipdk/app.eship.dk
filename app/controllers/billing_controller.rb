@@ -14,6 +14,10 @@ class BillingController < ApplicationController
     @user = User.find(params[:id])
   end
   
+  def edit_additional_charges
+    @user = User.find(params[:id])
+  end
+  
   def update_prices
     @user = User.find(params[:id])
     data = params.require(:shipments)
@@ -26,6 +30,28 @@ class BillingController < ApplicationController
       shipment.final_diesel_fee = row['diesel_fee'] == '' ? shipment.diesel_fee : row['diesel_fee'].to_f
       shipment.save
     end
+    redirect_to :action => :user
+  end
+  
+  def update_additional_charges
+    @user = User.find(params[:id])
+    trash = params[:delete]
+    if trash == nil
+      trash = []
+    end
+    ids = params[:cid] - trash
+    prices = params[:price]
+    
+    trash.each do |id|
+      AdditionalCharge.find(id).destroy
+    end
+    
+    (0..ids.length - 1).each do |i|
+      c = AdditionalCharge.find(ids[i])
+      c.price = prices[i]
+      c.save
+    end
+    
     redirect_to :action => :user
   end
   

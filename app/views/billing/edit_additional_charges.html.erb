@@ -1,0 +1,44 @@
+<%= form_tag(user_update_additional_charges_path(@user), id: 'price-form') do %>
+<h1 class='page-header'>Pending Additional Charges</h1>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Additional Charges</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Shipment</th>
+					<th>Description</th>
+					<th>Cost</th>
+					<th>Price</th>
+					<th>Delete</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @user.uninvoiced_additional_charges.each do |c| %>
+				<tr>
+					<td><%= link_to "#{c.shipment.pretty_id}", admin_shipment_path(c.shipment) %></td>
+					<td><%= c.description %></td>
+					<td><%= currency c.cost %></td>
+					<input type='hidden' name='cid[]' value='<%= c.id %>'/>
+					<td>
+						<input type='text' name='price[]' value='<%= c.price %>' class='form-control'/>
+					</td>
+					<td>
+						<input type='checkbox' value='<%= c.id %>' name='delete[]' class='form-control'/>
+					</td>
+				</tr>
+				<% end %>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td></td><td></td><td></td><td></td>
+					<td><button type='submit' class='btn btn-primary form-control'>Submit</button></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</div>
+
+
+
+<% end %>
