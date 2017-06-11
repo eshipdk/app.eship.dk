@@ -1,30 +1,32 @@
-<div class='table-responsive'>
+<div class='table-responsive address-input-container'>
 	<table class='table table-striped'>
 		<tr>
 			<th>Company</th>
 			<th>Attention</th>
 			<th>Address line 1</th>
 			<th>Address line 2</th>
-			<th>Zip code</th>
+			<th>Country</th>
+			
 		</tr>
 		<tr>
 			<td><%= f.bstxt_field :company_name %></td>
 			<td><%= f.bstxt_field :attention %></td>
 			<td><%= f.bstxt_field :address_line1 %></td>
 			<td><%= f.bstxt_field :address_line2 %></td>
-			<td><%= f.bstxt_field :zip_code %></td>
+			<td><%= bscountry_select('address', 'country_code', {selected: f.object.country_code}, {class: 'country-input'}) %></td>
+			
 		</tr>
 	</table>
 	<table class='table table-striped'>
 		<tr>
+			<th>Zip code</th>
 			<th>City</th>
-			<th>Country</th>
 			<th>Phone</th>
 			<th>Email</th>
 		</tr>
 		<tr>
-			<td><%= f.bstxt_field :city %></td>
-			<td><%= bscountry_select('address', 'country_code', selected: f.object.country_code) %></td>
+			<td><%= f.bstxt_field :zip_code, {class: 'zip-input'} %></td>
+			<td><%= f.bstxt_field :city, {class: 'city-input'} %></td>
 			<td><%= f.bstxt_field :phone_number %></td>
 			<td><%= f.bstxt_field :email %></td>
 		</tr>

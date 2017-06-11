@@ -2,7 +2,7 @@ module ApplicationHelper
   
 class ActionView::Helpers::FormBuilder
   def bstxt_field(method, options = {})
-    text_field(method, options.merge(class: 'form-control'))
+    text_field(method, append_form_control(options))
   end
   
   def bsnum_field(method, options = {})
@@ -21,19 +21,23 @@ class ActionView::Helpers::FormBuilder
 end
 
   def bstxt_field(object_name, method, options = {})
-    text_field(object_name, method, options.merge(class: 'form-control'))
+    text_field(object_name, method, append_form_control(options))
   end
   
-  def bscountry_select(method, priority_countries = nil, options = {}, html_options = {})
-      country_select(method, priority_countries, options.merge(:include_blank => 'Select country...'), html_options.merge(class: 'form-control'))
+  def bscountry_select(method, priority_countries = nil, options = {}, html_options = {})    
+      country_select(method, priority_countries, options.merge(:include_blank => 'Select country...'), append_form_control(html_options))
   end
   
   def bssel(name, option_tags = nil, options = {})
     select_tag(name, option_tags, options.merge(class: 'form-control'))
   end
   
+  def append_form_control options
+    return options.merge(class:  options.key?(:class) ? (options[:class] + ' form-control') : 'form-control')
+  end
+  
   def bschckbx(name, value = 1, checked = false, options={})
-    check_box_tag(name, value, checked, options.merge(class:  options.key?(:class) ? (options[:class] + ' form-control') : 'form-control', style: 'width: 34px;'))
+    check_box_tag(name, value, checked, append_form_control(options).merge(style: 'width: 34px;'))
   end
   
   def print_datetime datetime
