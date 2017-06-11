@@ -15,3 +15,18 @@
 	</div>
 	
 </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.address-input-container').each(function(){		
+		var inZip = $(this).find('.zip-input');
+		var inCity = $(this).find('.city-input');
+		var inCountry = $(this).find('.country-input');		
+		inZip.change(function(){
+			if(inCountry.val() == 'DK'){	
+				inCity.val(zipcodes[inZip.val()]);	
+			}
+		});
+	});
+});
+</script>
