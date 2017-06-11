@@ -23,6 +23,10 @@ module Economic
   def get_customer_name id
     customer = get(BASE_ENDPOINT + "customers/#{id}")
     customer['name']
+  end  
+  
+  def get_customer_data id
+    return get(BASE_ENDPOINT + "customers/#{id}")
   end
   
   
@@ -66,6 +70,9 @@ module Economic
     else
       notes = "Periode: #{print_date invoice.user.created_at} til #{print_date invoice.created_at}"
     end
+    notes = notes + "\nModtager af services:\n#{customer.company}\n#{customer.address_line1}\n#{customer.address_line2}\n#{customer.zip_code} #{customer.city}"
+    
+    customerData = get_customer_data customerId    
     
     i = 0
     lines = invoice.rows.order(:description).map{|x| i+=1;
@@ -102,11 +109,11 @@ module Economic
     "customer"=> {
         "customerNumber"=> customerId
     },
-    "recipient"=> {
-        "name"=> customer.company_name,
-        "address"=>  customer.address_line1 + "\n" + customer.address_line2,
-        "zip"=> customer.zip_code.to_s,
-        "city"=> customer.city,
+    "recipient"=> { # Use customer data from e-conomic as recipient
+        "name"=> customerData['name'],
+        "address"=>  customerData['address'],
+        "zip"=> customerData['zip'],
+        "city"=> customerData['city'],
         "vatZone"=> {
             "name"=> "Domestic",
             "vatZoneNumber"=> 1,
