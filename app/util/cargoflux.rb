@@ -26,10 +26,17 @@ module Cargoflux
   end
   
   def fetch_state shipment
-    if shipment.status != 'complete'
-      return :na
+    if shipment.cargoflux_shipment_id == nil
+      return
     end
+    response = fetch_all shipment
+    return response['state']
+  end
     
+  def fetch_all shipment
+    if shipment.cargoflux_shipment_id == nil
+      return
+    end
     endpoint = URI.parse(API_ENDPOINT + shipment.cargoflux_shipment_id)
     http = Net::HTTP.new(endpoint.host, endpoint.port)
     http.use_ssl = true
@@ -39,9 +46,8 @@ module Cargoflux
     if response['state'] == 'delivered_at_destination'
       response['state'] = 'delivered'
     end
-    return response['state']
+    return response
   end
-    
 
   def do_submit shipment
     endpoint = URI.parse API_ENDPOINT

@@ -71,6 +71,26 @@ class Shipment < ActiveRecord::Base
     end
     update_attribute(:shipping_state, (Cargoflux.fetch_state self))
   end
+  
+  def update_booking_state     
+    data = Cargoflux.fetch_all self    
+    if data == nil
+      return
+    end
+    cf_state = data['state']
+    if cf_state == 'created'
+      return    
+    elsif cf_state == 'booking_failed'
+      update_attribute(:status, :failed)
+    else
+      update_attribute(:status, :complete)
+      shipping_state = cf_state
+      awb = data['awb']
+      document_url = data['awb_link']
+      determine_value
+      save
+    end    
+  end
 
   def address(type)
     if new_record?
@@ -326,6 +346,14 @@ class Shipment < ActiveRecord::Base
     end
     
     Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_pending_shipping_states"
+  end
+  
+  def self.update_pending_booking_states
+    Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_booking_states"
+    Shipment.where(:status => 1).each do |shipment|
+      shipment.update_booking_state
+    end
+    Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_pending_booking_states"
   end
   
 end

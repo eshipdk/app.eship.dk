@@ -134,29 +134,7 @@ class ShipmentsController < ApplicationController
       file_content = file_content_ascii
     else
       file_content = file_content_utf8
-    end       
-       
-    
-    if false
-    raise file_content
-    raise file_content.valid_encoding?.to_s
-    
-    file_content_utf8 = file_content.force_encoding(Encoding::UTF_8)    
-    file_content_ascii = file_content.force_encoding(Encoding::ISO_8859_1)
-    count_a = count_unknowns file_content_utf8
-    count_b = count_unknowns file_content_ascii
-    raise file_content_utf8 + ' ::: ' + file_content_ascii
-    
-    file_content_utf8 = file_content.encode(Encoding::UTF_8, invalid: :replace, undef: :replace, :replace => '?')
-    file_content_ascii = file_content.encode(Encoding::ISO_8859_1, invalid: :replace, undef: :replace, :replace => '?')
-    raise file_content_ascii
-    file_content_ascii = file_content.force_encoding(Encoding::ISO_8859_1).encode(Encoding::UTF_8)
-    if file_content_ascii.length < file_content.length
-      raise 'ascii'
-      file_content = file_content_ascii
-    end
-    raise 'utf'
-    end
+    end                  
     
     begin
       res = CsvImporter.import_csv file_content, @current_user

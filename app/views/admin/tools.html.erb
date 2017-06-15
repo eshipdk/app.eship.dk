@@ -32,6 +32,16 @@
 	<div class='panel-heading'>Cron Jobs</div>
 	<div class='panel-body'>
 		<div class='panel panel-default'>
+			<div class='panel-heading'>Update booking states</div>
+			<div class='panel-body'>
+				<p>Fetch booking states for bookings stuck in "Response_pending".
+					(<%= @n_response_pending %> bookings pending)
+					</p>
+				
+				<%= link_to 'Run update', admin_update_booking_states_path, method: :post%>
+			</div>
+		</div>
+		<div class='panel panel-default'>
 			<div class='panel-heading'>Update Shipping States</div>
 			<div class='panel-body'>
 				<%= link_to 'Run update', admin_update_shipping_states_path,

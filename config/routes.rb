@@ -118,6 +118,7 @@ Rails.application.routes.draw do
   get 'admin/tools', to: 'admin#tools', as: 'admin_tools'
   post 'admin/tools/verify_billable_shipments', to: 'admin#verify_billable_shipments', as: 'admin_verify_billable'
   post 'admin/tools/update_shipping_states', to: 'admin#update_shipping_states', as: 'admin_update_shipping_states'
+  post 'admin/tools/update_booking_states', to: 'admin#update_booking_states', as: 'admin_update_booking_states'
   post 'admin/tools/automatic_invoicing', to: 'admin#automatic_invoicing', as: 'admin_automatic_invoicing'
   post 'admin/tools/fetch_economic_data', to: 'admin#fetch_economic_data', as: 'admin_economic_fetch'
   post 'admin/tools/process_additional_charges', to: 'admin#process_additional_charges', as: 'admin_process_additional_charges'

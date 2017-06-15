@@ -46,7 +46,9 @@ class AdminController < ApplicationController
   end
   
   def tools
+    @n_response_pending = Shipment.where(:status => 1).count
   end
+  
   
   
   def verify_billable_shipments
@@ -79,6 +81,11 @@ class AdminController < ApplicationController
   
   def update_shipping_states
     Shipment.update_pending_shipping_states
+    redirect_to :back
+  end
+  
+  def update_booking_states
+    Shipment.update_pending_booking_states
     redirect_to :back
   end
   
