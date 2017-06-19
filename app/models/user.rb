@@ -121,6 +121,11 @@ class User < ActiveRecord::Base
     return shipment_cost + additional_cost, shipment_price + additional_price, diesel_fees
   end
   
+  def total_customer_balance
+    cost, price, diesel_fees = balance
+    return price + diesel_fees
+  end
+  
   def additional_charge_balance
     sums = additional_charges.select('SUM(cost) as total_cost, SUM(price) as total_price').where(:invoice_id => nil).first
     if sums.total_cost == nil

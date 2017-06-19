@@ -51,11 +51,17 @@
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>Payment method</th><th></th>
+					<th>Balance</th><th>Balance limit</th><th>Payment method</th><th></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
+					<td>
+						<%= currency @current_user.total_customer_balance %>
+					</td>
+					<td>
+						<%= currency @current_user.invoice_x_balance %>
+					</td>
 					<td>
 						<%= @current_user.payment_method_title %>
 						<% if @current_user.epay? %>
