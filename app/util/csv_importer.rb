@@ -165,22 +165,7 @@ module CsvImporter
   end
 
   def row_val user, row, key
-    
-    key = user.import_format.attributes[key]
-    if ImportFormat.is_const_format key
-      return ImportFormat.const_val key
-    end
-    
-    intVal = Integer(key)
-    if intVal < 0
-      return ""
-    end
-    
-    v = row[intVal- 1]
-    if v == nil
-      v = ""
-    end
-    return v.strip
+    return user.import_format.row_val user, row, key
   end
   
   def import_error msg, line_number
