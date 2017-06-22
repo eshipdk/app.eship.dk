@@ -16,7 +16,7 @@ module Economic
   end
   
   def get_customers
-    customers = get(BASE_ENDPOINT + 'customers')
+    customers = get(BASE_ENDPOINT + 'customers?skippages=0&pagesize=1000')
     customers['collection']
   end
   
