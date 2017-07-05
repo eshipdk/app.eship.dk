@@ -256,10 +256,19 @@ module CsvImporter
             File.delete(filename)
           end
         rescue => e
-          Rails.logger.warn "#{Time.now.utc.iso8601} EXCEPTION IMPORTING FILE #{filename}}: #{e.to_s}"
-          issue = "#{e.to_s}: #{e.backtrace.join("\n")}"
+          if e.to_s == 'CsvImportException'
+            estr = "CsvImportException: #{e.issue}"
+          else
+            estr = e.to_s
+          end
+          Rails.logger.warn "#{Time.now.utc.iso8601} EXCEPTION IMPORTING FILE #{filename}}: #{estr}"
+          issue = "#{estr}: #{e.backtrace.join("\n")}"
           Rails.logger.warn issue
           SystemMailer.ftp_upload_import_failed(filename, issue).deliver_now
+          File.rename filename, "#{filename}.fail-backup"
+          File.open("#{filename}.error", 'w+') do |f|
+            f.write(estr)
+          end
         end       
       end      
     end    
