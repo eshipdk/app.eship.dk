@@ -150,7 +150,10 @@ class UsersController < ApplicationController
                                      :payment_method, :affiliate_id,
                                      :affiliate_commission_rate,
                                      :affiliate_base_house_amount,
-                                     :affiliate_minimum_invoice_amount)
+                                     :affiliate_minimum_invoice_amount,
+                                     :enable_ftp_upload, :ftp_upload_user)
+   p[:enable_ftp_upload] = p.key?(:enable_ftp_upload) and p[:enable_ftp_upload]
+   return p
   end
     
   def address_params

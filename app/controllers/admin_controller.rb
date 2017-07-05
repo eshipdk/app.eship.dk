@@ -1,6 +1,7 @@
 include Reporting
 require 'csv'
 require 'roo'
+include CsvImporter
 class AdminController < ApplicationController
   before_filter :authenticate_admin
   before_filter :filter_dates, :only => :dashboard
@@ -143,6 +144,11 @@ class AdminController < ApplicationController
     end
     flash[:success] = "#{user_ids.length} additional service charges saved."
     redirect_to admin_tools_path
+  end
+  
+  def import_ftp_uploads
+    CsvImporter.import_ftp_uploads
+    redirect_to :back
   end
 
 end

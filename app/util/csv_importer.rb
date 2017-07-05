@@ -5,7 +5,7 @@ module CsvImporter
   
 
   
-  def import_csv content, user
+  def self.import_csv content, user
 
     delimiter = user.import_format.delimiter
     lines = CSV.parse content, {:col_sep => delimiter, :skip_blanks => true}
@@ -45,7 +45,7 @@ module CsvImporter
   end
   
   
-  def validate_csv_values values, user
+  def self.validate_csv_values values, user
     if !user.import_format.complete?
       raise import_error "Import format is incomplete.", 0
     end
@@ -65,7 +65,7 @@ module CsvImporter
     return {'error'=>false}
   end
   
-  def interline_csv_row_hash user, row, line
+  def self.interline_csv_row_hash user, row, line
     shipment_type = row_val user, row, 'product_code'
     is_return = 0
     label_action = 'print'
@@ -124,7 +124,7 @@ module CsvImporter
 
 
 
-  def default_csv_row_hash user, row
+  def self.default_csv_row_hash user, row
     {
       'return'=>( row_val user, row, 'return'),
       'product_code' => ( row_val user, row, 'product_code'),
@@ -164,15 +164,15 @@ module CsvImporter
     }
   end
 
-  def row_val user, row, key
+  def self.row_val user, row, key
     return user.import_format.row_val user, row, key
   end
   
-  def import_error msg, line_number
+  def self.import_error msg, line_number
     CsvImportException.new(msg + " - line #{line_number}")
   end
   
-  def create_shipment hash, user
+  def self.create_shipment hash, user
     
     shipment = Shipment.new
     shipment.product = user.find_product hash['product_code']
@@ -227,6 +227,52 @@ module CsvImporter
     
   end
   
-
+  def self.decode_content content
+    # Issue: How do we determine the input encoding?
+    # There exists no correct solution. Instead, we attempt to guess it using a naive heuristic.
+    # If the input text is utf-8 encoded then decoding it as ascii will probably result in
+    # a more complex (measured as longer) output than the original input.
+    content_utf8 = content.force_encoding(Encoding::UTF_8).encode(Encoding::UTF_8)
+    content_ascii = content.force_encoding(Encoding::ISO_8859_1).encode(Encoding::UTF_8)
+    if content_utf8.length == content_ascii.length
+      content = content_ascii
+    else
+      content = content_utf8
+    end
+    return content  
+  end
+      
+  def self.import_ftp_uploads
+    
+    User.where(:enable_ftp_upload => true).each do |user|      
+      dir = "/var/ftp_upload/#{user.ftp_upload_user}"  
+      filenames = Dir.glob("#{dir}/*.csv") # only consider csv files!
+      filenames.each do |filename|
+        begin
+          age = (Time.now - File.stat(filename).mtime).to_i
+          if age > 5 # Wait at least 5 seconds to ensure upload is finished
+            content = decode_content IO.binread(filename)
+            import_csv content, user
+            File.delete(filename)
+          end
+        rescue => e
+          Rails.logger.warn "#{Time.now.utc.iso8601} EXCEPTION IMPORTING FILE #{filename}}: #{e.to_s}"
+          issue = "#{e.to_s}: #{e.backtrace.join("\n")}"
+          Rails.logger.warn issue
+          SystemMailer.ftp_upload_import_failed(filename, issue).deliver_now
+        end       
+      end      
+    end    
+  end
   
+  # crontab only has 1 minute granularity but we want 5 second intervals on
+  # import ftp uploads. Use crontab to spawn a new process every one minute
+  # that runs for approximately one minute before terminating. 
+  def self.import_ftp_uploads_60s_daemon
+    tstart = Time.now()
+    while Time.now() - tstart < 55
+      CsvImporter.import_ftp_uploads
+      sleep 5
+    end
+  end
 end

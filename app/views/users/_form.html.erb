@@ -56,7 +56,7 @@
 					</td>
 				</tr>
 			</tbody>
-		</table>
+		</table>		
  	</div>
  </div>
  <div class='panel panel-default'>
@@ -141,6 +141,27 @@
        </tbody>
      </table>
    </div>
+ </div>
+ <div class='panel panel-default'>
+ 	<div class='panel-heading'>
+ 		FTP Upload Import
+ 	</div>
+ 	<div class='panel-body'>
+		<table class='table table-striped'>
+	  		<thead>
+	  			<tr>
+					<th>Enable FTP upload import</th>
+					<th>FTP user</th>					
+				</tr>
+	  		</thead>
+			<tbody>
+				<tr>					
+					<td><%= bschckbx 'user[enable_ftp_upload]', "1", @user.enable_ftp_upload %></td>
+					<td><%= f.bstxt_field :ftp_upload_user %></td>
+				</tr>
+			</tbody>
+		</table>
+ 	</div>
  </div>
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>

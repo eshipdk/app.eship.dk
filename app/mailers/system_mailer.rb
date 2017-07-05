@@ -15,4 +15,9 @@ class SystemMailer < ApplicationMailer
     mail(to: EShip::WEBMASTER_MAIL, subject: "Shipment status update failed for shipment #{shipment.id} (customer #{shipment.user.email})")
   end
   
+  def ftp_upload_import_failed filename, issue
+    @issue = issue
+    mail(to: EShip::WEBMASTER_MAIL, subject: "Failed importing #{filename} from ftp uploads..")
+  end
+  
 end

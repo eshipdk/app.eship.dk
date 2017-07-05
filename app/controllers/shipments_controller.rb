@@ -124,17 +124,7 @@ class ShipmentsController < ApplicationController
     uploaded_file = params[:file]
     file_content = uploaded_file.read
     
-    # Issue: How do we determine the input encoding?
-    # There exists no correct solution. Instead, we attempt to guess it using a naive heuristic.
-    # If the input text is utf-8 encoded then decoding it as ascii will probably result in
-    # a more complex (measured as longer) output than the original input.
-    file_content_utf8 = file_content.force_encoding(Encoding::UTF_8).encode(Encoding::UTF_8)
-    file_content_ascii = file_content.force_encoding(Encoding::ISO_8859_1).encode(Encoding::UTF_8)
-    if file_content_utf8.length == file_content_ascii.length
-      file_content = file_content_ascii
-    else
-      file_content = file_content_utf8
-    end                  
+    file_content = CsvImporter.decode_content file_content       
     
     begin
       res = CsvImporter.import_csv file_content, @current_user

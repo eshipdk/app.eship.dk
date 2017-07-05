@@ -123,6 +123,7 @@ Rails.application.routes.draw do
   post 'admin/tools/fetch_economic_data', to: 'admin#fetch_economic_data', as: 'admin_economic_fetch'
   post 'admin/tools/process_additional_charges', to: 'admin#process_additional_charges', as: 'admin_process_additional_charges'
   post 'admin/tools/approve_additional_charges', to: 'admin#approve_additional_charges', as: 'admin_approve_additional_charges'
+  post 'admin/tools/import_ftp_uploads', to: 'admin#import_ftp_uploads', as: 'admin_import_ftp_uploads'
   
   #Affiliate
   get 'affiliate/dashboard', to: 'affiliate#dashboard', as: 'affiliate_dashboard'

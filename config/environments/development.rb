@@ -39,5 +39,6 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
   EShip::HOST_ADDRESS = 'http://test.eship.dk/'
+  Eship::EPAY_MERCHANT_NUMBER = '8027230'
 
 end
