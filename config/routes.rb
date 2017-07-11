@@ -69,7 +69,11 @@ Rails.application.routes.draw do
   root 'sessions#index'
   post 'login', to: 'sessions#login_attempt'
   get 'home', to: 'sessions#home'
-  get 'logout', to: 'sessions#logout'
+  get 'logout', to: 'sessions#logout'  
+  get 'forgot_password', to: 'sessions#forgot_password'
+  post 'reset_password', to: 'sessions#reset_password'
+  get 'urp/:email/:key', as: 'new_password', to: 'sessions#new_password', :constraints => { :email => /[^\/]+/ }
+  post 'update_password', to: 'sessions#update_password'
 
   #eShip API
   post 'api/products', to: 'api#product_codes'

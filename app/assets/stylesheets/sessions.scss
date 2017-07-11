@@ -44,6 +44,10 @@ body {
   border-top-right-radius: 0;
 }
 
+.form-signin .end{
+  margin-bottom: 10px !important;
+}
+
 .login-logo{
     width: 300px;
     height: 108px;
@@ -51,4 +55,13 @@ body {
     background-size:     cover;
     background-repeat:   no-repeat;
     background-position: center center;    
+}
+
+.link-forgot-password{
+  text-align: center;
+  padding-top: 20px;
+}
+
+.link-forgot-password a{
+  color: black;  
 }

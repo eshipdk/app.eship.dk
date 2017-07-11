@@ -34,31 +34,31 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     	 	<% if flash[:error] %>
     	 		<div class='alert alert-danger'>
-				    <strong>Error:</strong>
-				    <ul>
-				    	<% if flash[:error].is_a?(String) %>
-				    		<li><%= flash[:error] %></li>
-				    	<% else %>
+				    <strong>Error:</strong>			    
+			    	<% if flash[:error].is_a?(String) %>
+			    		<%= flash[:error] %>
+			    	<% else %>
+			    		<ul>
 					    	<% flash[:error].each do |e| %>
 				    		<li><%= e %></li>
 					    	<% end %>
-				    	<% end %>
-				    </ul>
-
+				    	</ul>
+			    	<% end %>				    
 			    </div>
 		    <% end %>
 		    <% if flash[:success] %>
 		    	<div class='alert alert-success'>
-				    <strong>Success!</strong>
-				    <ul>
-				    	<% if flash[:success].is_a?(String) %>
-				    		<li><%= flash[:success] %></li>
-				    	<% else %>
-					    	<% flash[:success].each do |e| %>
-				    		<li><%= e %></li>
-					    	<% end %>
+				    <strong>Success!</strong>				    
+			    	<% if flash[:success].is_a?(String) %>
+			    		<%= flash[:success] %><
+			    	<% else %>
+			    	<ul>
+				    	<% flash[:success].each do |e| %>
+			    		<li><%= e %></li>
 				    	<% end %>
 				    </ul>
+			    	<% end %>
+			    
 
 			    </div>
 		    <% end %>

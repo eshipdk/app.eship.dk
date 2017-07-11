@@ -1,10 +1,15 @@
-<% @page_title = "UserAuth | Login" -%>
-<div class= "login_form">
-	<h1>Welcome to eShip.dk!</h1>
-  	<h3>Please sign in..</h3>
-  	<%= form_tag(:action => 'login_attempt') do %>
-  	<p>Email:</br> <%= text_field_tag(:email) %></p> 
-  	<p>Password:</br> <%= password_field_tag :login_password %></p> 
-  	<%= submit_tag("Log in") %>
-  	<% end %>
-</div>
+ <div class="form-signin">
+	<%= form_tag(:action => 'login_attempt') do %>
+	<div class='login-logo'></div>
+    <h2 class="form-signin-heading">Please sign in</h2>
+    
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <input type="email" name='email' id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" name='login_password' id="inputPassword" class="form-control end" placeholder="Password" required >
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <% end %>
+    <div class='link-forgot-password'>
+    	<a href="<%= url_for forgot_password_path %>">I forgot my password</a>
+    </div>    
+  </div>

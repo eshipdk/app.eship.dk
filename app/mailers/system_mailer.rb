@@ -20,4 +20,9 @@ class SystemMailer < ApplicationMailer
     mail(to: EShip::WEBMASTER_MAIL, subject: "Failed importing #{filename} from ftp uploads..")
   end
   
+  def send_reset_password_link user    
+    @user = user
+    mail(to: user.email, subject: "Reset password to eship.dk")
+  end
+  
 end

@@ -41,8 +41,46 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to '/'
   end
+  
+  def forgot_password    
+  end
+  
+  def reset_password
+    mail = params[:email]
+    user = User.find_by_email(mail)
+    if user
+      user.password_reset_key = rand(36**64).to_s(36)
+      user.save
+      SystemMailer.send_reset_password_link(user).deliver_now
+    end
+    
+    flash[:notice] = "A mail has been sent with instructions on how to reset your password."
+    redirect_to '/'
+  end
 
+  def new_password
+    email = params[:email]
+    key = params[:key]
+    user = User.find_by_email(email)
+    if user and user.password_reset_key == key
+      @email = email
+      @key = key
+    else
+      redirect_to '/'  
+    end    
+  end
 
-
+  def update_password
+    email = params[:email]
+    key = params[:key]
+    user = User.find_by_email(email)
+    if user and user.password_reset_key == key
+      user.password = params[:password]
+      user.password_reset_key = nil
+      user.save
+      flash[:notice] = 'Your password has been updated!'
+    end
+    redirect_to '/'         
+  end
 
 end
