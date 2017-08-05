@@ -19,6 +19,7 @@
 	      <th>Product</th>
 	      <th>Booking state</th>
 	      <th>Shipping state</th>
+      	  <th><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></th>
 	    </tr>
 	    <tr class='model-filters'>
 	    	<td><input class='form-control' type='text' name='id' value='<%= params[:id] %>'/></td>
@@ -29,8 +30,13 @@
 	    		<%= date_filter %>
 	    	</td>
 	    	<td></td>
+	    	<td>
+	    		<%= bssel :booking_state, options_for_select(Shipment.booking_state_options(false), params[:booking_state]) %>
+	    	</td>
+	    	<td>
+	    		<%= bssel :shipping_state, options_for_select(Shipment.shipping_state_options(false), params[:shipping_state]) %>
+	    	</td>
 	    	<td></td>
-	    	<td><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></td>
 	    </tr>
 	</thead>
     <tbody>
@@ -44,6 +50,7 @@
 		      <td><%= shipment.product.name %></td>
 		      <td><%= shipment.status.capitalize %></td>
 		      <td><%= shipment.shipping_state.capitalize %></td>
+		      <td></td>
 	    	</tr>
 	    <% end %>
 	</tbody>

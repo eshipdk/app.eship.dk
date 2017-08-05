@@ -19,6 +19,12 @@ class ShipmentsController < ApplicationController
     if params[:awb] != nil and params[:awb] != ''
       @shipments = @shipments.where('awb LIKE ?', "%#{params[:awb]}%")
     end
+    if params[:booking_state] != nil and params[:booking_state] != ''     
+      @shipments = @shipments.where(:status => Shipment.statuses[params[:booking_state]])
+    end
+    if params[:shipping_state] != nil and params[:shipping_state] != ''
+      @shipments = @shipments.where(:shipping_state => Shipment.shipping_states[params[:shipping_state]])
+    end
     @shipments = @shipments.order(id: :desc).paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
   end
 

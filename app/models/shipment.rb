@@ -160,6 +160,23 @@ class Shipment < ActiveRecord::Base
     {(self.label_action_title :print) => :print, (self.label_action_title :email) => :email}
   end
   
+  def self.booking_state_options required = true
+    opts = Shipment.statuses.map { |key, value| [key.humanize, key] } 
+    if not required
+      opts.unshift(['', ''])
+    end
+    return opts  
+  end
+  
+  def self.shipping_state_options required = true
+    opts = Shipment.shipping_states.map { |key, value| [key.humanize, key] } 
+    if not required
+      opts.unshift(['', ''])
+    end
+    return opts  
+  end
+  
+  
   def self.label_action_title code
     case code.to_s
     when 'print'
