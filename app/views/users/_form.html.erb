@@ -69,6 +69,7 @@
 	  				Billing type
 		  			</th>
 		  			<th>Unit price (for flat rate pricing)</th>
+		  			<th>Invoice failed bookings (flat rate only)</th>
 		  			<th>
 		  				Payment method
 		  			</th>
@@ -84,6 +85,9 @@
 		  			</td>
 		  			<td>
 		  				<%= f.bsnum_field :unit_price, :step=>'any' %>
+		  			</td>
+		  			<td>
+		  				<%= bschckbx 'user[invoice_failed_bookings]', "1", @user.invoice_failed_bookings %>
 		  			</td>
 		  			<td>
 		  				<%= f.bssel :payment_method, User.payment_method_options %>

@@ -45,7 +45,11 @@ class Shipment < ActiveRecord::Base
     if user.customer_type == 'shipping'
       return self.complete.where(['invoiced = false AND (shipping_state IN (2, 3, 5))', false])
     else
-      return self.complete.where(['invoiced = ?', false])
+      if user.invoice_failed_bookings
+        return self.where(['invoiced = ?', false])
+      else
+        return self.complete.where(['invoiced = ?', false])  
+      end
     end
     #self.complete.where(invoiced: false)
   }

@@ -151,8 +151,10 @@ class UsersController < ApplicationController
                                      :affiliate_commission_rate,
                                      :affiliate_base_house_amount,
                                      :affiliate_minimum_invoice_amount,
-                                     :enable_ftp_upload, :ftp_upload_user)
+                                     :enable_ftp_upload, :ftp_upload_user,
+                                     :invoice_failed_bookings)
    p[:enable_ftp_upload] = p.key?(:enable_ftp_upload) and p[:enable_ftp_upload]
+   p[:invoice_failed_bookings] = p.key?(:invoice_failed_bookings) and p[:invoice_failed_bookings]
    return p
   end
     

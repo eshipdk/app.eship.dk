@@ -145,6 +145,9 @@ class User < ActiveRecord::Base
     total_fee = 0
     total_cost = 0
     shipments.each do |shipment|
+      if !shipment.final_price
+        shipment.determine_value
+      end
       total_price += shipment.final_price
       total_fee += shipment.final_diesel_fee
       total_cost += shipment.cost
