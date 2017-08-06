@@ -39,6 +39,7 @@
 					<th>Weight to (&gt; weight)</th>
 					<th>Cost DKK</th>
 					<th>Default Markup DKK</th>
+					<th>Default price</th>
 					<th class="col-md-1">Remove</th>
 				</tr>
 			</thead>
@@ -57,14 +58,20 @@
 				</td>
 				<td>
 					<%= hidden_field("pricing_scheme[rows_attributes][#{i}]", 'id', :value => row.id)%>
-					<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'value', :value => row.value)%>
+					<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'value', :value => row.value,
+					:onchange => "updateDefaultPrice(this);", :class => 'input-cost')%>
 				</td>
 				<td>
-					<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'default_markup', :value => row.default_markup)%>
+					<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'default_markup', :value => row.default_markup,
+					:onchange => "updateDefaultPrice(this);", :class => 'input-markup')%>
 				</td>
 				<td>
-					<%= bschckbx("pricing_scheme[rows_attributes][#{i}][remove]", '1') %>
+					<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'default_price', 
+					:value => row.value + row.default_markup, :disabled => true, :class => 'input-price')%>
 				</td>
+				<td>
+					<%= bschckbx("pricing_scheme[rows_attributes][#{i}][remove]", '1',) %>
+				</td>				
 			</tr>
 			<% i+=1 %>
 			<% end %>
@@ -97,10 +104,15 @@
 			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'weight_to')%>
 		</td>
 		<td>
-			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'value')%>
+			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'value',
+			:onchange => "updateDefaultPrice(this);", :class => 'input-cost')%>
 		</td>
 		<td>
-			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'default_markup')%>
+			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'default_markup',
+			:onchange => "updateDefaultPrice(this);", :class => 'input-markup')%>
+		</td>
+		<td>
+			<%= bstxt_field("pricing_scheme[rows_attributes][{{x}}]", 'default_price', :class => 'input-price', :disabled => true)%>
 		</td>
 		<td>
 			<button onclick='removeRow({{x}})' type='button' class='btn btn-danger btn-block'>X</button>
@@ -126,6 +138,13 @@
 	function removeRow(i){
 		var row = $('#row-' + i);
 		row.remove();
+	}
+	
+	function updateDefaultPrice(caller){
+		var row = $(caller).parents().eq(1);
+		var costField = row.find('.input-cost');		
+		var markupField = row.find('.input-markup');			
+		row.find('.input-price').val(parseFloat(costField.val()) + parseFloat(markupField.val()));
 	}
 </script>
 
