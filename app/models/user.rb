@@ -54,8 +54,13 @@ class User < ActiveRecord::Base
     [["Admin", :admin], ["Customer", :customer], ['Affiliate', :affiliate]]
   end
   
-  def self.role_options
-    {'Admin' => :admin, 'Customer' => :customer, 'Affiliate' => :affiliate}
+  def self.role_options required = true
+    opts = {'Admin' => :admin, 'Customer' => :customer, 'Affiliate' => :affiliate}
+    opts = User.roles.map { |key, value| [key.humanize, key] }
+    if not required
+      opts.unshift(['', ''])
+    end
+    return opts
   end
   
   def self.billing_type_options

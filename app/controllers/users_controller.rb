@@ -5,6 +5,16 @@ class UsersController < ApplicationController
 
   def index
     @users = User.all.paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
+    @users = @users.joins(:contact_address)
+    if params[:name]
+      @users = @users.where(['users.email LIKE ? or addresses.company_name LIKE ?', "%#{params[:name]}%", "%#{params[:name]}%"])
+    end
+    if params[:email]
+      @users = @users.where(['users.email LIKE ?', "%#{params[:email]}%"])
+    end
+    if params[:role] and params[:role] != ''
+      @users = @users.where(:role => User.roles[params[:role]])
+    end
   end
 
   def show
