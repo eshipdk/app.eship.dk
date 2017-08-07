@@ -9,15 +9,24 @@
 				<th>Last invoice date</th>
 				<th>Uninvoiced shipments</th>
 				<th>Uninvoiced additional charges</th>
+				<th>Cost</th>
+				<th>Price</th>
+				<th>Diesel fee</th>
+				<th>Total balance</th>
 				<th>User Billing Overview</th>
 			</thead>
 			<tbody>
 				<% @users.each do |user| %>
+				<% cost, price, diesel_fee = user.balance %>
 				<tr>
 					<td><%= link_to user.name, user_path(user) %></td>
 					<td><%= print_date user.last_invoice_date %></td>
 					<td><%= user.n_uninvoiced_shipments %></td>
 					<td><%= user.n_uninvoiced_additional_charges %></td>
+					<td><%= currency cost %></td>
+					<td><%= currency price %></td>
+					<td><%= currency diesel_fee %></td>
+					<td><%= currency price + diesel_fee %></td>
 					<td><%= link_to 'Billing', user_billing_path(user) %></td>
 				</tr>
 				<% end %>
