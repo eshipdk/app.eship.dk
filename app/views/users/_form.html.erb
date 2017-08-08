@@ -22,41 +22,43 @@
  				<tr>
 		 			<th>Email</th>
 		 			<th>Privilege</th>
-		 			<th>Cargoflux API key</th>
-		 			<th>eShip API key</th>
+		 			<th>Password<% if not @user.new_record? %> (Leave blank to keep existing)<% end %></th>
+					<th>Repeat password</th>
+					<th>e-conomic customer</th>		 			
 		 		</tr>
  			</thead>
 	 		<tbody>
 	 			<tr>
 		 			<td><%= f.bstxt_field :email %></td>
 		 			<td><%= f.bssel :role, User.role_options %></td>
-		 			<td><%= f.bstxt_field :cargoflux_api_key %></td>
-		 			<td><% if !@user.new_record? %><%= f.bstxt_field :eship_api_key, :disabled => true %><% end %></td>
+		 			<td><%= f.password_field :password %></td>
+					<td><%= f.password_field :password_confirmation %></td>
+					<td>
+						<%= f.bssel :economic_customer_id, @economic_customers %>
+					</td>		 			
 		 		</tr>
 	 		</tbody>
 		</table>
+		<div class='hide-affiliate'>
 	  	<table class='table table-striped'>
 	  		<thead>
 	  			<tr>
-					<th>Password<% if not @user.new_record? %> (Leave blank to keep existing)<% end %></th>
-					<th>Repeat password</th>
-					<th>e-conomic customer</th>
+					<th>Cargoflux API key</th>
+		 			<th>eShip API key</th>					
 					<th>Affiliate User</th>
 				</tr>
 	  		</thead>
 			<tbody>
 				<tr>
-					<td><%= f.password_field :password %></td>
-					<td><%= f.password_field :password_confirmation %></td>
-					<td>
-						<%= f.bssel :economic_customer_id, @economic_customers %>
-					</td>
+					<td><%= f.bstxt_field :cargoflux_api_key %></td>
+		 			<td><% if !@user.new_record? %><%= f.bstxt_field :eship_api_key, :disabled => true %><% end %></td>				
 					<td>
 						<%= f.bssel :affiliate_id, @affiliate_users %>
 					</td>
 				</tr>
 			</tbody>
-		</table>		
+		</table>	
+		</div>	
  	</div>
  </div>
  <div class='panel panel-default hide-affiliate'>
