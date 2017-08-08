@@ -59,7 +59,7 @@
 		</table>		
  	</div>
  </div>
- <div class='panel panel-default'>
+ <div class='panel panel-default hide-affiliate'>
  	<div class='panel-heading'>Billing</div>
  	<div class='panel-body'>
  		<table class='table table-striped'>
@@ -122,8 +122,28 @@
 		</table>
  	</div>
  </div>
-
- <div class='panel panel-default'>
+<div class='panel panel-default hide-affiliate'>
+ 	<div class='panel-heading'>
+ 		FTP Upload Import
+ 	</div>
+ 	<div class='panel-body'>
+		<table class='table table-striped'>
+	  		<thead>
+	  			<tr>
+					<th>Enable FTP upload import</th>
+					<th>FTP user</th>					
+				</tr>
+	  		</thead>
+			<tbody>
+				<tr>					
+					<td><%= bschckbx 'user[enable_ftp_upload]', "1", @user.enable_ftp_upload %></td>
+					<td><%= f.bstxt_field :ftp_upload_user %></td>
+				</tr>
+			</tbody>
+		</table>
+ 	</div>
+ </div>
+ <div class='panel panel-default hide-customer'>
    <div class='panel-heading'>
      Affiliate Commission
    </div>
@@ -146,27 +166,7 @@
      </table>
    </div>
  </div>
- <div class='panel panel-default'>
- 	<div class='panel-heading'>
- 		FTP Upload Import
- 	</div>
- 	<div class='panel-body'>
-		<table class='table table-striped'>
-	  		<thead>
-	  			<tr>
-					<th>Enable FTP upload import</th>
-					<th>FTP user</th>					
-				</tr>
-	  		</thead>
-			<tbody>
-				<tr>					
-					<td><%= bschckbx 'user[enable_ftp_upload]', "1", @user.enable_ftp_upload %></td>
-					<td><%= f.bstxt_field :ftp_upload_user %></td>
-				</tr>
-			</tbody>
-		</table>
- 	</div>
- </div>
+ 
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
  
@@ -176,9 +176,11 @@
 	function control_fields(){
 		$('#user_invoice_x_days').prop('disabled', !$('#radio_by_time').prop('checked'));
 		$('#user_invoice_x_balance').prop('disabled', !$('#radio_by_balance').prop('checked'));
+		$('.hide-affiliate').each(function () {	$(this).css('display', $('#user_role').val()!='affiliate' ? 'block' : 'none');});
+		$('.hide-customer').each(function() { $(this).css('display', $('#user_role').val()!='customer' ? 'block' : 'none');});
 	}
 	
-	$("input[name='user[billing_control]']").change(function(e){
+	$(".form-control").change(function(e){
     	control_fields();
 	});
 	control_fields();
