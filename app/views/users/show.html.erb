@@ -63,7 +63,7 @@
 	<div class='panel-body collapse' id='settings'>
 		<div class='panel panel-default'>
 			<div class='panel-heading'>
-				Profile
+				Profile and billing
 				<span class='pull-right'>
 					<a href='javascript:void(0);' type="button" class="btn btn-default" data-toggle="collapse" data-target="#profile">
 						Toggle</a>
@@ -128,8 +128,9 @@
 				<%= render :partial => 'addresses/display', :locals => {:address => @user.contact_address}%>
 			</div>
 		</div>
-		
+				
 		<% if !@user.affiliate? %>
+		<% if false %>
 		<div class='panel panel-default'>
 			<div class='panel-heading'>
 				Billing Configuration
@@ -171,7 +172,7 @@
 				</table>
 			</div>
 		</div>
-		
+		<% end %>
 		
 		<div class='panel panel-default'>
 			<div class='panel-heading'>
