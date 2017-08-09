@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   before_create :create_unique_api_key
   before_save :encrypt_password
   after_save :clear_password
-
+  after_save :fill_contact_address
 
 
   def self.authenticate(email="", login_password="")
@@ -447,6 +447,12 @@ class User < ActiveRecord::Base
   end
   def clear_password
     self.password = nil
+  end
+  
+  def fill_contact_address    
+    if economic_customer_id and (not contact_address.company_name or contact_address.company_name == '')
+      Economic.update_user_address self
+    end
   end
   
 

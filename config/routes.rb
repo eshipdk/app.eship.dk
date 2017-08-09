@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       post :add_product
       post :set_product_alias
       post :remove_product
+      post :fetch_address_from_economic
       get :edit_products
       get :edit_contact_address
       

@@ -29,6 +29,21 @@ module Economic
     return get(BASE_ENDPOINT + "customers/#{id}")
   end
   
+  def update_user_address user
+    data = get_customer_data user.economic_customer_id  
+    addr = user.contact_address
+    addr.company_name = data['name']
+    addr.attention = ''
+    addr.address_line1 = data['address']
+    addr.address_line2 = ''
+    addr.country_code = data['country']
+    addr.zip_code = data['zip']
+    addr.city = data['city']
+    addr.phone_number = data['mobilePhone']
+    addr.email = data['email']
+    addr.save    
+  end
+  
   
   def submit_invoice invoice
     match(invoice_payload(invoice)) do

@@ -157,6 +157,11 @@ class UsersController < ApplicationController
     render :text => 'ok'
   end
   
+  def fetch_address_from_economic
+    user = User.find params[:id]
+    Economic.update_user_address user
+    redirect_to(:back)
+  end
 
   private
 
