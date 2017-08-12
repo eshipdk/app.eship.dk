@@ -86,11 +86,29 @@ class ShipmentsController < ApplicationController
     if !sender.valid? || !recipient.valid?
       render 'new'
       return
-    end
-
+    end       
 
     sender.save
     recipient.save
+    
+    if params[:save_quick_sender]
+      sender_clone = sender.clone
+      sender_clone.save
+      record = AddressBookRecord.new
+      record.user = @current_user
+      record.address = sender_clone
+      record.quick_select_sender = true
+      record.save    
+    end
+    if params[:save_quick_recipient]
+      recipient_clone = recipient.clone
+      recipient_clone.save
+      record = AddressBookRecord.new
+      record.user = @current_user
+      record.address = recipient_clone
+      record.quick_select_recipient = true
+      record.save    
+    end
 
     @shipment.sender_address_id = sender.id
     @shipment.recipient_address_id = recipient.id

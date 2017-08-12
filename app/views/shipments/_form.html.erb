@@ -152,10 +152,18 @@
 	<div class='panel-heading'>Addresses</div>
 	<div class='panel-body'>
 		<div class='col-lg-6'>
-			<%= render :partial => 'address_form', :locals => {:prefix => 'sender', :address => (form_address @shipment, 'sender')} %>	
+			<%= render :partial => 'address_form', :locals => {:prefix => 'sender', :address => (form_address @shipment, 'sender')} %>
+			<% if not @shipment.id %>
+			<span class='pull-right'><%= bschckbx :save_quick_sender %></span>
+			<label for='save_quick_sender'>Add sender to "Quick select sender"</label>
+			<% end %>
 		</div>
 		<div class='col-lg-6'>
 			<%= render :partial => 'address_form', :locals => {:prefix => 'recipient', :address => (form_address @shipment, 'recipient')} %>
+			<% if not @shipment.id %>
+			<span class='pull-right'><%= bschckbx :save_quick_recipient %></span>
+			<label for='save_quick_recipient'>Add recipient to "Quick select recipient"</label>
+			<% end %>
 		</div>		
 	</div>
 </div>
