@@ -11,14 +11,22 @@
 			<th>Name</th>
 			<th>Code</th>
 			<th></th>
-			<th>Cost</th>			
+			<th>Cost</th>
+			<th>Status</th>
 		</tr>
 		<% @products.each do |product| %>
 		<tr>
 			<td><%= product.name %></td>
 			<td><%= product.product_code %></td>
 			<td><%= link_to 'Edit', edit_product_path(product) %></td>
-			<td><%= link_to 'Configure cost', edit_cost_product_path(product) %></td>			
+			<td><%= link_to 'Configure cost', edit_cost_product_path(product) %></td>	
+			<td>
+				<% if product.disabled %>
+				<%= glyphicon 'minus-sign'%>
+				<% else %>
+				<%= glyphicon 'ok-sign' %>
+				<% end %>
+			</td>		
 		</tr>
 		<% end %>
 	</table>

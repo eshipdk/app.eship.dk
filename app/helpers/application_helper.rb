@@ -83,4 +83,8 @@ end
   def date_filter
     render :partial => 'layouts/date_filter'
   end
+  
+  def glyphicon name
+    "<span class='glyphicon glyphicon-#{name}'></span>".html_safe
+  end
 end
