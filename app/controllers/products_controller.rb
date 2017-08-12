@@ -2,7 +2,7 @@ class ProductsController < ApplicationController
   before_filter :authenticate_admin
 
   def index
-    @products = Product.all.paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE)
+    @products = Product.all.paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE).order(:disabled, :name)
   end
 
   def show

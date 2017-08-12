@@ -74,7 +74,7 @@ class UsersController < ApplicationController
 
   def edit_products
     @user = User.find(params[:id])
-    @products = Product.where(:disabled => false)
+    @products = Product.where(:disabled => false).order(:name)
   end
   
   def edit_contact_address
