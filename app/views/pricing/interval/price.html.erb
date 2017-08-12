@@ -46,6 +46,7 @@
 					<th>Cost</th>
 					<th>Default Markup</th>
 					<th>Markup <span class="pull-right"><button onclick="copyDefaultMarkup();" type="button" class="btn btn-primary">Use defaults</button></span></th>
+					<th>Total Price</th>
 					<th><label for="markup-active-all">Active</label><input type="checkbox" id="markup-active-all" onclick="toggleMarkupActiveAll()"/></th>
 				</tr>
 			</thead>
@@ -66,13 +67,20 @@
 					</td>
 					<td>
 						<%= currency row.cost_break.value %>
+						<%= hidden_field("pricing_scheme[rows_attributes][#{i}]", 'cost', :value => row.cost_break.value,
+					:onchange => "updateDefaultPrice(this);", :class => 'input-cost')%>
 					</td>
 					<td>
 						<%= currency row.cost_break.default_markup %>
 						<input type="hidden" id="default-markup-<%= i %>" value=<%= row.cost_break.default_markup %>>
 					</td>
 					<td>
-						<%= bstxt_field("pricing_scheme[markup_rows_attributes][#{row.id}]", 'markup', :value => row.markup, :id => "markup-#{i}")%>
+						<%= bstxt_field("pricing_scheme[markup_rows_attributes][#{row.id}]", 'markup',
+						:value => row.markup, :id => "markup-#{i}", :onchange => "updatePrice(this);", :class => 'input-markup')%>
+					</td>
+					<td>
+							<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'price', 
+							:value => row.cost_break.value + row.markup, :disabled => true, :class => 'input-price')%>
 					</td>
 					<td>
 						<%= bschckbx("pricing_scheme[markup_rows_attributes][#{row.id}][active]", '1', row.active, {:class => 'markup-active'})%>
@@ -91,6 +99,7 @@
 	function copyDefaultMarkup(){
 		for(i=0; i<N_MARKUPS; i++){
 			$('#markup-' + i).val($('#default-markup-' + i).val());
+			$('#markup-' + i).change();
 		}
 	}
 	
@@ -124,6 +133,13 @@
 	$(document).ready(function(){
 		updateMarkupActiveAll();
 	});
+	
+	function updatePrice(caller){
+		var row = $(caller).parents().eq(1);
+		var costField = row.find('.input-cost');		
+		var markupField = row.find('.input-markup');			
+		row.find('.input-price').val(parseFloat(costField.val()) + parseFloat(markupField.val()));
+	}
 </script>
 
 
