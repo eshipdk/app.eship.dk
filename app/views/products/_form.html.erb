@@ -46,6 +46,7 @@
 				<tr>
 				  <th>Has Parcelshops</th><th>Parcelshop Discovery url</th>
 	              <th>Return Product</th>
+	              <th>Disabled</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -58,6 +59,9 @@
 					</td>
                     <td>
                       <%= f.bssel :return_product_id, Product.options %>
+                    </td>
+                    <td>
+                    	<%= f.bschckbx :disabled %>
                     </td>
 				</tr>
 			</tbody>
