@@ -1,4 +1,4 @@
-<li>
+<li <%= (defined? regex) and regex =~ request.fullpath ? 'class="active"'.html_safe : '' %>>
 	<a href='<%= url_for path %>' class='img-link <%= (defined? img) ? img : '' %>'><%= title %>
 	</a>
 </li>
