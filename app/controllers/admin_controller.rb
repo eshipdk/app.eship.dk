@@ -104,13 +104,22 @@ class AdminController < ApplicationController
   def process_additional_charges
     uploaded_file = params[:file]
     spreadsheet = Roo::Spreadsheet.open(uploaded_file)    
+        
     
+        
     @charges = []
     header = spreadsheet.row(1).map{|x| x.downcase}
+    required_headers = ['awb', 'beskrivelse', 'beløb']
+    required_headers.each do |h|
+      if not header.include?(h)
+        flash[:error] = "File misses column: #{h}"
+        redirect_to :back
+        return
+      end
+    end
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      awb = row['pakke nr.']
-      
+      awb = row['awb']      
       if awb
         service = row['beskrivelse']
         cost = row['beløb']
@@ -118,7 +127,13 @@ class AdminController < ApplicationController
         if not price
           price = cost
         end
-        shipment = Shipment.where(awb: awb).first!
+        begin
+          shipment = Shipment.where(awb: awb).first!
+        rescue ActiveRecord::RecordNotFound
+            flash[:error] = "Shipment with awb #{awb} does not exist!"
+            redirect_to :back
+            return
+        end
         user = shipment.user
         @charges.push(ChargeDraft.new(shipment, user, cost, price, service))
       end      
