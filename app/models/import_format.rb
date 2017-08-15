@@ -83,20 +83,41 @@ class ImportFormat < ActiveRecord::Base
   # the remaining import format
   def func_val key, row
     func = (ImportFormat.func_val_func_match key).to_s
-    params = (ImportFormat.func_val_param_match key).to_s
-    if func == 'zipprod'
+    params = (ImportFormat.func_val_param_match key).to_s.split(',')
+        
+    case func
+    when 'zip_prod'      
+      # example format: {zip_prod:0-2000=glsboc,2001-5000=glspoc}
       zip = (row_val user, row, 'recipient_zip_code').to_i
-      str_intervals = params.split(',')
-      str_intervals.each do |str_interval|     
-        from, to = str_interval.scan(/\d+/)        
-        prod = str_interval.match(/(?<=\=).*/).to_s       
-        if from.to_i <= zip and zip <= to.to_i
-          return prod
-        end    
+      prod = match_str_intervals params, zip
+      if prod
+        return prod
+      end      
+      raise CsvImportException.new "Zip-to-prod function: no matching intervals for zip code #{zip}"
+    when 'column_interval_prod'
+      # example format: {column_interval_prod:6,0-2000=glsboc,2001-5000=glspoc}
+      # where 6 is the input column
+      column = params.shift.to_i            
+      target = row[column - 1].to_i # make up for one-indexed parameters      
+      prod = match_str_intervals params, target      
+      if prod
+        return prod
       end
-      raise "Zip-to-prod function: no matching intervals for zip code #{zip}"      
+      raise CsvImportException.new "Column-to-prod function: no matching intervals for input #{target}"
+    else
+      raise CsvImportException.new "Unknown functional import key: #{func}"      
+    end    
+  end
+  
+  def match_str_intervals str_intervals, target
+    str_intervals.each do |str_interval|
+      from, to = str_interval.scan(/\d+/)
+      val = str_interval.match(/(?<=\=).*/).to_s
+      if from.to_i <= target and target <= to.to_i
+        return val
+      end
     end
-    raise "Unknown functional import key: #{func}"
+    return false
   end
 
   def cols

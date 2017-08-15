@@ -8,8 +8,11 @@ module CsvImporter
   def self.import_csv content, user
 
     delimiter = user.import_format.delimiter
-    lines = CSV.parse content, {:col_sep => delimiter, :skip_blanks => true}
-    
+    begin
+      lines = CSV.parse content, {:col_sep => delimiter, :skip_blanks => true}
+    rescue StandardError => e
+      raise CsvImportException.new(e.to_s)
+    end
     validation = validate_csv_values lines, user
 
     if !validation['error']
