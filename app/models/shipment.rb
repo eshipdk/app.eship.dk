@@ -284,11 +284,15 @@ class Shipment < ActiveRecord::Base
     return self.price, nil
   end
   
-  def calculate_diesel_fee
+  def calculate_diesel_fee cache = true
     if user.billing_type != 'advanced'
       return 0
     end
-    price, _ = get_price
+    if cache
+      price, _ = get_price
+    else
+      price, _ = calculate_price false
+    end
     scheme = product.price_scheme(user)
     if recipient.country_code == 'DK'
       if scheme.diesel_fee_dk_enabled?

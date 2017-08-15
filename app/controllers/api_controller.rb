@@ -206,6 +206,26 @@ class ApiController < ApplicationController
     api_success
   end
   
+  def get_price
+    packages = []
+    @api_params['packages'].each do |pdata|
+      p = Package.new
+      p.length = pdata['length']
+      p.width = pdata['width']
+      p.height = pdata['height']
+      p.weight = pdata['weight'].to_i           
+      p.amount = pdata['amount'].to_i
+      packages.push p
+    end
+       
+    response = {}
+    params['product_ids'].each do |product_id|
+      product = Product.find product_id
+      price, issue = PriceEstimation.estimate_price @current_user, product, packages, @api_params['countryFrom'], @api_params['countryTo']    
+      response[product_id]={:price => price, :issue => issue}
+    end           
+    render :text => response.to_json, :content_type => 'application/json'
+  end
   
 # POSTNORD API 
   

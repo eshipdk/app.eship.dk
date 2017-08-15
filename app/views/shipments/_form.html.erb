@@ -210,7 +210,11 @@
 		      'Content-Type': 'application/json'
 		   	},
 	        success: function(data){
-	        	$('#price-container').html(currency(data['price']));	        	
+	        	if(data['issue']!=''){
+	        		$('#price-container').text(data['issue']);
+	        	}else{
+	        		$('#price-container').html(currency(data['price']));	
+	        	}	        	
 	        },
 	        failure: function(errMsg) {
 	            alert(errMsg);

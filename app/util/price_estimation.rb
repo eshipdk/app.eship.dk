@@ -18,8 +18,11 @@ def estimate_price user, product, packages, country_from, country_to
   recipient.country_code = country_to
   shipment.recipient = recipient
      
-  price, issue = shipment.calculate_price false
-  diesel_fee = shipment.calculate_diesel_fee
+  price, issue = shipment.calculate_price false  
+  if not price
+    return price, issue
+  end
+  diesel_fee = shipment.calculate_diesel_fee false
   return price + diesel_fee, issue
 end
 
