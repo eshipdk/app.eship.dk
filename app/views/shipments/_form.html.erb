@@ -124,10 +124,10 @@
 						<%= fp.bsnum_field :height %>
 					</td>
 					<td>
-						<%= fp.bsnum_field :weight, :step => 'any' %>
+						<%= fp.bsnum_field :weight, :step => 'any', :onchange => 'getPrice()' %>
 					</td>
 					<td>
-						<%= fp.bsnum_field :amount %>
+						<%= fp.bsnum_field :amount, :onchange => 'getPrice()' %>
 					</td>
 				</tr>
 				<% end %>
@@ -169,11 +169,55 @@
 </div>
 
 
-
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Your price
+		<span class='pull-right' id='price-container'>
+			<a href='javascript:getPrice();'>Get price..</a>
+		</span>
+	</div>	
+</div>
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 
 <script type='text/javascript'>
+
+
+	function getPrice(){		
+		var countryFrom = $('#sender_country_code').val();
+		var countryTo = $('#sender_country_code').val();		
+		
+		if(!countryFrom || !countryFrom){
+			return;
+		}	
+		
+		var data = {'product_id': $('#shipment_product_id').val(), 'countryFrom': countryFrom, 'countryTo': countryTo, 'packages': []};
+		
+		var package_fields = ['length', 'width', 'height', 'weight', 'amount'];		
+		for(var i=0; i<nPackages; i++){
+			data['packages'].push({});									
+			for(var j=0; j<package_fields.length; j++){
+				var f = package_fields[j];
+				data['packages'][i][f] = $('#shipment_packages_attributes_' + (i == 0 ? 0 : i + 1) + '_' + f).val();
+			}			
+		}
+	 	$.ajax({
+	        type: "POST",
+	        url: "/shipments/calculate_price",
+	        data: JSON.stringify(data),
+         	headers: {
+		      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'), // Optional
+		      'Content-Type': 'application/json'
+		   	},
+	        success: function(data){
+	        	$('#price-container').html(currency(data['price']));	        	
+	        },
+	        failure: function(errMsg) {
+	            alert(errMsg);
+	        }
+  		});		
+	}
+
 	var nPackages = <%= i_package %>;
 	function addPackage(){
 		var baseRow = $('#package-row-1');
@@ -185,6 +229,7 @@
 		newRow.innerHTML = html;
 		$('#package-table').append(newRow);
 		$('#btn-remove-package').prop('disabled', false);
+		getPrice();
 	}
 	
 	function removePackage(){
@@ -197,6 +242,7 @@
 		if(nPackages < 2){
 			$('#btn-remove-package').prop('disabled', true);
 		}
+		getPrice();
 		return true;
 	}
 	
@@ -273,14 +319,16 @@
 	
 	
 	$(document).ready(function(){	
+		$('#sender_country_code').on('change', getPrice);
 		destCountrySelector = $('#recipient_country_code');
+		destCountrySelector.on('change', getPrice);		
 		if(destCountrySelector.val() == ""){ //Only set default values if this is a new shipment
 			productSelectUpdate($('#shipment_product_id').val());
 		}else{
 			setParcelshopStatus($('#shipment_product_id').val());
 			setAvailableCountries($('#shipment_product_id').val());
 		}
-	
+		getPrice();
 	});
 	
 </script>

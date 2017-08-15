@@ -39,11 +39,11 @@ class PricingScheme < ActiveRecord::Base
     raise self.to_s + 'Price update not implemented'
   end
   
-  def get_price shipment
+  def get_price shipment, cache = true
     raise self.to_s + 'Price calculation not implemented'
   end
   
-  def get_cost shipment
+  def get_cost shipment, cache = true
     raise self.to_s + 'Cost calculation not implemented'
   end
   

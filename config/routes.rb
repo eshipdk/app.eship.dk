@@ -39,7 +39,11 @@ Rails.application.routes.draw do
       get :copy
     end
   end
-  
+  post 'shipments/calculate_price', to: 'shipments#calculate_price'
+  post 'shipments/upload_csv', to: 'shipments#upload_csv'
+  get 'bulk_import', to: 'shipments#bulk_import'
+
+
   resources :invoices, only: [:show] do
     get :shipments
   end
@@ -52,9 +56,7 @@ Rails.application.routes.draw do
   end
   
   
-  post 'shipments/upload_csv', to: 'shipments#upload_csv'
-  get 'bulk_import', to: 'shipments#bulk_import'
-
+  
 
   resources :import_formats do
     member do

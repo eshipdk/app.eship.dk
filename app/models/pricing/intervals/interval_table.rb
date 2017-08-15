@@ -144,12 +144,13 @@ class IntervalTable < PricingScheme
     return true
   end
   
-  def get_cost shipment
-    return get_price shipment
+  def get_cost shipment, cache = true    
+    return get_price(shipment, cache)
   end
   
-  def get_price shipment
-      val = 0
+  
+  def get_price shipment, cache = true
+      val = 0      
       title = "#{shipment.product.name}: #{shipment.recipient.country_code}"
       
       if self.pricing_type == 'cost'
@@ -163,14 +164,18 @@ class IntervalTable < PricingScheme
           cost_row = get_cost_row cost_scheme, shipment, package
           if self.pricing_type == 'cost'
             package.cost = cost_row.value * package.amount
-            package.save
+            if cache
+              package.save
+            end
             val += package.cost
           else     
             markup_row = get_markup_row cost_row
             package.price = (markup_row.markup + cost_row.value) * package.amount
             package_class = "(#{cost_row.weight_from} - #{cost_row.weight_to} kg)"
             package.title = "#{title} #{package_class}"
-            package.save
+            if cache
+              package.save
+            end
             val += package.price
           end
         rescue ActiveRecord::RecordNotFound

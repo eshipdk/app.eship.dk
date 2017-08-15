@@ -252,7 +252,7 @@ class Shipment < ActiveRecord::Base
     return self.cost, nil
   end
   
-  def calculate_price
+  def calculate_price cache = true
     issue = false
     case user.billing_type
     when 'free'
@@ -262,7 +262,7 @@ class Shipment < ActiveRecord::Base
     when 'advanced'
       begin
         scheme = product.price_scheme user
-        price = (scheme.get_price self).round(2)
+        price = (scheme.get_price(self, cache)).round(2)
       rescue PriceConfigException => e
         issue = e.issue
       end

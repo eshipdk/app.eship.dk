@@ -1,5 +1,6 @@
 include Cargoflux
 include CsvImporter
+include PriceEstimation
 class ShipmentsController < ApplicationController
   before_filter :authenticate_user, :except => ['callback']
   skip_before_action :verify_authenticity_token, :only => ['callback']
@@ -260,6 +261,25 @@ class ShipmentsController < ApplicationController
     end
     
     redirect_to :action => 'show'
+  end
+  
+  def calculate_price
+    
+    packages = []
+    params['packages'].each do |pdata|
+      p = Package.new
+      p.length = pdata['length']
+      p.width = pdata['width']
+      p.height = pdata['height']
+      p.weight = pdata['weight'].to_i           
+      p.amount = pdata['amount'].to_i
+      packages.push p
+    end
+       
+    product = Product.find params['product_id']
+    price, issue = PriceEstimation.estimate_price @current_user, product, packages, params['countryFrom'], params['countryTo']   
+    response = {:price => price, :issue => issue}
+    render :text => response.to_json, :content_type => 'application/json'
   end
   
 
