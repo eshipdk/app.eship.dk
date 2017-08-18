@@ -86,6 +86,11 @@ module CsvImporter
     when 'B'
       product_code = 'glsb'
       is_return = 1
+    when 'M'
+      product_code = 'glspri'
+    when 'R'
+      product_code = 'glspri'
+      is_return = 1
     when '4'
       raise import_error 'Express10Service not supported.', line
     when '5'
