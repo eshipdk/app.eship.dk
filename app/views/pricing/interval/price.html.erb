@@ -68,7 +68,7 @@
 					<td>
 						<%= currency row.cost_break.value %>
 						<%= hidden_field("pricing_scheme[rows_attributes][#{i}]", 'cost', :value => row.cost_break.value,
-					:onchange => "updateDefaultPrice(this);", :class => 'input-cost' :disabled => true)%>
+					:onchange => "updateDefaultPrice(this);", :class => 'input-cost', :disabled => true)%>
 					</td>
 					<td>
 						<%= currency row.cost_break.default_markup %>
