@@ -187,8 +187,11 @@
 		var countryFrom = $('#sender_country_code').val();
 		var countryTo = $('#sender_country_code').val();		
 		
-		if(!countryFrom || !countryFrom){
-			return;
+		if(!countryFrom){
+			$('#price-container').text('Please enter sender country..');
+		}
+		if(!countryTo){
+			$('#price-container').text('Please enter recipient country..');
 		}	
 		
 		var data = {'product_id': $('#shipment_product_id').val(), 'countryFrom': countryFrom, 'countryTo': countryTo, 'packages': []};
