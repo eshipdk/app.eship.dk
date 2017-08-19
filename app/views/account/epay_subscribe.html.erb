@@ -1,8 +1,17 @@
 
 
-
 <h1 class="page-header">Subscription</h1>
+<% if @current_user.verify_epay_subscription %>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Payment Subscription</div>
+	<div class='panel-body'>
+		<%  data = @current_user.get_epay_subscription_data %>		
+		You have an active payment subscription (<%= data[:cardtypeid] %>).
+		 <%= link_to 'Click here to delete payment subscription.', epay_delete_subscription_path, {method: :post} %>
+	</div>
+</div>
 
+<% else %>
 <div class='panel panel-default'>
   <div class='panel-heading'>
     Register Payment Subscription
@@ -96,3 +105,4 @@
   }
   $('input').change(updateSubscribeButton);
 </script>
+<% end %>

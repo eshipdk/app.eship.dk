@@ -102,6 +102,7 @@ Rails.application.routes.draw do
   get 'account/invoices/:id/download', to: 'account#invoice_download', as: 'download_invoice'
   get 'account/invoices/:id/shipments', to: 'account#invoices_shipments', as: 'my_invoices_shipments'
   get 'account/epay_subscribe', to: 'account#epay_subscribe', as: 'epay_subscribe'
+  post 'account/epay_delete_subscription', to: 'account#epay_delete_subscription', as: 'epay_delete_subscription'
 
   #User settings
   get 'settings', to: 'settings#index', as: 'settings'

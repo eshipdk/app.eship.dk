@@ -36,4 +36,13 @@ module Epay
     end
   end
   
+  def get_subscription_data user
+    params = {
+      'merchantnumber' => EShip::EPAY_MERCHANT_NUMBER,
+      'subscriptionid' => user.epay_subscription_id.to_s
+    }
+    res = Savon.client(wsdl: SUBSCRIPTION_ENDPOINT).call(:getsubscriptions, message: params).body
+    return res[:getsubscriptions_response][:subscription_ary][:subscription_information_type]
+  end
+  
 end

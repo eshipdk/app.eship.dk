@@ -65,6 +65,12 @@ class AccountController < ApplicationController
     @settings = false
   end
   
+  def epay_delete_subscription
+    @current_user.epay_subscription_id = nil
+    @current_user.save
+    redirect_to :back
+  end
+  
   def update_product
     user_product = UserProduct.find params[:id]
     if user_product.user == current_user

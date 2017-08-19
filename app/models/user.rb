@@ -406,6 +406,10 @@ class User < ActiveRecord::Base
     not(epay? and epay_subscription_id == nil)
   end
   
+  def get_epay_subscription_data   
+    Epay.get_subscription_data self
+  end
+  
   def settings
     s = user_setting
     if !s
