@@ -1,3 +1,4 @@
+include Epay
 class AccountController < ApplicationController
   before_filter :authenticate_user
   before_filter :filter_dates, :only => :invoices
@@ -66,8 +67,12 @@ class AccountController < ApplicationController
   end
   
   def epay_delete_subscription
-    @current_user.epay_subscription_id = nil
-    @current_user.save
+    if not Epay.delete_subscription @current_user
+      flash[:error] = 'Failed deleting subscription. Please contact eShip customer service.'
+    else
+      @current_user.epay_subscription_id = nil
+      @current_user.save
+    end
     redirect_to :back
   end
   

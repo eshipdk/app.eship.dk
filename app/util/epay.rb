@@ -42,7 +42,21 @@ module Epay
       'subscriptionid' => user.epay_subscription_id.to_s
     }
     res = Savon.client(wsdl: SUBSCRIPTION_ENDPOINT).call(:getsubscriptions, message: params).body
-    return res[:getsubscriptions_response][:subscription_ary][:subscription_information_type]
+    data = res[:getsubscriptions_response][:subscription_ary]
+    if data
+      return data[:subscription_information_type]
+    else
+      return false
+    end    
+  end
+  
+  def delete_subscription user
+    params = {
+      'merchantnumber' => EShip::EPAY_MERCHANT_NUMBER,
+      'subscriptionid' => user.epay_subscription_id.to_s
+    }
+    res = Savon.client(wsdl: SUBSCRIPTION_ENDPOINT).call(:deletesubscription, message: params).body    
+    return res[:deletesubscription_response][:deletesubscription_result]
   end
   
 end
