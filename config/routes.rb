@@ -46,7 +46,9 @@ Rails.application.routes.draw do
 
   resources :invoices, only: [:show] do
     get :shipments
+    get :export_rows
   end
+  resources :invoices, defaults: { format: 'xlsx' }
   
   resources :addresses do
     member do

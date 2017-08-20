@@ -78,7 +78,8 @@
 </div>
 
 <div class='panel panel-default'>
-  <div class='panel-heading'>Items</div>
+  <div class='panel-heading'>Items <span class='pull-right'>
+  	<%= link_to 'Export', invoice_export_rows_path(@invoice, format: :xlsx), :target => '_blank' %></span></div>
   <div class='panel-body'>
 	<table class='table table-striped'>
 	  <tr>

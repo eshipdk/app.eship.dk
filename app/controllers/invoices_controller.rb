@@ -1,6 +1,7 @@
 class InvoicesController < ApplicationController
   before_filter :authenticate_admin
-  
+  layout 'blank', only: [:export_rows]  
+  respond_to :xlsx
   
   def show
     @invoice = Invoice.find params[:id]
@@ -34,5 +35,13 @@ class InvoicesController < ApplicationController
     redirect_to :back
   end
   
+  def export_rows
+    @invoice = Invoice.find params[:invoice_id]
+    respond_to do |format|
+      format.xlsx
+    end
+
+    response.headers['Content-Disposition'] = "attachment; filename=#{@invoice.pretty_id}-rows.xlsx"    
+  end
   
 end

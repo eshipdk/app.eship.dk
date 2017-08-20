@@ -1,0 +1,43 @@
+
+wb = xlsx_package.workbook
+
+# Create a style we can use for record headers
+styles = xlsx_package.workbook.styles
+header_style = styles.add_style bg_color: "00",
+                                fg_color: "FF",
+                                bold: true,
+                                alignment: { horizontal: :center }
+
+
+# Create a worksheet. Name it after the resource we're exporting
+wb.add_worksheet(name: "invoice #{@invoice.pretty_id} rows") do |sheet|
+  # Get list of attributes to export
+  #attrs = policy(@resources.first).permitted_export_attributes
+
+  # Add a header row using the header style we defined
+  #sheet.add_row attrs.map { |n| @resources.first.class.human_attribute_name(n) }, style: header_style
+  
+  sheet.add_row ['Product', 'AWB', 'Price (DKK)', 'Date', 'From', 'From Country', 'To', 'To Country', 'Weight'], style: header_style
+  sheet.column_widths 30, 20, 20, 20, 20, 20, 20
+  @invoice.shipments.each do |s|
+    weights = s.packages.map{|p| "#{p.amount} X #{p.weight}"}.join(', ')
+    
+    sheet.add_row [s.product.name, s.awb, s.final_price,  s.created_at, s.sender.company_name, s.sender.country_code, 
+      s.recipient.company_name, s.recipient.country_code, weights]
+    sheet.add_row ['Diesel Fee', s.awb, s.final_diesel_fee]
+  end
+  
+  @invoice.additional_charges.each do |c|    
+    if c.shipment_id
+      sheet.add_row [c.description, c.shipment.awb, c.price, '', c.shipment.sender.company_name, c.shipment.sender.country_code,
+        c.shipment.recipient.company_name, c.shipment.recipient.country_code]
+    else
+      sheet.add_row [c.description, '', c.price]
+    end         
+  end
+
+  # Add each row to our sheet
+  #@resources.each do |row|
+  #  sheet.add_row attrs.map { |a| row.send(assocs[a] || a) }
+  #end
+end
