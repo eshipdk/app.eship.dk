@@ -403,7 +403,7 @@ class User < ActiveRecord::Base
   
   
   def verify_epay_subscription
-    not(epay? and (epay_subscription_id == nil or  not get_epay_subscription_data))
+    not(epay? and epay_subscription_id == nil)
   end
   
   def get_epay_subscription_data
