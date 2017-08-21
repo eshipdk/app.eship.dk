@@ -1,5 +1,6 @@
 class InvoicesController < ApplicationController
-  before_filter :authenticate_admin
+  before_filter :authenticate_admin, except: [:export_rows]
+  before_filter :authenticate_user, only: [:export_rows]
   layout 'blank', only: [:export_rows]  
   respond_to :xlsx
   
@@ -37,6 +38,11 @@ class InvoicesController < ApplicationController
   
   def export_rows
     @invoice = Invoice.find params[:invoice_id]
+    
+    if !@current_user.admin? and @invoice.user != @current_user
+      redirect_to '/'
+      return
+    end
     respond_to do |format|
       format.xlsx
     end
