@@ -1,4 +1,4 @@
-
+<script type="text/javascript" src="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js" charset="UTF-8"></script>
 
 <h1 class="page-header">Subscription</h1>
 <% if @current_user.verify_epay_subscription and not params[:update] and (data = @current_user.get_epay_subscription_data) %>
@@ -80,8 +80,7 @@
               <input type='checkbox' id='subscription_conditions'/>
               I accept the <a target='_blank' href='https://eship.dk/handelsbetingelser'>terms of subscription</a>.
             </label>
-          </div>
-		<script type="text/javascript" src="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js" charset="UTF-8"></script>
+          </div>		
   
 		<script type="text/javascript">
 		    paymentwindow = new PaymentWindow({
