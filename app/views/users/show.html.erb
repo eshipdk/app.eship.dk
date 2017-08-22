@@ -50,7 +50,26 @@
 	</div>
 </div>
 <% end %>
-
+<% if @user.affiliate? %>
+<div class='panel panel-default'>
+	<div class='panel-heading'>
+		Affiliate
+		<span class='pull-right'>
+			<a href='javascript:void(0);' type="button" class="btn btn-default" data-toggle="collapse" 
+			data-target="#affiliate">
+				Toggle</a>	
+		</span>
+	</div>
+	<div class='panel-body collapse' id='affiliate'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'>
+				Dashboard
+				<span class='pull-right'><%= link_to 'View Dashboard', affiliate_dashboard_user_path(@user) %></span>
+			</div>
+		</div>
+	</div>
+</div>
+<% end %>
 <div class='panel panel-default'>
 	<div class='panel-heading'>
 		User Account

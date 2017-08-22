@@ -6,6 +6,11 @@ class Invoice < ActiveRecord::Base
   has_many :additional_charges
   has_many :rows, :class_name => 'InvoiceRow', :dependent => :destroy
   
+  
+  scope :filter_affiliate_withdrawal_pending, ->() {
+    return self.where(:affiliate_commission_withdrawn => false).where("affiliate_commission > ?", 0) 
+  }
+  
   def pretty_id
     if economic_id
       economic_id
@@ -57,6 +62,10 @@ class Invoice < ActiveRecord::Base
     profit = amount - cost
     compute_commissions
     save
+  end
+  
+  def n_packages
+    shipments.map {|s| s.n_packages}.sum
   end
   
   def self.identify_economic_ids

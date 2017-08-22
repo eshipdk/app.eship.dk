@@ -27,6 +27,10 @@ class Shipment < ActiveRecord::Base
     return 'e' + id.to_s
   end
   
+  def n_packages
+    packages.map {|p| p.amount}.sum
+  end
+  
   scope :filter_pretty_id, ->(pretty_id){
     if(pretty_id == '' || pretty_id == nil) 
       return self.all

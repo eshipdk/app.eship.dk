@@ -2,19 +2,45 @@
 
 <div class='panel panel-default'>
 	<div class='panel-heading'>
-		Affiliated Users
+		My Customers - Pending Commission
 	</div>
 	<div class='panel-body'>
-		<table class='panel panel-striped'>
+		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>User</th>
+					<th>Customer</th>
+					<th>Packages Pending</th>
+					<th>Packages Invoiced</th>
+					<th>My Commission</th>
 				</tr>
 			</thead>
 			<tbody>
-				<% current_user.affiliated_users.each do |user| %>
+				<% @affiliate_user.affiliated_users.each do |user| %>
+				<%
+				shipments = user.uninvoiced_shipments
+				n_packages_pending = 0
+				shipments.each do |s|
+					s.packages.each do |p|
+						n_packages_pending += p.amount
+					end
+				end
+				
+				n_packages_pending = user.uninvoiced_shipments.map {|s| s.n_packages}.sum
+				pending_invoices = user.invoices.filter_affiliate_withdrawal_pending
+				n_packages_invoiced = pending_invoices.map {|i| i.n_packages}.sum
+				commission = pending_invoices.map {|i| i.affiliate_commission}.sum
+				%>
 				<tr>
 					<td><%= user.name %></td>
+					<td>
+						<%= n_packages_pending %>
+					</td>
+					<td>
+						<%= n_packages_invoiced%>
+					</td>
+					<td>
+						<%= currency commission %>
+					</td>
 				</tr>
 				<% end %>
 			</tbody>

@@ -432,6 +432,7 @@ class User < ActiveRecord::Base
   def affiliated_users
     User.where(affiliate_user: self)
   end
+    
   
   # END AFFILIATE
 

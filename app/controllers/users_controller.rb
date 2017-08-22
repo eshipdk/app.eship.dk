@@ -171,6 +171,11 @@ class UsersController < ApplicationController
     Economic.update_user_address user
     redirect_to(:back)
   end
+  
+  def affiliate_dashboard
+    @affiliate_user  =User.find params[:id]
+    render template: 'affiliate/dashboard'
+  end
 
   private
 

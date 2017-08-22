@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       post :fetch_address_from_economic
       get :edit_products
       get :edit_contact_address
+      get :affiliate_dashboard
       
       patch :update_contact_address
       resources :products, only: [] do
