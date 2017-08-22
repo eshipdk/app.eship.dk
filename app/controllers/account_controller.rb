@@ -59,7 +59,7 @@ class AccountController < ApplicationController
       redirect_to '/account'
       return
     end
-    @callback_url =  EShip::HOST_ADDRESS + "users/#{@current_user.id}/epay_subscribe"
+    @callback_url =  EShip::HOST_ADDRESS + "users/#{@current_user.id}/epay_subscribe/?key=#{@current_user.eship_api_key}"
     @accept_url = EShip::HOST_ADDRESS + "account"
 
     register_products

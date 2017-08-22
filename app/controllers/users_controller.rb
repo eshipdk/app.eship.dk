@@ -150,7 +150,16 @@ class UsersController < ApplicationController
 
   def epay_subscribe
     Rails.logger.warn "EPAY SUBSCRIBE"
+    
     user = User.find params[:id]
+    if params[:key] != user.eship_api_key
+      render :text => 'error'
+      return
+    end    
+    
+    if user.epay_subscription_id and not Epay.delete_subscription user
+      flash[:error] = 'Failed deleting subscription. Please contact eShip customer service.'
+    end
     subscription_id = params[:subscriptionid]
     user.epay_subscription_id = subscription_id
     user.save
