@@ -160,9 +160,17 @@ class UsersController < ApplicationController
     if user.epay_subscription_id and not Epay.delete_subscription user
       flash[:error] = 'Failed deleting subscription. Please contact eShip customer service.'
     end
+    is_update = user.epay_subscription_id?
     subscription_id = params[:subscriptionid]
     user.epay_subscription_id = subscription_id
     user.save
+    
+    if is_update
+      AccountMailer.send_subscription_alteration_mail(user).deliver_now
+    else
+      AccountMailer.send_subscription_confirmation_mail(user).deliver_now
+    end
+    
     render :text => 'ok'
   end
   

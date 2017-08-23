@@ -66,12 +66,13 @@ class AccountController < ApplicationController
     @settings = false
   end
   
-  def epay_delete_subscription
+  def epay_delete_subscription    
     if not Epay.delete_subscription @current_user
       flash[:error] = 'Failed deleting subscription. Please contact eShip customer service.'
     else
       @current_user.epay_subscription_id = nil
       @current_user.save
+      AccountMailer.send_subscription_deletion_mail(@current_user).deliver_now
     end
     redirect_to :back
   end
