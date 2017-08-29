@@ -7,7 +7,7 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 module EShip
-  HOST_ADDRESS = 'https://app.eship.dk/'
+  HOST_ADDRESS = 'https://app.eship.dk'
   WEBMASTER_MAIL = 'rune@runekoknielsen.dk'
   EPAY_MERCHANT_NUMBER = '6512100'
 
@@ -45,5 +45,7 @@ module EShip
 
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '**/')]
     config.assets.paths << Rails.root.join('vendor', 'assets')
+    
+    Rails.application.routes.default_url_options[:host] = EShip::HOST_ADDRESS
   end
 end

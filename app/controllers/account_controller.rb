@@ -1,6 +1,6 @@
 include Epay
 class AccountController < ApplicationController
-  before_filter :authenticate_user
+  before_filter :authenticate_user, :except => :invoice_download
   before_filter :filter_dates, :only => :invoices
   
   def index
@@ -59,8 +59,8 @@ class AccountController < ApplicationController
       redirect_to '/account'
       return
     end
-    @callback_url =  EShip::HOST_ADDRESS + "users/#{@current_user.id}/epay_subscribe/?key=#{@current_user.eship_api_key}"
-    @accept_url = EShip::HOST_ADDRESS + "account"
+    @callback_url =  EShip::HOST_ADDRESS + "/users/#{@current_user.id}/epay_subscribe/?key=#{@current_user.eship_api_key}"
+    @accept_url = EShip::HOST_ADDRESS + "/account"
 
     register_products
     @settings = false
@@ -86,9 +86,11 @@ class AccountController < ApplicationController
     redirect_to my_products_path
   end
   
-  def invoice_download
+  def invoice_download  
     invoice = Invoice.find params[:id]
-    if invoice.user != @current_user and not @current_user.admin?
+    user = User.find_by(id: session[:user_id])
+        
+    if (not user and params[:key] != invoice.pdf_download_key) or (user and invoice.user != user and not user.admin?) 
       redirect_to home_path
     else
       pdf = Economic.get_pdf_data invoice

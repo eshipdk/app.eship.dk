@@ -14,6 +14,8 @@ class Invoice < ActiveRecord::Base
   def pretty_id
     if economic_id
       economic_id
+    elsif economic_draft_id
+      "DRAFT_#{economic_draft_id}"
     else
       "TMP_#{id}"
     end
@@ -66,6 +68,10 @@ class Invoice < ActiveRecord::Base
   
   def n_packages
     shipments.map {|s| s.n_packages}.sum
+  end
+  
+  def send_email
+    AccountMailer.send_invoice_mail(self).deliver_now
   end
   
   def self.identify_economic_ids

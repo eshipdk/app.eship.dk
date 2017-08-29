@@ -1,0 +1,21 @@
+Kære <%= @invoice.user.name %>,<br/>
+<br/>
+Tak fordi du er kunde hos os.<br/>
+<br/>
+Du kan hente din faktura <%= link_to 'her', download_invoice_url(@invoice, :key => @invoice.pdf_download_key) %>. Har du nogen spørgsmål til din faktura er du velkommen til at kontakte os.<br/>
+<br/>
+Pakke specifikationer fremsendes særskilt.<br/>
+<br/>
+<% if @invoice.can_capture_online %>
+<strong>Bemærk at beløbet vil blive trukket automatisk gennem dit abonnement, og at du derfor ikke skal foretage dig yderligere.</strong><br/>
+<br/> 
+<% end %>
+Med venlig hilsen<br/>
+<br/>
+eShip teamet<br/>
+<br/>
+70666066<br/>
+<br/>
+eShip ApS<br/>
+Bellahøjvej 129<br/>
+2720 Vanløse<br/>

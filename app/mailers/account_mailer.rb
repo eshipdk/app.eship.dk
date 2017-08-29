@@ -16,4 +16,8 @@ class AccountMailer < ApplicationMailer
     mail(to: user.email, subject: 'Your subscription has ended')
   end
   
+  def send_invoice_mail invoice
+    @invoice = invoice
+    mail(to: invoice.user.email, subject: "Fakturanr. #{invoice.pretty_id} - #{invoice.created_at.strftime('%d.%m.%y')} - eShip ApS")
+  end
 end

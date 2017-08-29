@@ -82,7 +82,7 @@ module Cargoflux
     data =
     {
       'access_token' => shipment.user.cargoflux_api_key,
-      'callback_url' => EShip::HOST_ADDRESS + "shipments/#{shipment.id}/callback",
+      'callback_url' => EShip::HOST_ADDRESS + "/shipments/#{shipment.id}/callback",
       'return_label' => shipment.return,
       'shipment' => {
         'product_code' => product_code,

@@ -3,7 +3,8 @@ include ApplicationHelper
 module Economic
   
   BASE_ENDPOINT = 'https://restapi.e-conomic.com/'
-  DRAFTS_ENDPOINT = 'https://restapi.e-conomic.com/invoices/drafts'
+  DRAFTS_ENDPOINT = "#{BASE_ENDPOINT}/invoices/drafts"
+  BOOKED_ENDPOINT = "#{BASE_ENDPOINT}/invoices/booked"
   
   AST = 'nBpsmoZrlyGF606BmjraJlHRqjUvrh4dyvBOk5tXhyU1'
   AGT = 'BqfwngGDN3IrSjGXZoTvGqtHuv575f0E6WBJhIlk4BY1'
@@ -45,26 +46,49 @@ module Economic
   end
   
   
-  def submit_invoice invoice
+  def submit_invoice invoice, capture = true    
     match(invoice_payload(invoice)) do
       with(_[:error, issue]) do
         [:error, issue]
       end
       with payload do
         #raise res.to_json.to_s
-        res = post(BASE_ENDPOINT + "invoices/drafts",  payload)
+        res = post(DRAFTS_ENDPOINT,  payload)
         if res.key?('errorCode')
           [:error, res]
-        else
+        else          
           invoice.gross_amount = res['grossAmount']
+          invoice.economic_draft_id = res['draftInvoiceNumber']
           invoice.sent_to_economic = true
           invoice.save
-          res
+          if capture            
+            Economic.capture_invoice invoice
+          else
+            res  
+          end          
         end
       end
     end
   end
   
+  def self.capture_invoice invoice    
+    payload = {
+      'draftInvoice' =>{
+        'draftInvoiceNumber' => invoice.economic_draft_id
+      },
+      'sendBy' => 'none'
+    }
+    res = post(BOOKED_ENDPOINT, payload)
+    if res.key?('errorCode')
+      [:error, res]
+    else
+      invoice.economic_id = res['bookedInvoiceNumber']
+      invoice.pdf_download_key = rand(36**64).to_s(36)
+      invoice.save
+      invoice.send_email
+      res
+    end
+  end
   
   def invoice_payload invoice
     
