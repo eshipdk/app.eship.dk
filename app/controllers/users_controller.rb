@@ -181,7 +181,7 @@ class UsersController < ApplicationController
   end
   
   def affiliate_dashboard
-    @affiliate_user  =User.find params[:id]
+    @affiliate_user  = User.find params[:id]
     render template: 'affiliate/dashboard'
   end
 
@@ -198,7 +198,8 @@ class UsersController < ApplicationController
                                      :affiliate_base_house_amount,
                                      :affiliate_minimum_invoice_amount,
                                      :enable_ftp_upload, :ftp_upload_user,
-                                     :invoice_failed_bookings)
+                                     :invoice_failed_bookings,
+                                     :subscription_fee)
    p[:enable_ftp_upload] = p.key?(:enable_ftp_upload) and p[:enable_ftp_upload]
    p[:invoice_failed_bookings] = p.key?(:invoice_failed_bookings) and p[:invoice_failed_bookings]
    return p

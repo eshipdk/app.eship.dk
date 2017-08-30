@@ -103,7 +103,9 @@
   		<table class='table table-striped'>
 	  		<thead>
 	  			<tr>
-					<th>Invoice manually</th><th>Invoice by time (X days since last invoice)</th><th>Invoice by balance (more than X,- due) </th>
+					<th>Invoice manually</th><th>Invoice by time (X days since last invoice)</th>
+					<th>Invoice by balance (more than X,- due) </th>
+					<th>Monthly subscription fee (DKK)</th>
 				</tr>
 	  		</thead>
 	  		<tbody>
@@ -112,12 +114,22 @@
 						<input class="form-control" type="radio" name="user[billing_control]" <%= @user.manual? ? 'checked' : ''%>  value="manual"/>
 					</td>
 					<td>
-						<input id='radio_by_time' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_time? ? 'checked' : ''%> value="by_time"/>
-						<%= f.bsnum_field :invoice_x_days %>
+						<input id='radio_by_time' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_time? ? 'checked' : ''%> value="by_time"/>						
 					</td>
 					<td>
-						<input id='radio_by_balance' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_balance? ? 'checked' : ''%> value="by_balance"/>
+						<input id='radio_by_balance' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_balance? ? 'checked' : ''%> value="by_balance"/>						
+					</td>
+					<td>												
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><%= f.bsnum_field :invoice_x_days %></td>
+					<td>
 						<%= f.bsnum_field :invoice_x_balance %>
+					</td>
+					<td>
+						<%= f.bsnum_field :subscription_fee %>
 					</td>
 				</tr>
 	  		</tbody>

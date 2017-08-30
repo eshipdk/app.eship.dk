@@ -136,6 +136,7 @@ Rails.application.routes.draw do
   post 'admin/tools/process_additional_charges', to: 'admin#process_additional_charges', as: 'admin_process_additional_charges'
   post 'admin/tools/approve_additional_charges', to: 'admin#approve_additional_charges', as: 'admin_approve_additional_charges'
   post 'admin/tools/import_ftp_uploads', to: 'admin#import_ftp_uploads', as: 'admin_import_ftp_uploads'
+  post 'admin/tools/apply_subscription_fees', to: 'admin#apply_subscription_fees', as: 'admin_apply_subscription_fees'
   
   #Affiliate
   get 'affiliate/dashboard', to: 'affiliate#dashboard', as: 'affiliate_dashboard'

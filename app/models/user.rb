@@ -197,9 +197,7 @@ class User < ActiveRecord::Base
     
     shipments = uninvoiced_shipments
     n = shipments.count
-    if n < 1
-      raise 'No shipments to invoice.'
-    end
+
     invoice = Invoice.new()
     invoice.user = self
     invoice.n_shipments = n
@@ -400,7 +398,32 @@ class User < ActiveRecord::Base
     
     Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: User.perform_automatic_invoicing"
   end
-  
+    
+  def self.apply_subscription_fees
+    Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: User.apply_subscription_fees"    
+    
+    # Find existing subscription fees that cover the current time
+    covering_fees = AdditionalCharge.select('user_id').where('product_code LIKE "subscription_fee"')
+                    .where('created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)')
+    
+    # Consider all customers who should pay subscription fees who are at least one month old and have not been
+    # charged subscription fee within the last month
+    customers = User.where('subscription_fee > ? AND created_at < DATE_SUB(NOW(), INTERVAL 1 MONTH)', 0)
+                .where("id NOT IN (#{covering_fees.to_sql})")                    
+    
+    customers.each do |customer|
+      charge = AdditionalCharge.new            
+      charge.user = customer
+      charge.cost = 0
+      charge.price = customer.subscription_fee
+      charge.description = "Subscription Fee #{Time.now.utc.strftime('%d.%m.%y')}"
+      charge.product_code = 'subscription_fee'      
+      charge.save
+    end    
+    
+    Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENEDED: User.apply_subscription_fees"
+  end
+    
   
   def verify_epay_subscription
     not(epay? and epay_subscription_id == nil)

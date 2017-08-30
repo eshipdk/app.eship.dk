@@ -11,7 +11,7 @@
 					<th>Billing type</th>
 					<th>Cost</th>
 					<th>Price</th>
-					<th>Diesel Fee</th>					
+					<th>Diesel Fee</th>	
 					<th>Invoice</th>
 				</tr>
 			</thead>
@@ -33,9 +33,9 @@
 					</td>
 					
 					<td>
-						<% if @user.n_uninvoiced_shipments < 1 %>
+						<% if price + fee == 0 %>
 							<% disable_invoice = true%>
-							Cannot create invoice: no shipments pending
+							Cannot create invoice: nothing pending
 						<% elsif false and issues %>
 							<% disable_invoice = true%>
 							Cannot create invoice: some prices could not be determined (see shipments)

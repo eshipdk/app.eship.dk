@@ -148,7 +148,7 @@ class AdminController < ApplicationController
     prices = params[:price]
     (0..user_ids.length-1).each do |i|
       charge = AdditionalCharge.new      
-      shipment = Shipment.find shipment_ids[i]      
+      shipment = Shipment.find shipment_ids[i]
       charge.user_id = user_ids[i]
       charge.cost = costs[i]
       charge.price = prices[i]
@@ -163,6 +163,11 @@ class AdminController < ApplicationController
   
   def import_ftp_uploads
     CsvImporter.import_ftp_uploads
+    redirect_to :back
+  end
+  
+  def apply_subscription_fees
+    User.apply_subscription_fees
     redirect_to :back
   end
 
