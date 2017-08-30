@@ -278,7 +278,7 @@ class Shipment < ActiveRecord::Base
       calculated, issue = calculate_price
       if issue
         return nil, issue
-      else
+      else        
         self.price = calculated
         save
         return calculated, nil
@@ -339,6 +339,13 @@ class Shipment < ActiveRecord::Base
   def determine_value
     get_cost
     price, _ = calculate_price
+    
+    if user.billing_type == 'flat_price' and user.monthly_free_labels_remaining > 0
+      freebies = [get_label_qty, user.monthly_free_labels_remaining].min
+      price -= freebies * user.unit_price
+      user.monthly_free_labels_expended += freebies
+      user.save
+    end
 
     if price != nil
       self.price = price

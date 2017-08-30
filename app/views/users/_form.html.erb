@@ -104,8 +104,7 @@
 	  		<thead>
 	  			<tr>
 					<th>Invoice manually</th><th>Invoice by time (X days since last invoice)</th>
-					<th>Invoice by balance (more than X,- due) </th>
-					<th>Monthly subscription fee (DKK)</th>
+					<th>Invoice by balance (more than X,- due) </th>					
 				</tr>
 	  		</thead>
 	  		<tbody>
@@ -119,8 +118,6 @@
 					<td>
 						<input id='radio_by_balance' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_balance? ? 'checked' : ''%> value="by_balance"/>						
 					</td>
-					<td>												
-					</td>
 				</tr>
 				<tr>
 					<td></td>
@@ -128,8 +125,23 @@
 					<td>
 						<%= f.bsnum_field :invoice_x_balance %>
 					</td>
+				</tr>
+	  		</tbody>
+		</table>
+		<table class='table table-striped'>
+	  		<thead>
+	  			<tr>		
+					<th>Monthly subscription fee (DKK)</th>
+					<th>Monthly Free Labels (Remaining: <%= @user.monthly_free_labels_remaining %>)</th>
+				</tr>
+	  		</thead>
+	  		<tbody>	  			
+				<tr>
 					<td>
 						<%= f.bsnum_field :subscription_fee %>
+					</td>
+					<td>
+						<%= f.bsnum_field :monthly_free_labels %>
 					</td>
 				</tr>
 	  		</tbody>

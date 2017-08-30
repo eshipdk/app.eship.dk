@@ -367,6 +367,7 @@ class User < ActiveRecord::Base
       end
     end
   end
+  
 
   def self.perform_automatic_invoicing
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: User.perform_automatic_invoicing"
@@ -411,6 +412,7 @@ class User < ActiveRecord::Base
     customers = User.where('subscription_fee > ? AND created_at < DATE_SUB(NOW(), INTERVAL 1 MONTH)', 0)
                 .where("id NOT IN (#{covering_fees.to_sql})")                    
     
+    # Charge subscription fee and reset monthly free label count
     customers.each do |customer|
       charge = AdditionalCharge.new            
       charge.user = customer
@@ -419,9 +421,20 @@ class User < ActiveRecord::Base
       charge.description = "Subscription Fee #{Time.now.utc.strftime('%d.%m.%y')}"
       charge.product_code = 'subscription_fee'      
       charge.save
+      
+      customer.monthly_free_labels_expended = 0
+      customer.save
     end    
     
     Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENEDED: User.apply_subscription_fees"
+  end
+  
+  def subscription_fees
+    additional_charges.where('product_code LIKE "subscription_fee"')
+  end
+  
+  def monthly_free_labels_remaining
+    monthly_free_labels - monthly_free_labels_expended    
   end
     
   
