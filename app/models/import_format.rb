@@ -126,7 +126,7 @@ class ImportFormat < ActiveRecord::Base
     case func
     when 'zip_prod'      
       # example format: {zip_prod:0-2000=glsboc,2001-5000=glspoc}
-      zip = (row_val user, row, 'recipient_zip_code').to_i
+      zip = (row_val row, 'recipient_zip_code').to_i
       prod = match_str_intervals params, zip
       if prod
         return prod
