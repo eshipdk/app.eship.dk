@@ -1,14 +1,16 @@
 <div class='shipment-show'>
   <h2 class='page-header'>Shipment #<%= @shipment.pretty_id %>
-  	<% if not @disable_actions %>
+  	
   	<span class='pull-right'>
  		<% if @shipment.can_edit %>
 		<a href='<%= url_for edit_shipment_path(@shipment) %>' class='btn btn-primary' role='button'>Edit</a>
 	  	<% else %>
+		<% if not @disable_actions %>
 	  	<a href='<%= url_for copy_shipment_path(@shipment) %>' class='btn btn-primary' role='button'>Copy</a>
 	  	<% end %>
+		<% end %>
   	</span>
-  	<% end %>
+
   </h2>
   
   <% if @shipment.status == 'failed' %>
