@@ -297,7 +297,7 @@ class Shipment < ActiveRecord::Base
       price, _ = calculate_price false
     end
     scheme = product.price_scheme(user)
-    if recipient.country_code == 'DK'
+    if recipient.country_code == 'DK' and sender.country_code == 'DK'
       if scheme.diesel_fee_dk_enabled?
         return price * scheme.get_diesel_fee_dk * 0.01
       end

@@ -187,9 +187,10 @@ class IntervalTable < PricingScheme
       return val 
   end
   
-  def get_cost_row cost_scheme, shipment, package    
+  def get_cost_row cost_scheme, shipment, package
+    country_code = shipment.product.is_import ? shipment.sender.country_code : shipment.recipient.country_code
     return cost_scheme.rows.where(['country_code LIKE ? AND weight_from <= ? AND weight_to > ?',
-      shipment.recipient.country_code, package.weight, package.weight]).first!
+      country_code, package.weight, package.weight]).first!
   end
   
   def get_markup_row cost_row
@@ -289,7 +290,7 @@ class IntervalTable < PricingScheme
       # -------------------------------------------------------------
       # FROM THIS LINE BELOW FUNCTIONALITY IS IDENTICAL FOR OLD VS NEW
       # -------------------------------------------------------------  
-      if shipment.recipient.country_code == 'DK'
+      if shipment.recipient.country_code == 'DK' and shipment.sender.country_code == 'DK'
          fee_dk += shipment.final_diesel_fee
       else
         fee_inter += shipment.final_diesel_fee
