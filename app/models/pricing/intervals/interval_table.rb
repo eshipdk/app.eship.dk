@@ -303,7 +303,7 @@ class IntervalTable < PricingScheme
       row = InvoiceRow.new
       row.amount = value[:price]
       row.description = title
-      row.product_code = shipments[0].product.product_code
+      row.product_code = shipments[0].economic_product_code
       row.qty = value[:count]
       row.unit_price = (row.amount / row.qty).round(2)
       row.cost = value[:cost]

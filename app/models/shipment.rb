@@ -1,4 +1,5 @@
 include Cargoflux
+include Taxing
 class Shipment < ActiveRecord::Base
   
   belongs_to :user
@@ -360,7 +361,15 @@ class Shipment < ActiveRecord::Base
   def has_package_prices
     return packages[0].price != nil
   end
-    
+
+  # Returns the code of the product use in the shipment with respects to economic
+  def economic_product_code
+    code = product.product_code
+    if not Taxing.european_union_countries.include?(sender.country_code)
+      code += '_taxfree'
+    end
+    return code
+  end
   
   def self.update_pending_shipping_states
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"
