@@ -270,6 +270,7 @@ class ApiController < ApplicationController
       render :text => res
       return
     end
+
     
     if data['httpStatusCode'] == 401
       res = 'Denied access to economic'
@@ -277,6 +278,9 @@ class ApiController < ApplicationController
       render :text => res
       return
     end
+    
+    customer_id = data['customer']['customerNumber']
+    customer_data = Economic.get_customer_data customer_id    
     
     if not data.key?('lines')
       res = 'Unexpected response from economic'
@@ -315,7 +319,9 @@ class ApiController < ApplicationController
         recipient.country_code = data['delivery']['country']
         recipient.zip_code = data['delivery']['zip']
         recipient.city = data['delivery']['city']         
-                
+        recipient.phone_number = customer_data['telephoneAndFaxNumber']
+        recipient.email = customer_data['email']
+        
         recipient.save
         
         
