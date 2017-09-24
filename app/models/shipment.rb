@@ -1,4 +1,5 @@
 include Cargoflux
+include Taxing
 class Shipment < ActiveRecord::Base
   
   belongs_to :user
@@ -297,7 +298,7 @@ class Shipment < ActiveRecord::Base
       price, _ = calculate_price false
     end
     scheme = product.price_scheme(user)
-    if recipient.country_code == 'DK'
+    if recipient.country_code == 'DK' and sender.country_code == 'DK'
       if scheme.diesel_fee_dk_enabled?
         return price * scheme.get_diesel_fee_dk * 0.01
       end
@@ -379,6 +380,16 @@ class Shipment < ActiveRecord::Base
       p.shipment = self
       p.save
     end        
+  end
+
+
+  # Returns the code of the product use in the shipment with respects to economic
+  def economic_product_code
+    code = product.product_code
+    if not Taxing.european_union_countries.include?(sender.country_code)
+      code += '_taxfree'
+    end
+    return code
   end
   
   def self.update_pending_shipping_states

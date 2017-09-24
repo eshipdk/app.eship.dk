@@ -63,7 +63,7 @@ class ShipmentsController < ApplicationController
 
   def edit
     @shipment = Shipment.find(params[:id])
-    if !@shipment.can_edit or @shipment.user != @current_user
+    if !@shipment.can_edit or not (@shipment.user == @current_user or @current_user.admin?)
       redirect_to '/'
     end
   end
@@ -167,7 +167,7 @@ class ShipmentsController < ApplicationController
   def update
     shipment = Shipment.find(params[:id])
     
-    if not shipment.can_edit or shipment.user != @current_user
+    if not shipment.can_edit or not (shipment.user == @current_user or @current_user.admin?)
       redirect_to :action => :index
       return
     end

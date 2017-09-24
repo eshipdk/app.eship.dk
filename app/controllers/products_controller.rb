@@ -150,7 +150,7 @@ class ProductsController < ApplicationController
   def product_params
     params.require(:product).permit(:product_code, :name, :tracking_url_prefix,
                                     :taxed, :has_parcelshops, :disabled,
-                                    :find_parcelshop_url, :return_product_id)
+                                    :find_parcelshop_url, :return_product_id, :is_import)
   end
 
 end

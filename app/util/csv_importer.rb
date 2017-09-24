@@ -173,7 +173,7 @@ module CsvImporter
   end
 
   def self.row_val user, row, key
-    return user.import_format.row_val user, row, key
+    return user.import_format.row_val row, key
   end
   
   def self.import_error msg, line_number
