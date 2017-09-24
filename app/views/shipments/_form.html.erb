@@ -266,7 +266,8 @@
 				:weight => user_product.default_weight,
 				:parcelshops_enabled => user_product.product.has_parcelshops,
 				:find_parcelshop_url => user_product.product.find_parcelshop_url,
-				:available_countries => user_product.product.available_countries(current_user)
+				:available_countries => user_product.product.available_countries(current_user),
+				:product_code => user_product.product.product_code
 			 }
 	end
 	%>
@@ -309,7 +310,7 @@
 	function setAvailableCountries(productId){
         if(CUSTOMER_TYPE!='shipping') return;        
 		$('#recipient_country_code').find('option').each(function(){			
-			toggleOption($(this), $.inArray($(this).val(), PRODUCT_VALUES[productId]['available_countries']) > -1);
+			toggleOption($(this), PRODUCT_VALUES[productId]['product_code'] == 'dataimport' || $.inArray($(this).val(), PRODUCT_VALUES[productId]['available_countries']) > -1);
 		});
 	}
 	
@@ -319,12 +320,10 @@
 		setParcelshopStatus(productId);
 		setAvailableCountries(productId);
 	}
-	
-	<% if @shipment.id == nil %>
+		
 	$('#shipment_product_id').on('change', function(){		
 		productSelectUpdate(this.value);
-	});
-	<% end %>
+	});	
 	
 	
 	$(document).ready(function(){	
