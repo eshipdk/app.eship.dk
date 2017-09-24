@@ -217,6 +217,12 @@ class ShipmentsController < ApplicationController
     shipment = Shipment.find(params[:id])
 
     if params['status'] == 'booked'
+      # When using dataimport product we must update the package configuration from cargoflux before determining value
+      if shipment.product.product_code == 'dataimport'
+        shipment.fetch_packages_from_cargoflux
+        shipment.reload  
+      end
+      
       shipment.status = 'complete'
       shipment.shipping_state = 'booked'
       shipment.awb = params['awb']

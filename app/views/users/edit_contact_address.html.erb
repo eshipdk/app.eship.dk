@@ -5,19 +5,18 @@
 
 <div class='panel panel-default'>
 	<div class='panel-heading'>Address
-		<span class='pull-right'>
+		<span class='pull-right'>			
 			<%= form_for @user, :url => {:controller => "users", :action => "fetch_address_from_economic"}, method: :post  do |f| %>        		                		
           			<a onclick="$(this).parent().submit();" class='btn btn-primary' type="submit">Fetch from economic</a>       	 		
         	<% end %>			
 		</span>
 		</div>
+	
 	<div class='panel-body'>
 		<%= form_for @address, :url => { :action => 'update_contact_address'} do |f| %>
 		<%= render :partial => '/addresses/form_fields', :locals => {:f => f} %>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button> 
+		<% end %>
 	</div>
 </div>
 
-<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
- 
-
-<% end %>

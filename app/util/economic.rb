@@ -6,8 +6,11 @@ module Economic
   DRAFTS_ENDPOINT = "#{BASE_ENDPOINT}/invoices/drafts"
   BOOKED_ENDPOINT = "#{BASE_ENDPOINT}/invoices/booked"
   
-  AST = 'nBpsmoZrlyGF606BmjraJlHRqjUvrh4dyvBOk5tXhyU1'
-  AGT = 'BqfwngGDN3IrSjGXZoTvGqtHuv575f0E6WBJhIlk4BY1'
+  AST = 'nBpsmoZrlyGF606BmjraJlHRqjUvrh4dyvBOk5tXhyU1' # App secret token for internal use
+  def AST_Customer
+    'nBpsmoZrlyGF606BmjraJlHRqjUvrh4dyvBOk5tXhyU1' # App secret token for customer integration
+  end
+  AGT = 'BqfwngGDN3IrSjGXZoTvGqtHuv575f0E6WBJhIlk4BY1' # Agreement grant token for internal use
   
   
   def get_customer_options
@@ -46,7 +49,7 @@ module Economic
   end
   
   
-  def submit_invoice invoice, capture = true    
+  def submit_invoice invoice, capture = true
     match(invoice_payload(invoice)) do
       with(_[:error, issue]) do
         [:error, issue]
@@ -189,8 +192,13 @@ module Economic
     end
   end
   
-  def get_invoice_data invoice
-    get(BASE_ENDPOINT + "invoices/booked/#{invoice.economic_id}")
+  def get_invoice_data invoice, ast = AST, agt = AGT
+    if invoice.is_a?(Invoice)
+      id = invoice.economic_id
+    else
+      id = invoice
+    end
+    get(BASE_ENDPOINT + "invoices/booked/#{id}", ast, agt)
   end
 
   def get_pdf_data invoice
@@ -199,22 +207,22 @@ module Economic
   end
 
   
-  def get_raw url
+  def get_raw url, ast = AST, agt = AGT
     endpoint = URI.parse url
     http = Net::HTTP.new(endpoint.host, endpoint.port)
     http.use_ssl = true
-    
+        
     request = Net::HTTP::Get.new(endpoint.request_uri,
                                   initheader = {
                                      'Content-Type' =>'application/json',
-                                     'X-AppSecretToken' => AST,
-                                     'X-AgreementGrantToken'=> AGT,
+                                     'X-AppSecretToken' => ast,
+                                     'X-AgreementGrantToken'=> agt,
                                      'accept' => "application/json"})
      http.request(request).body
   end
   
-  def get url                      
-     JSON.parse(get_raw(url))
+  def get url, ast = AST, agt = AGT           
+     JSON.parse(get_raw(url, ast, agt))
   end
   
   def post url, payload

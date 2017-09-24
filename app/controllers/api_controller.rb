@@ -1,6 +1,6 @@
 include CsvImporter
 class ApiController < ApplicationController
-  before_filter :authenticate_api, :except => [:validate_key, :client_version]
+  before_filter :authenticate_api, :except => [:validate_key, :client_version, :economic_invoice_captured]
   skip_before_filter :verify_authenticity_token
 
 
@@ -241,6 +241,116 @@ class ApiController < ApplicationController
     http.use_ssl = true
     request = Net::HTTP::Get.new(url)
     render :text => http.request(request).body,  :content_type => 'application/json'
+  end
+  
+  # Webhook for invoices caputred in economic
+  def economic_invoice_captured
+    Rails.logger.warn "#{Time.now.utc.iso8601} Webhook called #{params.to_s}"
+    
+    user = User.authenticate_api(params['api_key'])
+    if not user
+      res = 'Invalid/missing API-key'
+      Rails.logger.warn res
+      render :text => res
+      return
+    end
+    
+    if not params.key?('id')
+      res = 'Missing invoice id'
+      Rails.logger.warn res
+      render :text => res
+      return
+    end
+    
+    invoice_id = params['id']
+    data = Economic.get_invoice_data invoice_id, Economic.AST_Customer, user.economic_api_key
+    if data['errorCode'] == 'E06000'
+      res = "Cannot find invoice id #{invoice_id}"
+      Rails.logger.warn res
+      render :text => res
+      return
+    end
+    
+    if data['httpStatusCode'] == 401
+      res = 'Denied access to economic'
+      Rails.logger.warn res
+      render :text => res
+      return
+    end
+    
+    if not data.key?('lines')
+      res = 'Unexpected response from economic'
+      Rails.logger.warn res
+      Rails.logger data.to_s
+      render :text => res
+      return
+    end
+        
+    lines = data['lines']
+    lines.each do |line|            
+      product_code = line['product']['productNumber']
+      if product_code == 'eship_dataimport'                     
+        begin
+          product = user.find_product 'dataimport'
+        rescue => ex
+          res = 'User does not have access to dataimport product'
+          Rails.logger.warn res
+          render :text => res
+          return
+        end
+    
+        if not user.default_address
+          res = 'No sender address configured in eShip. Please configure default address in the address book.'
+          Rails.logger.warn res
+          render :text => res
+          return
+        end
+        
+        sender = user.default_address
+                
+        recipient = Address.new
+        recipient.company_name = data['recipient']['name']
+        recipient.attention = data['recipient']['name']
+        recipient.address_line1 = data['delivery']['address']
+        recipient.country_code = data['delivery']['country']
+        recipient.zip_code = data['delivery']['zip']
+        recipient.city = data['delivery']['city']         
+                
+        recipient.save
+        
+        
+        shipment = Shipment.new
+        shipment.user = user
+        shipment.product = product
+        shipment.sender = sender
+        shipment.recipient = recipient           
+       
+        shipment.save
+        
+        
+        package = Package.new
+        package.width = 1
+        package.length = 1
+        package.height = 1
+        package.weight = 1
+        package.amount = 1
+        package.shipment = shipment
+        package.save
+        
+        
+        if shipment.price_configured?
+          Cargoflux.submit shipment
+        else
+          shipment.status = 'failed'
+          shipment.save
+        end
+        
+        shipment.reload
+        break
+      end
+    end 
+    
+    render :text => 'ok'
   end
 
 end

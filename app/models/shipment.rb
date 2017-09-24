@@ -361,6 +361,25 @@ class Shipment < ActiveRecord::Base
     return packages[0].price != nil
   end
     
+    
+  def fetch_packages_from_cargoflux
+    # Updates the package configuration by pulling it from cargoflux
+    data = Cargoflux.fetch_all self
+    dims = data['package_dimensions']
+    self.packages.each do |p|
+      p.destroy
+    end
+    dims.each do |d|
+      p = Package.new
+      p.length = d['length']
+      p.width = d['width']
+      p.height = d['height']
+      p.weight = d['weight'].to_i           
+      p.amount = d['amount'].to_i
+      p.shipment = self
+      p.save
+    end        
+  end
   
   def self.update_pending_shipping_states
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"

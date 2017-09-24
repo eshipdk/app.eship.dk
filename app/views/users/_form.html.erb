@@ -24,7 +24,7 @@
 		 			<th>Privilege</th>
 		 			<th>Password<% if not @user.new_record? %> (Leave blank to keep existing)<% end %></th>
 					<th>Repeat password</th>
-					<th>e-conomic customer</th>		 			
+					<th>e-conomic customer</th>					 			
 		 		</tr>
  			</thead>
 	 		<tbody>
@@ -44,14 +44,18 @@
 	  		<thead>
 	  			<tr>
 					<th>Cargoflux API key</th>
-		 			<th>eShip API key</th>					
+		 			<th>eShip API key</th>	
+		 			<th>E-conomic API key</th>				
 					<th>Affiliate User</th>
 				</tr>
 	  		</thead>
 			<tbody>
 				<tr>
 					<td><%= f.bstxt_field :cargoflux_api_key %></td>
-		 			<td><% if !@user.new_record? %><%= f.bstxt_field :eship_api_key, :disabled => true %><% end %></td>				
+		 			<td><% if !@user.new_record? %><%= f.bstxt_field :eship_api_key, :disabled => true %><% end %></td>		
+		 			<td>
+		 				<%= f.bstxt_field :economic_api_key %>
+		 			</td>		
 					<td>
 						<%= f.bssel :affiliate_id, @affiliate_users %>
 					</td>

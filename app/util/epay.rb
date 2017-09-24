@@ -11,7 +11,7 @@ module Epay
       'orderid' => invoice.id.to_s,
       'amount' => (invoice.gross_amount * 100).round.to_s,
       'currency' => '208',
-      'instantcapture' => '1',
+      'instantcapture' => '0',
       'fraud' => '0',
       'transactionid' => '-1',
       'pbsresponse' => '-1',
