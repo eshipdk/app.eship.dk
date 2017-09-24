@@ -337,11 +337,17 @@ class ApiController < ApplicationController
         package.shipment = shipment
         package.save
         
-        
-        if shipment.price_configured?
-          Cargoflux.submit shipment
+        # Label customers will edit their bookings directly in CF.
+        # Shipment customers will do it in eship.
+        if user.customer_type == 'label'
+          if shipment.price_configured?
+            Cargoflux.submit shipment
+          else
+            shipment.status = 'failed'
+            shipment.save
+          end
         else
-          shipment.status = 'failed'
+          shipment.status = :initiated
           shipment.save
         end
         
