@@ -15,8 +15,8 @@
 			</thead>
 			<tbody>
 				<% @user.uninvoiced_additional_charges.each do |c| %>
-				<tr>
-					<td><%= link_to "#{c.shipment.pretty_id}", admin_shipment_path(c.shipment) %></td>
+				<tr>					
+					<td><% if c.shipment %><%= link_to "#{c.shipment.pretty_id}", admin_shipment_path(c.shipment) %><%end%></td>
 					<td><%= c.description %></td>
 					<td><%= currency c.cost %></td>
 					<input type='hidden' name='cid[]' value='<%= c.id %>'/>

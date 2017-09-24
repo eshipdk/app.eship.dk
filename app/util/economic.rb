@@ -143,10 +143,7 @@ module Economic
       "textLine1" => notes
     },
     "paymentTerms"=> {
-        "paymentTermsNumber"=> 1,
-        "daysOfCredit"=> 14,
-        "name"=> "Lobende maned 14 dage",
-        "paymentTermsType"=> "invoiceMonth"
+        "paymentTermsNumber"=> customerData['paymentTerms']['paymentTermsNumber']        
     },
     "customer"=> {
         "customerNumber"=> customerId

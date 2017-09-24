@@ -8,7 +8,7 @@ module Epay
     params = {
       'merchantnumber' => EShip::EPAY_MERCHANT_NUMBER,
       'subscriptionid' => invoice.user.epay_subscription_id.to_s,
-      'orderid' => invoice.id.to_s,
+      'orderid' => invoice.pretty_id,
       'amount' => (invoice.gross_amount * 100).round.to_s,
       'currency' => '208',
       'instantcapture' => '0',
