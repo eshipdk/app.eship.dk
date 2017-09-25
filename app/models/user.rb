@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   validates_length_of :password, :in => 6..20, :on => :update, :if => :password
   enum role: [:admin, :customer, :affiliate]
   enum billing_type: [:free, :flat_price, :advanced] #flat_price: Pays a flat fee per label ordered. advanced: use pricing schemes per product
-  enum billing_control: [:manual, :by_time, :by_balance]
+  enum billing_control: [:manual, :by_time, :by_balance, :weekly, :monthly]
   enum payment_method: [:bank_transfer, :epay]
 
   has_many :products, :through => :user_products
@@ -386,8 +386,7 @@ class User < ActiveRecord::Base
           customer.invoice_and_submit
         end
       end
-    end
-    
+    end    
     
     customers_by_balance = User.customer.by_balance
     customers_by_balance.each do |customer|
@@ -397,6 +396,27 @@ class User < ActiveRecord::Base
       end
     end
     
+    t = Time.now.utc    
+    if t.wday == 1
+      customers_weekly = User.customer.weekly
+      customers_weekly.each do |customer|
+        if customer.balance_price > 0
+          Rails.logger.warn "Automatically invoicing customer #{customer.email}. Reason: weekly"
+          customer.invoice_and_submit
+        end
+      end
+    end
+    
+    if t.day == 1
+      customers_monthly = User.customer.monthly
+      customers.monthly.each do |customer|
+        if customer.balance_price > 0
+          Rails.logger.warn "Automatically invoicing customer #{customer.email}. Reason: monthly"
+          customer.invoice_and_submit
+        end
+      end
+    end
+       
     Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: User.perform_automatic_invoicing"
   end
     

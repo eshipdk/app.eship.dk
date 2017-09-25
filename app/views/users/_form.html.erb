@@ -108,7 +108,9 @@
 	  		<thead>
 	  			<tr>
 					<th>Invoice manually</th><th>Invoice by time (X days since last invoice)</th>
-					<th>Invoice by balance (more than X,- due) </th>					
+					<th>Invoice by balance (more than X,- due) </th>				
+					<th>Invoice weekly (by Monday)</th>
+					<th>Invoice monthly (The first)</th>
 				</tr>
 	  		</thead>
 	  		<tbody>
@@ -122,6 +124,12 @@
 					<td>
 						<input id='radio_by_balance' class="form-control" type="radio" name="user[billing_control]"  <%= @user.by_balance? ? 'checked' : ''%> value="by_balance"/>						
 					</td>
+					<td>
+						<input id='radio_weekly' class="form-control" type="radio" name="user[billing_control]"  <%= @user.weekly? ? 'checked' : ''%> value="weekly"/>
+					</td>
+					<td>
+						<input id='radio_monthly' class="form-control" type="radio" name="user[billing_control]"  <%= @user.monthly? ? 'checked' : ''%> value="monthly"/>
+					</td>
 				</tr>
 				<tr>
 					<td></td>
@@ -129,6 +137,8 @@
 					<td>
 						<%= f.bsnum_field :invoice_x_balance %>
 					</td>
+					<td></td>
+					<td></td>
 				</tr>
 	  		</tbody>
 		</table>
