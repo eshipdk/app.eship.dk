@@ -42,3 +42,35 @@
 
 
 <% end %>
+
+<%= form_tag(user_add_additional_charge_path(@user), id: 'additional-charge-form') do %>
+<div class='panel panel-default'>
+	<div class='panel-heading'>Add custom charge</div>
+	<div class='panel-body'>
+		<table class='table table-striped'>
+			<thead>
+				<tr>
+					<th>Description</th><th>Cost</th><th>Price</th><th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<%= bstxt_field :charge, :description %>
+					</td>
+					<td>
+						<%= bstxt_field :charge, :cost %>
+					</td>
+					<td>
+						<%= bstxt_field :charge, :price %>
+					</td>
+					<td>
+						<button type='submit' class='btn btn-primary form-control'>Submit</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<% end %>

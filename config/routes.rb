@@ -119,6 +119,7 @@ Rails.application.routes.draw do
   post 'billing/invoice', to: 'billing#invoice', as: 'invoice_all'
   post 'billing/user/:id/update_prices', to: 'billing#update_prices', as: 'user_update_prices'
   post 'billing/user/:id/update_additional_charges', to: 'billing#update_additional_charges', as: 'user_update_additional_charges'
+  post 'billing/user/:id/add_additional_charge', to: 'billing#add_additional_charge', as: 'user_add_additional_charge'
   post 'billing/invoice/:id/submit', to:'billing#submit_invoice', as: 'submit_invoice'
   post 'billing/invoice/:id/capture', to: 'billing#capture_invoice', as: 'capture_invoice' 
   post 'billing/invoice/:id/identify', to: 'billing#identify_economic_id', as: 'identify_economic_id'

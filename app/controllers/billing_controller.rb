@@ -55,6 +55,20 @@ class BillingController < ApplicationController
     redirect_to :action => :user
   end
   
+  def add_additional_charge
+    @user = User.find params[:id]
+    
+    charge = AdditionalCharge.new
+    charge.user = @user
+    charge.cost = params[:charge][:cost]
+    charge.price = params[:charge][:price]
+    charge.description = params[:charge][:description]
+    charge.product_code = 'custom_charge'
+    charge.save
+    
+    redirect_to :back
+  end
+  
   def invoice
     user = User.find(params[:user_id])
     begin
