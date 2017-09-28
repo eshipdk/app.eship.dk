@@ -198,6 +198,24 @@ module Economic
     get(BASE_ENDPOINT + "invoices/booked/#{id}", ast, agt)
   end
 
+  # You can't lookup by actual id provided by webhook. Instead,
+  # get a list and find the one with the matching ID...
+  def get_invoice_draft_data_by_handle invoice_id, ast = AST, agt = AGT
+    drafts = get(BASE_ENDPOINT + "invoices/drafts", ast, agt)
+    drafts['collection'].each do |draft|
+      if draft['soap']['currentInvoiceHandle']['id'].to_i == invoice_id.to_i
+        id = draft['draftInvoiceNumber']
+        return get_invoice_draft_data id, ast, agt
+      end
+    end
+    return false
+  end
+
+  def get_invoice_draft_data id, ast = AST, agt = AGT
+     get(BASE_ENDPOINT + "invoices/drafts/#{id}", ast, agt)
+  end
+
+
   def get_pdf_data invoice
     data = get_invoice_data invoice
     return get_raw(data['pdf']['download'])
@@ -237,6 +255,157 @@ module Economic
                    
      request.body = payload.to_json                   
      JSON.parse http.request(request).body
+  end
+
+  def put url, payload, ast, agt
+
+    endpoint = URI.parse url
+    http = Net::HTTP.new(endpoint.host, endpoint.port)
+    http.use_ssl = true
+    
+    request = Net::HTTP::Put.new(endpoint.request_uri,
+                                  initheader = {
+                                     'Content-Type' =>'application/json',
+                                     'X-AppSecretToken' => ast,
+                                     'X-AgreementGrantToken'=> agt,
+                                     'accept' => "application/json"})
+                   
+     request.body = payload.to_json                   
+     JSON.parse http.request(request).body
+  end
+
+  def self.data_contains_import_code data
+    lines = data['lines']
+    lines.each do |line|
+      product_code = line['product']['productNumber']
+      if product_code == 'eship_dataimport'
+        return true
+      end
+    end
+    return false
+  end
+
+  def self.book_by_invoice_data user, data, draft_id = false
+    
+    if data['httpStatusCode'] == 401
+      res = 'Denied access to economic'
+      return [:error, res]
+    end
+    
+    if not data.key?('lines')
+      res = "Unexpected response from economic: #{data.to_s}"
+      return [:error, res]
+    end        
+    
+    if not Economic.data_contains_import_code data
+      return false
+    end
+        
+    begin
+      product = user.find_product 'dataimport'
+    rescue => ex
+      res = 'User does not have access to dataimport product'
+      return [:error, res]
+    end
+      
+    if not user.default_address
+      res = 'No sender address configured in eShip. Please configure default address in the address book.'
+      return [:error, res]
+    end
+
+    customer_id = data['customer']['customerNumber']
+    customer_data = Economic.get_customer_data customer_id
+    
+    sender = user.default_address
+    
+    recipient = Address.new
+    recipient.company_name = data['recipient']['name']
+    recipient.attention = data['recipient']['name']
+    recipient.address_line1 = data['delivery']['address']
+    recipient.country_code = data['delivery']['country']
+    recipient.zip_code = data['delivery']['zip']
+    recipient.city = data['delivery']['city']         
+    recipient.phone_number = customer_data['telephoneAndFaxNumber']
+    recipient.email = customer_data['email']    
+    recipient.save
+        
+    shipment = Shipment.new
+    shipment.user = user
+    shipment.product = product
+    shipment.sender = sender
+    shipment.recipient = recipient
+    if draft_id
+      shipment.economic_draft_id = draft_id
+    end
+    shipment.save
+    
+    
+    package = Package.new
+    package.width = 1
+    package.length = 1
+    package.height = 1
+    package.weight = 1
+    package.amount = 1
+    package.shipment = shipment
+    package.save
+    
+    # Label customers will edit their bookings directly in CF.
+    # Shipment customers will do it in eship.
+    if user.customer_type == 'label'
+      if shipment.price_configured?
+        Cargoflux.submit shipment
+      else
+        shipment.status = 'failed'
+        shipment.save
+      end
+    else
+      shipment.status = :initiated
+      shipment.save
+    end
+    
+    shipment.reload
+
+    return true
+  end
+  
+  def self.create_booking_from_invoice_captured user, invoice_id
+    data = Economic.get_invoice_data invoice_id, Economic.AST_Customer, user.economic_api_key
+    if data['errorCode'] == 'E06000'
+      res = "Cannot find invoice id #{invoice_id}"
+      return [:error, res]     
+    end
+
+    return Economic.book_by_invoice_data user, data
+  end
+
+
+  def self.create_booking_from_invoice_updated user, invoice_id
+    data = Economic.get_invoice_draft_data_by_handle invoice_id, Economic.AST_Customer, user.economic_api_key
+    if not data
+      res = "Cannot find invoice id #{invoice_id}: #{data}"
+      return [:error, res]
+    end
+    Economic.book_by_invoice_data user, data, data['draftInvoiceNumber']
+  end
+
+  def self.update_import_in_draft shipment
+    user = shipment.user
+    data = Economic.get_invoice_draft_data shipment.economic_draft_id, Economic.AST_Customer, user.economic_api_key
+
+    lines = data['lines']
+    new_lines = []
+    lines.each do |line|     
+      if line['product']['productNumber'] == 'eship_dataimport'
+
+      else
+        new_lines.push line
+      end
+    end
+
+    data['lines'] = new_lines
+    put BASE_ENDPOINT + "invoices/drafts/#{shipment.economic_draft_id}", data,
+        Economic.AST_Customer, user.economic_api_key
+    
   end
   
 end

@@ -1,6 +1,7 @@
+using PatternMatch
 include CsvImporter
 class ApiController < ApplicationController
-  before_filter :authenticate_api, :except => [:validate_key, :client_version, :economic_invoice_captured]
+  before_filter :authenticate_api, :except => [:validate_key, :client_version, :economic_invoice_captured, :economic_invoice_updated]
   skip_before_filter :verify_authenticity_token
 
 
@@ -226,9 +227,10 @@ class ApiController < ApplicationController
     end           
     render :text => response.to_json, :content_type => 'application/json'
   end
-  
-# POSTNORD API 
-  
+
+###################################################
+### POSTNORD API 
+###################################################  
   def pn_servicepoint_by_address
     url = 'https://api2.postnord.com/rest/businesslocation/v1/servicepoint/findNearestByAddress.json?apikey=e882a3b4126a72f01d95be8411d43938'
     @api_params.each do |k,v|
@@ -242,10 +244,16 @@ class ApiController < ApplicationController
     request = Net::HTTP::Get.new(url)
     render :text => http.request(request).body,  :content_type => 'application/json'
   end
+
+###################################################
+### ECONOMIC WEBHOOKS
+###################################################
+
+
   
   # Webhook for invoices caputred in economic
   def economic_invoice_captured
-    Rails.logger.warn "#{Time.now.utc.iso8601} Webhook called #{params.to_s}"
+    Rails.logger.warn "#{Time.now.utc.iso8601} Invocie webhook called #{params.to_s}"
     
     user = User.authenticate_api(params['api_key'])
     if not user
@@ -263,106 +271,49 @@ class ApiController < ApplicationController
     end
     
     invoice_id = params['id']
-    data = Economic.get_invoice_data invoice_id, Economic.AST_Customer, user.economic_api_key
-    if data['errorCode'] == 'E06000'
-      res = "Cannot find invoice id #{invoice_id}"
+    res = Economic.create_booking_from_invoice_captured user, invoice_id
+    match(res) do
+      with(_[:error, issue]) do
+        Rails.loger.warn issue
+        render :text => issue
+        return
+      end
+      with _ do
+        render :text => 'ok'
+      end
+    end
+  end
+
+  def economic_invoice_updated
+    Rails.logger.warn "#{Time.now.utc.iso8601} Order webhook called #{params.to_s}"
+      
+    user = User.authenticate_api(params['api_key'])
+    if not user
+      res = 'Invalid/missing API-key'
+      Rails.logger.warn res
+      render :text => res
+      return
+    end
+    
+    if not params.key?('id')
+      res = 'Missing invoice id'
       Rails.logger.warn res
       render :text => res
       return
     end
 
-    
-    if data['httpStatusCode'] == 401
-      res = 'Denied access to economic'
-      Rails.logger.warn res
-      render :text => res
-      return
-    end
-    
-    customer_id = data['customer']['customerNumber']
-    customer_data = Economic.get_customer_data customer_id    
-    
-    if not data.key?('lines')
-      res = 'Unexpected response from economic'
-      Rails.logger.warn res
-      Rails.logger data.to_s
-      render :text => res
-      return
-    end
-        
-    lines = data['lines']
-    lines.each do |line|            
-      product_code = line['product']['productNumber']
-      if product_code == 'eship_dataimport'                     
-        begin
-          product = user.find_product 'dataimport'
-        rescue => ex
-          res = 'User does not have access to dataimport product'
-          Rails.logger.warn res
-          render :text => res
-          return
-        end
-    
-        if not user.default_address
-          res = 'No sender address configured in eShip. Please configure default address in the address book.'
-          Rails.logger.warn res
-          render :text => res
-          return
-        end
-        
-        sender = user.default_address
-                
-        recipient = Address.new
-        recipient.company_name = data['recipient']['name']
-        recipient.attention = data['recipient']['name']
-        recipient.address_line1 = data['delivery']['address']
-        recipient.country_code = data['delivery']['country']
-        recipient.zip_code = data['delivery']['zip']
-        recipient.city = data['delivery']['city']         
-        recipient.phone_number = customer_data['telephoneAndFaxNumber']
-        recipient.email = customer_data['email']
-        
-        recipient.save
-        
-        
-        shipment = Shipment.new
-        shipment.user = user
-        shipment.product = product
-        shipment.sender = sender
-        shipment.recipient = recipient           
-       
-        shipment.save
-        
-        
-        package = Package.new
-        package.width = 1
-        package.length = 1
-        package.height = 1
-        package.weight = 1
-        package.amount = 1
-        package.shipment = shipment
-        package.save
-        
-        # Label customers will edit their bookings directly in CF.
-        # Shipment customers will do it in eship.
-        if user.customer_type == 'label'
-          if shipment.price_configured?
-            Cargoflux.submit shipment
-          else
-            shipment.status = 'failed'
-            shipment.save
-          end
-        else
-          shipment.status = :initiated
-          shipment.save
-        end
-        
-        shipment.reload
-        break
+    invoice_id = params['id']
+    res = Economic.create_booking_from_invoice_updated user, invoice_id
+    match(res) do
+      with(_[:error, issue]) do
+        Rails.logger.warn issue
+        render :text => issue
+        return
       end
-    end 
-    
-    render :text => 'ok'
+      with _ do
+        render :text => 'ok'
+      end
+    end
   end
 
 end

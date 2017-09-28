@@ -93,6 +93,7 @@ Rails.application.routes.draw do
   post 'api/pn/servicepoints', to: 'api#pn_servicepoint_by_address'
   post 'api/get_price', to: 'api#get_price'
   post 'api/economic_invoice_captured', to: 'api#economic_invoice_captured'
+  post 'api/economic_invoice_updated', to: 'api#economic_invoice_updated'
 
 
   #User account

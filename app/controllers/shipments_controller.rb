@@ -1,6 +1,7 @@
 include Cargoflux
 include CsvImporter
 include PriceEstimation
+include Economic
 class ShipmentsController < ApplicationController
   before_filter :authenticate_user, :except => ['callback']
   skip_before_action :verify_authenticity_token, :only => ['callback']
@@ -233,6 +234,12 @@ class ShipmentsController < ApplicationController
     end
 
     shipment.save
+
+    # If the dataimport product was used to generate the booking,
+    # remove the dataimport products from the given draft
+    if shipment.economic_draft_id
+      Economic.update_import_in_draft shipment
+    end
 
     shipment.api_response = params.to_json
     if shipment.label_action == 'print' || shipment.status != 'complete'
