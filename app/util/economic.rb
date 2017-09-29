@@ -1,5 +1,6 @@
 using PatternMatch
 include ApplicationHelper
+include CountryNames
 module Economic
   
   BASE_ENDPOINT = 'https://restapi.e-conomic.com/'
@@ -322,7 +323,7 @@ module Economic
     recipient.company_name = data['recipient']['name']
     recipient.attention = data['recipient']['name']
     recipient.address_line1 = data['delivery']['address']
-    recipient.country_code = data['delivery']['country']
+    recipient.country_code = CountryNames.get_code_from_danish data['delivery']['country']
     recipient.zip_code = data['delivery']['zip']
     recipient.city = data['delivery']['city']         
     recipient.phone_number = customer_data['telephoneAndFaxNumber']
@@ -365,7 +366,7 @@ module Economic
     
     shipment.reload
 
-    return true
+    return shipment
   end
   
   def self.create_booking_from_invoice_captured user, invoice_id
@@ -385,7 +386,12 @@ module Economic
       res = "Cannot find invoice id #{invoice_id}: #{data}"
       return [:error, res]
     end
-    Economic.book_by_invoice_data user, data, data['draftInvoiceNumber']
+    shipment = Economic.book_by_invoice_data user, data, data['draftInvoiceNumber']
+    
+    # Remove the dataimport products from the given draft
+    if shipment.economic_draft_id
+      Economic.update_import_in_draft shipment
+    end
   end
 
   def self.update_import_in_draft shipment

@@ -235,12 +235,6 @@ class ShipmentsController < ApplicationController
 
     shipment.save
 
-    # If the dataimport product was used to generate the booking,
-    # remove the dataimport products from the given draft
-    if shipment.economic_draft_id
-      Economic.update_import_in_draft shipment
-    end
-
     shipment.api_response = params.to_json
     if shipment.label_action == 'print' || shipment.status != 'complete'
       logger.debug 'Autoprint'
