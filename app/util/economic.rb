@@ -302,7 +302,7 @@ module Economic
     end
         
     begin
-      product = user.find_product 'dataimport'
+      product = user.find_product 'cfdataimport'
     rescue => ex
       res = 'User does not have access to dataimport product'
       return [:error, res]
