@@ -26,12 +26,12 @@
   <%= render 'layouts/header' %>
     
   
-   <div <% if not show_left %>class="hide-left"<% end %>class="container-fluid">
-     <div class="row main-body">
+   <div <% if not show_left %>class="hide-left"<% end %>>
+     <div class="main-body">
        <% if show_left %>
       	<%= render 'layouts/left' %>
        <% end %>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="main">
     	 	<% if flash[:error] %>
     	 		<div class='alert alert-danger'>
 				    <strong>Error:</strong>			    

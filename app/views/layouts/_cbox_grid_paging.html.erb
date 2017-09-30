@@ -1,0 +1,12 @@
+<div class='cbox-grid-paging'>
+	
+	<% if filter %><div style='padding-top: 6px; display: inline-block;'><% end %>	
+	<%= display_pagination models %>
+	<% if filter %></div><% end %>
+	<span class='pull-right'>
+		<%= will_paginate models %>
+		<% if filter %>
+			<button class="btn btn-primary" type="submit">Filter</button>
+		<% end %>	
+	</span>
+</div>

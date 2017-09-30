@@ -87,4 +87,50 @@ end
   def glyphicon name
     "<span class='glyphicon glyphicon-#{name}'></span>".html_safe
   end
+  
+  
+  # Content box helpers..    
+  def cbox(&block)
+    html = "<div class='content-box'>"
+    html << capture(&block)
+    html << '</div>'
+    raw html    
+  end
+  
+  def cbox_header(title, &links_block)
+      html = "<div class='content-box-header'><span class='title'>#{title}</span><span class='pull-right'>"
+      html << capture(&links_block)
+      html << '</span></div>'
+      raw html
+  end
+  
+  def btn_link(url, title, type='default')
+    html = "<a href='#{url}' class='btn btn-#{type}'>#{title}</a>"
+    raw html
+  end
+  
+  def tbl(clickable, &block)
+    html = "<table class='table table-hover #{clickable ? 'table-hover-pointer' : ''} table-condensed'>"
+    html << capture(&block)
+    html << "</table>"
+    raw html
+  end
+  
+  def cell_safe(str, max_width)    
+    html = "<td title='#{str}'><div class='safe-cell' style='max-width: #{max_width}px'>#{str}</div></td>"        
+    raw html
+  end
+  
+  def row_link(url, &block)
+    html = "<tr onclick='window.location=\"#{url}\"' class='link'>"
+    html << capture(&block)
+    html << "</tr>"
+    raw html
+  end
+  
+  def cbox_grid_paging models, show_filter = false
+    render :partial => 'layouts/cbox_grid_paging', :locals => {:models => models, :filter => show_filter}
+  end
+    
+  
 end
