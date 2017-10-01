@@ -363,6 +363,7 @@ table button.btn{
 	width: 100%;
 	background: white;
 	padding: 35px;
+	margin-bottom: 35px;
 }
 
 .content-box-header{
@@ -373,9 +374,61 @@ table button.btn{
 	margin-bottom: 30px;
 }
 
+
+.content-box-subheader{
+	font-size: 24px;
+	border-bottom: 1px solid #ddd;
+	text-transform: uppercase;
+	padding-bottom: 10px;
+	margin-bottom: 30px;
+}
+
 .btn{
 	text-transform: uppercase;
 }
 
+.form-control{
+	border-radius: 0;
+	height: 55px;
+}
+
+.model-filters .form-control{
+	height: 34px;
+}
+
+.row{
+	margin-bottom: 15px;
+}
+
+.key-value-box{
+	width: 100%;	
+}
+
+.key-value-box .key{
+	font-weight: bold;
+	text-transform: uppercase;
+	float: left;
+	clear: left;
+	max-width: 50%;
+}
+
+.key-value-box .value{
+	float: right;
+	text-transform: capitalize;
+	clear: right;
+	max-width: 50%;
+	max-height: 20px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 
 
+
+.block-key-value-box .key{
+	font-weight: bold;
+	text-transform: uppercase;	
+}
+
+.block-key-value-box .value{	
+}

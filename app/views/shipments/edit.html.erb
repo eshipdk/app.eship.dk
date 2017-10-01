@@ -1,2 +1,2 @@
-<h1>Edit shipment</h1>
-<%= render 'form' %>
+
+<%= render :partial => 'form', :locals => {:title => "Edit shipment ##{@shipment.pretty_id}"} %>

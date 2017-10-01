@@ -104,6 +104,13 @@ end
       raw html
   end
   
+  def cbox_subheader(title, &links_block)
+      html = "<div class='content-box-subheader'><span class='title'>#{title}</span><span class='pull-right'>"
+      html << capture(&links_block)
+      html << '</span></div>'
+      raw html
+  end
+  
   def btn_link(url, title, type='default')
     html = "<a href='#{url}' class='btn btn-#{type}'>#{title}</a>"
     raw html
@@ -130,6 +137,30 @@ end
   
   def cbox_grid_paging models, show_filter = false
     render :partial => 'layouts/cbox_grid_paging', :locals => {:models => models, :filter => show_filter}
+  end
+  
+  def kv_pair(key, value, title=true)
+    if title
+       raw "<span class='key'>#{key}</span><span class='value' title='#{value}'>#{value}</span>"
+    else
+       raw "<span class='key'>#{key}</span><span class='value'>#{value}</span>"
+    end    
+  end
+  
+  def kv_box(map, titles = true)
+    html = '<div class="key-value-box">'
+    map.keys.each do |key|
+      html << kv_pair(key, map[key], titles)
+    end
+    html << '</div>'
+    raw html
+  end
+  
+  def block_kv_pair(key, &valueblock)
+    html = "<div class=block-key-value-box><div class='key'>#{key}</div><div class='value'>"
+    html << capture(&valueblock)
+    html << '</div></div>'
+    raw html
   end
     
   
