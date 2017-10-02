@@ -1,39 +1,32 @@
+<%= cbox do-%>
+<%= cbox_header(title) do-%>
+
+<%end%>
+
 <%= form_for @address do |f| %>
 
-<div class='panel panel-default'>
-	<div class='panel-heading'>Quick Select Options</div>
-	<div class='panel-body'>
-		<div class='table-responsive'>
-			<table class='table table-striped'>
-				<thead>
-					<tr>
-						<th>Default Sender</th>
-						<th>Quick Select Sender</th>
-						<th>Quick Select Recipient</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><%= bschckbx 'default_address', "1", @current_user.default_address == @address %></td>
-						<td><%= bschckbx 'quick_select_sender', "1", @record.quick_select_sender %></td>
-						<td><%= bschckbx 'quick_select_recipient', "1", @record.quick_select_recipient %></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>	
-	</div>
+<div class='row'>
+  <div class='col-xs-4'>
+    <%= block_kv_pair('Default sender') do-%>
+    <%= bschckbx 'default_address', "1", @current_user.default_address == @address %>
+    <% end %>
+    <%= block_kv_pair('Quick select sender') do-%>
+    <%= bschckbx 'quick_select_sender', "1", @record.quick_select_sender %>
+    <%= block_kv_pair('Quick select recipient') do-%>
+    <%= bschckbx 'quick_select_recipient', "1", @record.quick_select_recipient %>
+    <% end %>
+    <%end%>
+  </div>
+  <div class='col-xs-8'>
+    <%= render :partial => 'form_fields', :locals => {:f => f}%>
+  </div>
 </div>
-
-
-<div class='panel panel-default'>
-	<div class='panel-heading'>Address Fields</div>
-	<div class='panel-body'>
-		<%= render :partial => 'form_fields', :locals => {:f => f}%>
-	</div>
-</div>	
 
  
 <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
  
-</div>
 <% end %>
+
+
+<% end %>
+
