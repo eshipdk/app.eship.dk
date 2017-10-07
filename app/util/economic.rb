@@ -389,7 +389,7 @@ module Economic
     shipment = Economic.book_by_invoice_data user, data, data['draftInvoiceNumber']
     
     # Remove the dataimport products from the given draft
-    if shipment.economic_draft_id
+    if shipment and shipment.economic_draft_id
       Economic.update_import_in_draft shipment
     end
   end
