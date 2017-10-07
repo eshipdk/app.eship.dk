@@ -1,32 +1,13 @@
-<div class='table-responsive'>
-	<table class='table table-striped'>
-		<tr>
-			<th>Company</th>
-			<th>Attention</th>
-			<th>Address line 1</th>
-			<th>Address line 2</th>
-			<th>Zip code</th>
-		</tr>
-		<tr>
-			<td><%= address.company_name %></td>
-			<td><%= address.attention %></td>
-			<td><%= address.address_line1 %></td>
-			<td><%= address.address_line2 %></td>
-			<td><%= address.zip_code %></td>
-		</tr>
-	</table>
-	<table class='table table-striped'>
-		<tr>
-			<th>City</th>
-			<th>Country</th>
-			<th>Phone</th>
-			<th>Email</th>
-		</tr>
-		<tr>
-			<td><%= address.city %></td>
-			<td><%= address.country_code %></td>
-			<td><%= address.phone_number %></td>
-			<td><%= address.email %></td>
-		</tr>
-	</table>
+<div class='address-show'>
+    <%= address.company_name %><br/>
+    <%= address.attention %><br/>
+    <%= address.address_line1 %><br/>
+    <% if address.address_line2 != '' %>
+    <%= address.address_line2 %><br/>
+    <% end %>
+    <%= address.country_code %><br/>
+    <%= address.zip_code %><br/>
+    <%= address.city %><br/>    
+    <%= address.phone_number %><br/>
+    <%= address.email %>
 </div>

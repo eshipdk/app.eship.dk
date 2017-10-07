@@ -401,7 +401,8 @@ table button.btn{
 }
 
 .key-value-box{
-	width: 100%;	
+        width: 100%;
+        float: left;
 }
 
 .key-value-box .key{
@@ -414,7 +415,6 @@ table button.btn{
 
 .key-value-box .value{
 	float: right;
-	text-transform: capitalize;
 	clear: right;
 	max-width: 50%;
 	max-height: 20px;
