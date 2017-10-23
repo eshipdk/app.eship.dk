@@ -1,3 +1,4 @@
+# coding: utf-8
 include Reporting
 require 'csv'
 require 'roo'
@@ -102,13 +103,13 @@ class AdminController < ApplicationController
   end
   
   def process_additional_charges
+
     uploaded_file = params[:file]
-    spreadsheet = Roo::Spreadsheet.open(uploaded_file)    
-        
+    spreadsheet = Roo::Spreadsheet.open(uploaded_file.tempfile.path)    
     
         
     @charges = []
-    header = spreadsheet.row(1).map{|x| x.downcase}
+    header = spreadsheet.row(1).map{|x| x == nil ? '' : x.downcase}
     required_headers = ['awb', 'beskrivelse', 'beløb']
     required_headers.each do |h|
       if not header.include?(h)
