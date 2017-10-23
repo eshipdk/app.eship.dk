@@ -275,15 +275,15 @@ module Economic
      JSON.parse http.request(request).body
   end
 
-  def self.data_contains_import_code data
+  def self.data_import_qty data
     lines = data['lines']
     lines.each do |line|
       product_code = line['product']['productNumber']
       if product_code == 'eship_dataimport'
-        return true
+        return line['quantity'].to_i
       end
     end
-    return false
+    return 0
   end
 
   def self.book_by_invoice_data user, data, draft_id = false
@@ -297,8 +297,9 @@ module Economic
       res = "Unexpected response from economic: #{data.to_s}"
       return [:error, res]
     end        
-    
-    if not Economic.data_contains_import_code data
+
+    qty = Economic.data_import_qty data
+    if qty < 1
       return false
     end
         
@@ -346,7 +347,7 @@ module Economic
     package.length = 1
     package.height = 1
     package.weight = 1
-    package.amount = 1
+    package.amount = qty
     package.shipment = shipment
     package.save
     
