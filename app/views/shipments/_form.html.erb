@@ -12,173 +12,154 @@
 	  </ul>
 	</div>
 <% end %>
-<div class='panel panel-default'>
-	<div class='panel-heading'>Product</div>
-	<div class='panel-body'>
-		<div class='panel panel-default'>
-			<div class='panel-heading'>
-				Essentials
-			</div>
-			<div class='panel-body'>
-				<table class='table table-striped'>
-					<thead>
-						<tr>
-							<th>Product</th>
-							<th>Return Service <div class='tip' data-toggle='tooltip' 
-								title='If you are in the receiving end of a shipment then it is most likely a return service.
-										E.g. if a customer is returning damaged goods. Note that sender/recipient addresses are
-										not reversed and that your address should thus be assigned as recipient below.
-										The option BOTH will generate a normal booking from sender to recipient and a
-										return booking from recipient to sender.'></th>
-							<th>Label Action<div class='tip' data-toggle='tooltip'
-								title="How to handle the shipping label.
-								[Print]: Automatically send the label to the printing service. [Email]: Automatically send the label by email to the sender."></div></th>
-							<th style="display:none;" id='parcelshop-th'>Parcelshop ID <a target="_blank" id="find-parcelshop-link">Find Parcelshop</a></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>
-			 					<%= f.bssel :product_id, options_from_collection_for_select(@current_user.products, :id, :name, :selected => @shipment.product_id) %>
-			 					<input type='hidden' name='shipment[parcelshop_id]' value='' />
-			 				</td>
-			 				<td>
-			 					<%= f.bssel :return, options_for_select( [['No', 0], ['Yes', 1], ['Both', :both]], :selected => (@shipment.return ? 1 : 0) ) %>
-			 				</td>
-			 				<td>
-			 					<%= f.bssel :label_action, Shipment.label_action_options %>
-			 				</td>
-			 				<td style="display:none;" id='parcelshop-td'>
-			 					<%= f.bstxt_field :parcelshop_id, {placeholder: 'OPTIONAL: Leave blank to use closest'} %>	
-			 				</td>
-						</tr>
-					</tbody>
-				</table>
+<%= cbox do-%>
+	<%= cbox_header (title) do-%>	
+	
+	<% end %>	
+	<div class='row'>
+		<div class='col-xs-4'>
+			<label for='shipment_product_id'>Product</label>
+			<%= f.bssel :product_id, options_from_collection_for_select(@current_user.products, :id, :name, :selected => @shipment.product_id) %>
+			<input type='hidden' name='shipment[parcelshop_id]' value='' />					
+		</div>
+		<div class='col-xs-4'>
+			<label for='shipment_return'>Return Service</label>
+			<%= f.bssel :return, options_for_select( [['No', 0], ['Yes', 1], ['Both', :both]], :selected => (@shipment.return ? 1 : 0) ) %>
+		</div>
+		<div class='col-xs-4'>
+			<label for='shipment_label_action'>Label Action</label>
+			<%= f.bssel :label_action, Shipment.label_action_options %>
+		</div>
+	</div>
+	<div class='row'>
+		<div class='col-xs-4'>
+			<div id='shipment-parcelshop-container' style='display:none'>
+				<label for='shipment_parcelshop_id'>Parcelshop ID <a target="_blank" id="find-parcelshop-link">Find Parcelshop</a></label>
+				<%= f.bstxt_field :parcelshop_id, {placeholder: 'OPTIONAL: Leave blank to use closest'} %>
 			</div>
 		</div>
-		<div class='panel panel-default'>
-			<div class='panel-heading'>
-				Details
-			</div>
-			<div class='panel-body'>
-				<table class='table table-striped'>
-					<thead>
-						<tr>
-			 				<th>Delivery Instructions <div class='tip' data-toggle="tooltip"
-			 					title='Instructions pertaining to the delivery. E.g. "Please do [not] leave the package if I am not home."'></div></th>
-			 				<th>Content Description<div class='tip' data-toggle='tooltip'
-			 					title='Description of the package content. E.g. "Contains fragile electronics. Handle with care."'></div></th>
-			 				<th>Remarks <div class='tip' data-toggle='tooltip'
-			 					title='Other remarks that do not belong in the previous categories.'></div></th>
-			 				<th>Reference<div class='tip' data-toggle='tooltip'
-			 					title='Your reference for future queries. E.g. relevant order number.'></div></th>
-			 			</tr>
-					</thead>
-		 			<tbody>
-		 				<tr>
-			 				<td>
-			 					<%= f.bstxt_field :delivery_instructions %>
-			 				</td>
-			 				<td>
-			 					<%= f.bstxt_field :description %>
-			 				</td>
-			 				<td>
-			 					<%= f.bstxt_field :remarks %>
-			 				</td>
-			 				<td>
-			 					<%= f.bstxt_field :reference %>
-			 				</td>
-			 			</tr>
-		 			</tbody>
-		 		</table>
-			</div>
-		</div>
+	</div>	
+<% end %>
+
+<%= cbox do-%>
+<div class='row'>
+	<div class='col-xs-6'>
+		<label for='shipment_delivery_instructions'>
+			Delivery Instructions
+		</label>
+		<%= f.bstxt_field :delivery_instructions %>
+	</div>
+	<div class='col-xs-6'>
+		<label for='shipment_description'>Content Description</label>
+		<%= f.bstxt_field :description %>
+	</div>
+</div>
+<div class='row'>
+	<div class='col-xs-6'>
+		<label for='shipment_remarks'>
+			Remarks
+		</label>
+		<%= f.bstxt_field :remarks %>
+	</div>
+	<div class='col-xs-6'>
+		<label for='shipment_reference'>
+			Reference
+		</label>
+		<%= f.bstxt_field :reference %>
+	</div>
+</div>
+<% end %>
+
+<%= cbox do-%>
+<%= cbox_header('Packages') do-%>
+
+<%end %>
+
+<table class='table' id='package-table'>
+	<thead>
+		<tr>
+			<th>Length (cm)</th>
+			<th>Width (cm)</th>
+			<th>Height (cm)</th>
+			<th>Weight (kg)</th>
+			<th>Amount</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% i_package = 0 %>
+		<%= f.fields_for :packages do |fp| %>
+		<% i_package += 1 %>
+		<tr id='package-row-<%= i_package %>'>
+			<td>
+				<%= fp.bsnum_field :length %>
+			</td>
+			<td>
+				<%= fp.bsnum_field :width %>
+			</td>
+			<td>
+				<%= fp.bsnum_field :height %>
+			</td>
+			<td>
+				<%= fp.bsnum_field :weight, :step => 'any', :onchange => 'getPrice()' %>
+			</td>
+			<td>
+				<%= fp.bsnum_field :amount, :onchange => 'getPrice()' %>
+			</td>
+		</tr>
+		<% end %>
+	</tbody>
+<tfoot>
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td><button id='btn-remove-package' <%= 'disabled' if i_package < 2 %> onclick='removePackage()' type='button' class='btn btn-primary btn-block'>Remove Package</button></td>
+		<td><button onclick='addPackage()' type='button' class='btn btn-primary btn-block'>Add Package</button></td>	
+	</tr>
+</tfoot>
+</table>	
+<script>var nPackages = <%= i_package %>;</script>
+<% end %>	
 		
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		Packages
-	</div>
-	<div class='panel-body'>
-		<table class='table table-striped' id='package-table'>
-			<thead>
-				<tr>
-					<th>Length (cm)</th>
-					<th>Width (cm)</th>
-					<th>Height (cm)</th>
-					<th>Weight (kg)</th>
-					<th>Amount</th>
-				</tr>
-			</thead>
-			<tbody>
-				<% i_package = 0 %>
-				<%= f.fields_for :packages do |fp| %>
-				<% i_package += 1 %>
-				<tr id='package-row-<%= i_package %>'>
-					<td>
-						<%= fp.bsnum_field :length %>
-					</td>
-					<td>
-						<%= fp.bsnum_field :width %>
-					</td>
-					<td>
-						<%= fp.bsnum_field :height %>
-					</td>
-					<td>
-						<%= fp.bsnum_field :weight, :step => 'any', :onchange => 'getPrice()' %>
-					</td>
-					<td>
-						<%= fp.bsnum_field :amount, :onchange => 'getPrice()' %>
-					</td>
-				</tr>
-				<% end %>
-			</tbody>
-		<tfoot>
-			<tr>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td><button id='btn-remove-package' <%= 'disabled' if i_package < 2 %> onclick='removePackage()' type='button' class='btn btn-primary btn-block'>Remove Package</button></td>
-				<td><button onclick='addPackage()' type='button' class='btn btn-primary btn-block'>Add Package</button></td>	
-			</tr>
-		</tfoot>
-		</table>
-	</div>
-</div>
 
+<%= cbox do-%>
+<%= cbox_header('Addresses') do-%>
+
+<%end%>
+<div class='row'>
+	<div class='col-xs-6'>
+		<%= render :partial => 'address_form', :locals => {:prefix => 'sender', :address => (form_address @shipment, 'sender')} %>
+		<% if not @shipment.id %>
+		<span class='pull-right'><%= bschckbx :save_quick_sender %></span>
+		<label for='save_quick_sender'>Add sender to "Quick select sender"</label>
+		<% end %>
 	</div>
-</div>
-
-<div class='panel panel-default'>
-	<div class='panel-heading'>Addresses</div>
-	<div class='panel-body'>
-		<div class='col-lg-6'>
-			<%= render :partial => 'address_form', :locals => {:prefix => 'sender', :address => (form_address @shipment, 'sender')} %>
-			<% if not @shipment.id %>
-			<span class='pull-right'><%= bschckbx :save_quick_sender %></span>
-			<label for='save_quick_sender'>Add sender to "Quick select sender"</label>
-			<% end %>
-		</div>
-		<div class='col-lg-6'>
-			<%= render :partial => 'address_form', :locals => {:prefix => 'recipient', :address => (form_address @shipment, 'recipient')} %>
-			<% if not @shipment.id %>
-			<span class='pull-right'><%= bschckbx :save_quick_recipient %></span>
-			<label for='save_quick_recipient'>Add recipient to "Quick select recipient"</label>
-			<% end %>
-		</div>		
+	<div class='col-xs-6'>
+		<%= render :partial => 'address_form', :locals => {:prefix => 'recipient', :address => (form_address @shipment, 'recipient')} %>
+		<% if not @shipment.id %>
+		<span class='pull-right'><%= bschckbx :save_quick_recipient %></span>
+		<label for='save_quick_recipient'>Add recipient to "Quick select recipient"</label>
+		<% end %>
 	</div>
-</div>
+</div>		
+<% end %>	
 
-
-<div class='panel panel-default'>
-	<div class='panel-heading'>
+<%= cbox do-%>
+<div class='row'>
+	<div class='col-xs-6'>
 		Your price
 		<span class='pull-right' id='price-container'>
 			<a href='javascript:getPrice();'>Get price..</a>
 		</span>
-	</div>	
+	</div>
+	<div class='col-xs-6'>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+	</div>
 </div>
+<% end %>
 
-<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+
+
 
 <script type='text/javascript'>
 
@@ -227,7 +208,7 @@
   		});		
 	}
 
-	var nPackages = <%= i_package %>;
+	
 	function addPackage(){
 		var baseRow = $('#package-row-1');
 		nPackages++;
@@ -291,17 +272,15 @@
 		$('#shipment_packages_attributes_0_weight').val(PRODUCT_VALUES[productId]['weight']);
 	}
 	
-	function setParcelshopStatus(productId){
-		if(PRODUCT_VALUES[productId]['parcelshops_enabled']){
-			$('#parcelshop-th').show();
-			$('#parcelshop-td').show();
+	function setParcelshopStatus(productId){		
+		if(PRODUCT_VALUES[productId]['parcelshops_enabled']){			
+			$('#shipment-parcelshop-container').show();
 			$('#find-parcelshop-link').attr('href', PRODUCT_VALUES[productId]['find_parcelshop_url']);
 			$('#label-attention-recipient').show();
 			$('#recipient_attention').attr('required', true);
 		}else{
-			$('#parcelshop-th').hide();
-			$('#shipment_parcelshop_id').val('');
-			$('#parcelshop-td').hide();
+			$('#shipment-parcelshop-container').hide();
+			$('#shipment_parcelshop_id').val('');			
 			$('#label-attention-recipient').hide();
 			$('#recipient_attention').attr('required', false);
 		}

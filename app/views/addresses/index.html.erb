@@ -1,57 +1,41 @@
-<h1 class='page-header'>Address Book</h1>
+<%= cbox do -%>
+<%= cbox_header('Address book') do-%>
+<% if @current_user.default_address %>
+<%= btn_link(edit_address_path(@current_user.default_address), 'Default address') %>
+<% end %>
+<%= btn_link(new_address_path, 'New address', 'primary') %>
+<%end%>
+
+<%= cbox_grid_paging @addresses %>
+<%= tbl true do-%>
+<thead>
+  <tr>
+    <th>Company</th>
+    <th>Attention</th>
+    <th>Street</th> 
+    <th>New shipment</th>
+    <th>Edit</th>
+    <th>Delete</th>
+  </tr>
+</thead>
+<tbody>
+  <% @addresses.each do |address| %>
+  <tr>
+    <td><%= address.company_name %></td>
+    <td><%= address.attention%></td>
+    <td><%= address.address_line1 %></td>
+    <td><%= link_to 'New shipment', send_to_address_path(address) %></td>
+    <td><%= link_to 'Edit', edit_address_path(address) %></td>
+    <td>
+      <%= link_to 'Delete', address_path(address),
+	  method: :delete,
+	  data: { confirm: 'Are you sure?' } %>
+    </td>
+  </tr>
+  <% end %>
+</tbody>
+<% end %>
+<%= cbox_grid_paging @addresses %>
+<%end%>
 
 
-<div class='panel panel-default'>
-	<div class='panel-heading'>Default Sender Address</div>
-	<div class='panel-body'>
-		<% if @current_user.default_address %>
-			<%= link_to "To default address", edit_address_path(@current_user.default_address) %>
-		<% else %>
-		<div class="error">
-			No default address assigned.
-		</div>
-		<% end %>
-	</div>
-</div>
-
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		All Contacts
-		<span class='pull-right'>
-			<a href='<%= url_for new_address_path %>' class='btn btn-primary' role='button'>New address</a>
-		</span>
-	</div>
-	<div class='panel-body'>
-		<%= will_paginate @addresses %>
-		<div class="table-responsive">
-		  <table class='table table-striped'>
-		  	<thead>
-		  		<tr>
-					<th>Company</th>
-					<th>Attention</th>
-					<th>Street</th> 
-					<th>New shipment</th>
-					<th>Edit</th>
-					<th>Delete</th>
-			    </tr>
-		  	</thead>
-		    <tbody>
-		    <% @addresses.each do |address| %>
-		    <tr>
-				<td><%= address.company_name %></td>
-				<td><%= address.attention%></td>
-				<td><%= address.address_line1 %></td>
-				<td><%= link_to 'New shipment', send_to_address_path(address) %></td>
-				<td><%= link_to 'Edit', edit_address_path(address) %></td>
-				<td>
-					<%= link_to 'Delete', address_path(address),
-		              method: :delete,
-		              data: { confirm: 'Are you sure?' } %>
-				</td>
-		    </tr>
-		    <% end %>
-		    </tbody>
-		  </table>
-		</div>
-	</div>
-</div>

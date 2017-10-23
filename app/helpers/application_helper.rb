@@ -23,6 +23,10 @@ end
   def bstxt_field(object_name, method, options = {})
     text_field(object_name, method, append_form_control(options))
   end
+
+  def bspwd_field(object_name, method, options = {})
+    password_field(object_name, method, append_form_control(options))
+  end
   
   def bscountry_select(method, priority_countries = nil, options = {}, html_options = {})    
       country_select(method, priority_countries, options.merge(:include_blank => 'Select country...'), append_form_control(html_options))
@@ -87,4 +91,81 @@ end
   def glyphicon name
     "<span class='glyphicon glyphicon-#{name}'></span>".html_safe
   end
+  
+  
+  # Content box helpers..    
+  def cbox(&block)
+    html = "<div class='content-box'>"
+    html << capture(&block)
+    html << '</div>'
+    raw html    
+  end
+  
+  def cbox_header(title, &links_block)
+      html = "<div class='content-box-header'><span class='title'>#{title}</span><span class='pull-right'>"
+      html << capture(&links_block)
+      html << '</span></div>'
+      raw html
+  end
+  
+  def cbox_subheader(title, &links_block)
+      html = "<div class='content-box-subheader'><span class='title'>#{title}</span><span class='pull-right'>"
+      html << capture(&links_block)
+      html << '</span></div>'
+      raw html
+  end
+  
+  def btn_link(url, title, type='default')
+    html = "<a href='#{url}' class='btn btn-#{type}'>#{title}</a>"
+    raw html
+  end
+  
+  def tbl(clickable, &block)
+    html = "<table class='table table-hover #{clickable ? 'table-hover-pointer' : ''} table-condensed'>"
+    html << capture(&block)
+    html << "</table>"
+    raw html
+  end
+  
+  def cell_safe(str, max_width)    
+    html = "<td title='#{str}'><div class='safe-cell' style='max-width: #{max_width}px'>#{str}</div></td>"        
+    raw html
+  end
+  
+  def row_link(url, &block)
+    html = "<tr onclick='window.location=\"#{url}\"' class='link'>"
+    html << capture(&block)
+    html << "</tr>"
+    raw html
+  end
+  
+  def cbox_grid_paging models, show_filter = false
+    render :partial => 'layouts/cbox_grid_paging', :locals => {:models => models, :filter => show_filter}
+  end
+  
+  def kv_pair(key, value, title=true)
+    if title
+       raw "<span class='key'>#{key}</span><span class='value' title='#{value}'>#{value}</span>"
+    else
+       raw "<span class='key'>#{key}</span><span class='value'>#{value}</span>"
+    end    
+  end
+  
+  def kv_box(map, titles = true)
+    html = '<div class="key-value-box">'
+    map.keys.each do |key|
+      html << kv_pair(key, map[key], titles)
+    end
+    html << '</div>'
+    raw html
+  end
+  
+  def block_kv_pair(key, &valueblock)
+    html = "<div class=block-key-value-box><div class='key'>#{key}</div><div class='value'>"
+    html << capture(&valueblock)
+    html << '</div></div>'
+    raw html
+  end
+    
+  
 end

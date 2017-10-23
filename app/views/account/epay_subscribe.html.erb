@@ -1,16 +1,13 @@
 <script type="text/javascript" src="https://ssl.ditonlinebetalingssystem.dk/integration/ewindow/paymentwindow.js" charset="UTF-8"></script>
+<%= cbox do-%>
+<%=cbox_header('Subscription') do-%>
 
-<h1 class="page-header">Subscription</h1>
-<% if @current_user.verify_epay_subscription and not params[:update] and (data = @current_user.get_epay_subscription_data) %>
-<div class='panel panel-default'>
-	<div class='panel-heading'>Payment Subscription</div>
-	<div class='panel-body'>		
+<%end%>
+<% if @current_user.verify_epay_subscription and not params[:update] and (data = @current_user.get_epay_subscription_data) %>	
 		You have an active payment subscription (<%= data[:cardtypeid] %>).<br/>
 		<br/>
 		 <%= link_to 'Delete subscription', epay_delete_subscription_path, {method: :post, :class => 'btn btn-danger', :data => {:confirm => 'Delete subscription?'}} %>
 		 <%= link_to 'Update subscription', epay_subscribe_path(:update => 1), :class => 'btn btn-primary' %>
-	</div>
-</div>
 
 <% else %>
 <div class='panel panel-default'>
@@ -106,3 +103,6 @@
   $('input').change(updateSubscribeButton);
 </script>
 <% end %>
+
+<% end %>
+

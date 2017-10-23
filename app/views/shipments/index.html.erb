@@ -1,14 +1,14 @@
-<h1 class='page-header'>Shipments
-	<span class='pull-right'>
-		<a href='<%= url_for bulk_import_path %>' class='btn btn-default' role='button'>Bulk import</a>
-		<a href='<%= url_for new_shipment_path %>' class='btn btn-primary' role='button'>New shipment</a>	
-	</span>
-	</h1>
 
+<%= cbox do-%>
 
-<%= grid_before @shipments %>
+ <%= cbox_header ('Shipments') do-%>  
+ 	<%= btn_link(url_for(bulk_import_path), 'Bulk Import')%>
+ 	<%= btn_link(url_for(new_shipment_path), 'New Shipment', 'primary')%>	
+ <% end %>
+
 <%= form_tag({:action => 'index'}, {:method => :get}) do %>
-<table class='table table-striped'>
+<%= cbox_grid_paging @shipments, true %> 
+  <%= tbl true do-%>	 
 	<thead>
 		<tr>
 	      <th>Shipment</th>
@@ -17,9 +17,8 @@
 	      <th>Recipient</th>
 	      <th>Timestamp</th>
 	      <th>Product</th>
-	      <th>Booking state</th>
-	      <th>Shipping state</th>
-      	  <th><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></th>
+	      <th>Booking</th>
+	      <th>Shipping	</th>	  	 
 	    </tr>
 	    <tr class='model-filters'>
 	    	<td><input class='form-control' type='text' name='id' value='<%= params[:id] %>'/></td>
@@ -35,26 +34,26 @@
 	    	</td>
 	    	<td>
 	    		<%= bssel :shipping_state, options_for_select(Shipment.shipping_state_options(false), params[:shipping_state]) %>
-	    	</td>
-	    	<td></td>
+	    	</td>	    	
 	    </tr>
 	</thead>
-    <tbody>
-    	<% @shipments.each do |shipment| %>
-		    <tr>
+  	<tbody>
+  		<% maxw = 100 %>
+		<% @shipments.each do |shipment| %>
+			<%= row_link(shipment_path(shipment)) do-%>
 		      <td><%= link_to "#{shipment.pretty_id}", shipment_path(shipment) %></td>
-		      <td><%= shipment.awb %></td>
-		  	  <td><%= shipment.reference %></td>
-		  	  <td><%= shipment.recipient.company_name %></td>
-		      <td><%= print_datetime shipment.created_at %></td>
-		      <td><%= shipment.product.name %></td>
+		      <%= cell_safe shipment.awb, maxw %>
+		  	  <%= cell_safe shipment.reference, maxw %>
+		  	  <%= cell_safe shipment.recipient.company_name, maxw %>
+		  	  <%= cell_safe print_datetime(shipment.created_at), 150 %>
+		      <%= cell_safe shipment.product.name, maxw %>		      
 		      <td><%= shipment.status.capitalize %></td>
-		      <td><%= shipment.shipping_state.capitalize %></td>
-		      <td></td>
-	    	</tr>
+		      <td><%= shipment.shipping_state.capitalize %></td>		      
+	    	<% end %>
 	    <% end %>
-	</tbody>
-</table>
+	</tbody>	
+  <% end %>
+  <%= cbox_grid_paging @shipments %>
 <% end %>
-<%= grid_after @shipments %>
+<% end %>
 

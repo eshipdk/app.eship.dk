@@ -1,245 +1,173 @@
 <div class='shipment-show'>
-  <h2 class='page-header'>Shipment #<%= @shipment.pretty_id %>
-  	
-  	<span class='pull-right'>
- 		<% if @shipment.can_edit %>
+<%= cbox do-%>
+<%= cbox_header("Shipment ##{@shipment.pretty_id}") do-%>
+	<% if @shipment.can_edit %>
 		<a href='<%= url_for edit_shipment_path(@shipment) %>' class='btn btn-primary' role='button'>Edit</a>
 	  	<% else %>
 		<% if not @disable_actions %>
 	  	<a href='<%= url_for copy_shipment_path(@shipment) %>' class='btn btn-primary' role='button'>Copy</a>
 	  	<% end %>
-		<% end %>
-  	</span>
-
-  </h2>
-  
-  <% if @shipment.status == 'failed' %>
+	<% end %>
+<%end%>
+<% if @shipment.status == 'failed' %>
   <div class='alert alert-danger'>
     <strong>Error:</strong> <%= @shipment.api_response_error_msg %>
   </div>
   <% end %>
   
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		Status
-	</div>	
-	<div class='panel-body'>
-		<table class='table table-striped'>
-			<thead>
-		 		<tr>
-		 			<th>ID</th>
-		 			<th>Booking State</th>
-		 			<th>Shipping State</th>
-		 			<th>Invoiced</th>
-		 			<th>Timestamp</th>
-		 			<th>AWB</th>
-		 			<th>Document</th>
-		 			<th>Label Action</th>
-		 		</tr>	
- 			</thead>
- 			<tbody>
- 				<tr>
- 					<td>#<%= @shipment.pretty_id %></td>
-			      	<td><%= @shipment.status.capitalize %></td>
-			      	<td><%= @shipment.shipping_state.capitalize %></td>
-			      	<td><%= @shipment.invoiced ? "Yes" : "No" %></td>
-			      	<% if @shipment.status == 'response_pending'%>
-			      		<script type='text/javascript'>var autoReload = true;</script>
-			      	<% end %>
-			      	<td><%= @shipment.created_at %></td>
-			      	<td>
-			        	<% if @shipment.can_print %>
-			        		<%= link_to "Download label", @shipment.document_url, :target => '_blank' %>
-			        	<% else %>
-			        		-
-			        	<% end %>
-			      	</td>
-			      	<td>
-			        	<% if @shipment.can_print %>
-			        		<%= link_to @shipment.awb, @shipment.tracking_url, :target => '_blank' %>
-			        	<% else %>
-			        		-
-			        	<% end %>
-			      	</td>
-			      	<td>
-			      		<%= @shipment.label_action_title %>(
-				        <% if @shipment.can_print %>
-				        	<% if @shipment.label_action == 'print' %>
-					        	<% if @shipment.recent_label_pending? %>
-					        	Pending..
-					        	<script type='text/javascript'>var autoReload = true;</script>
-					        	<% else %>
-					    	 	<%= link_to 'Send to printer', reprint_shipment_path(@shipment), method: :post %>
-					        	<% end %>
-				        	<% elsif @shipment.label_action == 'email' %>
-				        		<%= link_to 'Send email', email_shipment_path(@shipment), method: :post %>
-				        	<% end %>
-				        <% else %>
-				        -
-				        <% end %>
-				        )
-			      	</td>	
- 				</tr>
- 			</tbody>
- 		</table>	
-	</div>	
-</div>
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		Product
+  <div class='row'>
+  	<div class='col-xs-4'>
+  		<%
+  		 data = {
+  		 	'id' => "##{@shipment.pretty_id}",
+  		 	'timestamp' => print_datetime(@shipment.created_at),
+  		 	'booking state' => @shipment.status,
+  		 	'shipping state' => @shipment.shipping_state,
+  		 	'invoice' => @shipment.invoiced ? link_to("#{@shipment.invoice.pretty_id}", my_invoices_show_path(@shipment.invoice)) : "-"  		 	
+  		 }
+  		%>
+  		<%= kv_box data %>
 	</div>
-	<div class='panel-body'>
-		<table class='table table-striped'>
-			<thead>
-		 		<tr>
-			      <th>Product</th>
-			      <th>Return Service</th>
-			      <th>Parcelshop id</th>
-			    </tr>
-			</thead>
-		   	<tbody>
-   		 		<tr>
-		    		
-			      	<td><%= @shipment.product.name %></td>
-			      	<td><%= @shipment.return ? 'Yes' : 'No' %></td>
-			      	<td><%= @shipment.parcelshop_id %></td>
-			  
-			      	
-		    	</tr>
-		   	</tbody>
-	  </table>
-	  <table class='table table-striped'>
-	  	<thead>
-	  		<tr>
-		  		<th>Delivery instructions</th>
-		  		<th>Remarks</th>
-		  		<th>Description</th>
-		  		<th>Reference</th>
-		  	</tr>
-	  	</thead>
-	  	<tbody>
-	  		<tr>
-		  		<td><%= @shipment.delivery_instructions%></td>
-		  		<td><%= @shipment.remarks %></td>
-		  		<td><%= @shipment.description %></td>
-		  		<td><%= @shipment.reference %></td>
-		  	</tr>
-	  	</tbody>
-	  </table>
-	</div>
-</div>
-
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		Packages
-	</div>	
-	<div class='panel-body'>
-		<table class='table table-striped'>
-			<thead>
-				<tr>
-		  			<th>Length</th>
-		  			<th>Width</th>
-		  			<th>Height</th>
-		  			<th>Weight</th>
-		  			<th>Amount</th>
-		  		</tr>
-			</thead>
-	  		<tbody>
-	  			<% @shipment.packages.each do |package| %>
-		  		<tr>
-		  			<td><%= package.length %></td>
-		  			<td><%= package.width %></td>
-		  			<td><%= package.height %></td>
-		  			<td><%= package.weight %></td>
-		  			<td><%= package.amount %></td>
-		  		</tr>
-		  		<% end %>
-	  		</tbody>
-		</table>
-	</div>
-</div>
-<div class='panel panel-default'>
-	<div class='panel-heading'>Addresses</div>
-	<div class='panel-body'>
-		<div class='col-lg-6'>
-			<div class='panel panel-default'>
-				<div class='panel-heading'>Sender</div>
-				<div class='panel-body'>
-					<%= render :partial => 'shipments/address_show', :locals => {:address => @shipment.sender } %>
-				</div>	
-			</div>	
-		</div>
-		<div class='col-lg-6'>
-			<div class='panel panel-default'>
-				<div class='panel-heading'>Recipient</div>
-				<div class='panel-body'>
-					<%= render :partial => 'shipments/address_show', :locals => {:address => @shipment.recipient } %>
-				</div>	
-			</div>	
-		</div>
-	</div>	
-</div>	  
+  	<div class='col-xs-4'>  		  	
+        <%
+  		 label_action = @shipment.label_action_title	 
+  		 if @shipment.can_print  		 	
+  		 	label_action += ' -'
+	        if @shipment.label_action == 'print'
+	        	if @shipment.recent_label_pending?
+	        		label_action += 'pending..'
+	        	else	        		
+	        		label_action += link_to(' Print again', reprint_shipment_path(@shipment), method: :post) 
+	        	end
+	        elsif @shipment.label_action == 'email'
+	        	label_action += link_to 'Send again', email_shipment_path(@shipment), method: :post
+	        end
+  		 end
+  		 data = {  		 	
+			'AWB' =>  @shipment.can_print ? link_to(@shipment.awb, @shipment.tracking_url, :target => '_blank') : '-',
+			'Document' => @shipment.can_print ? link_to("Download label", @shipment.document_url, :target => '_blank') : '-',
+			'Label Action' => label_action,
+			'Product' => @shipment.product.name,
+			'Return service' => @shipment.return ? 'Yes' : 'No'
+  		 }
+  		%>
+  		<%= kv_box data %>
+  	</div>
+  	
+  	<div class='col-xs-4'>
+  		<%
+  		data = {
+  			'Parcelshop id' => @shipment.parcelshop_id,
+  			'Del. Instr.' => @shipment.delivery_instructions,
+  			'Remarks' => @shipment.remarks,
+  			'Content Descr.' => @shipment.description,
+  			'Reference' => @shipment.reference
+  		}
+  		%>
+  		<%= kv_box data%>
+  	</div>	
+  </div>
+<%end%>
+	 
+<% if @shipment.status == 'response_pending'%>
+	<script type='text/javascript'>var autoReload = true;</script>
+<% end %>
   
-</div>
+ <%= cbox do-%>
+ <%= cbox_header('Packages') do-%>
+ 
+ <%end%>
+ 
+ <table class='table'>
+	<thead>
+		<tr>
+  			<th>Length</th>
+  			<th>Width</th>
+  			<th>Height</th>
+  			<th>Weight</th>
+  			<th>Amount</th>
+  		</tr>
+	</thead>
+	<tbody>
+		<% @shipment.packages.each do |package| %>
+  		<tr>
+  			<td><%= package.length %></td>
+  			<td><%= package.width %></td>
+  			<td><%= package.height %></td>
+  			<td><%= package.weight %></td>
+  			<td><%= package.amount %></td>
+  		</tr>
+  		<% end %>
+	</tbody>
+</table>
+ <%end%>
+ 
+<%= cbox do-%>
+ <%= cbox_header('Addresses') do-%>
 
+ <%end%>
+
+<div class='row'>
+ 	<div class='col-xs-6'>
+ 		<%=cbox_subheader('sender') do-%>
+ 		
+ 		<%end%>
+ 		<%= render :partial => 'shipments/address_show', :locals => {:address => @shipment.sender }%>
+	</div>
+ 	<div class='col-xs-6'>
+		<%= cbox_subheader('recipient') do-%>
+		
+		<%end%>
+		<%= render :partial => 'shipments/address_show', :locals => {:address => @shipment.recipient}%>
+ 	</div>	
+</div> 
+<%end%>  
 
 <% if @shipment.value_determined %>
-<div class='panel panel-default'>
-	<div class='panel-heading'>Prices</div>
-	<div class='panel-body'>
-		<table class='table table-striped'>
-			<thead>
-				<tr>
-					<th>Calculated Shipment Price</th>
-					<th>Adjusted Shipment Price</th>
-					<th>Calculated Diesel Fee</th>
-					<th>Adjusted Diesel Fee</th>
-					<th>Invoice</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>
-						<%= render :partial => 'shipments/calculated_price', :locals => {:shipment => @shipment } %>
-					</td>
-					<td><%= currency @shipment.final_price %></td>
-					<td><%= currency @shipment.diesel_fee %></td>
-					<td><%= currency @shipment.final_diesel_fee %></td>
-					<td>
-						<% if @shipment.invoiced? %>
-							<%= link_to "#{@shipment.invoice.pretty_id}", my_invoices_show_path(@shipment.invoice) %>
-						<% else %>
-							Not invoiced
-						<% end %>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<% if @shipment.additional_charges.length > 0 %>
-		
-		<table class='table table-striped'>
-			<thead>
-				<tr>
-					<th>Additional Service Charge</th>
-					<% if current_user.admin? %><th>Cost</th><% end %>
-					<th>Price</th>
-				</tr>
-			</thead>
-			<tbody>
-				<% @shipment.additional_charges.each do |c| %>
-					<tr>
-						<td><%= c.description %></td>
-						<% if current_user.admin? %><td><%= currency c.cost %></td><% end %>
-						<td><%= currency c.price %></td>
-					</tr>
-				<% end %>
-			</tbody>
-		</table>
+<%= cbox do-%>
+<%= cbox_header('Prices') do-%>
+
+<% end%>
+
+<div class='row'>
+	<div class='col-xs-6'>
+		<%= block_kv_pair('Calculated shipment price') do-%>
+		<%= render :partial => 'shipments/calculated_price', :locals => {:shipment => @shipment } %>
+		<%end %>
+	</div>
+	<div class='col-xs-6'>
+		<%= kv_box({
+			'Adjusted shipment price' => currency(@shipment.final_price),
+			'Calculated diesel fee' => currency(@shipment.diesel_fee),
+			'Adjusted diesel fee' => currency(@shipment.final_diesel_fee)
+		}, false)%>
+	</div>
+</div>
+
+<% if @shipment.additional_charges.length > 0 %>
+
+<table class='table'>
+	<thead>
+		<tr>
+			<th>Additional Service Charge</th>
+			<% if current_user.admin? %><th>Cost</th><% end %>
+			<th>Price</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @shipment.additional_charges.each do |c| %>
+			<tr>
+				<td><%= c.description %></td>
+				<% if current_user.admin? %><td><%= currency c.cost %></td><% end %>
+				<td><%= currency c.price %></td>
+			</tr>
 		<% end %>
-		
-	</div>	
-</div>	
+	</tbody>
+</table>
 <% end %>
+<%end%>
+<%end%>
+  
  
 </div>
 

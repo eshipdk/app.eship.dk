@@ -1,10 +1,11 @@
-<h1>Bulk import</h1>
-<div class='import-csv panel panel-default'>
-	<div class='panel-heading'>
-		Upload CSV
-	</div>
-	<div class='panel-body'>
+<%= cbox do-%>
+
+ <%= cbox_header ('Bulk import') do-%>
+ 
+ <%end%>
 <p>Bulk import allows you to generate multiple shipments using data contained in a single file.</p>
+
+
 <% if @current_user.import_format and @current_user.import_format.complete? %>
 
 
@@ -30,12 +31,11 @@
   </script>
  	
   <% end %>
-</div>
-
-<% else %>
+  <%else %>
 <div class='error'>
 	This functionality requires you to define an import format. Please contact the eShip administration.
 </div>
 <% end %>
-</div>
-</div>
+
+<% end %>
+

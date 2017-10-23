@@ -1,34 +1,38 @@
-<div class='table-responsive address-input-container'>
-	<table class='table table-striped'>
-		<tr>
-			<th>Company</th>
-			<th>Attention</th>
-			<th>Address line 1</th>
-			<th>Address line 2</th>
-			<th>Country</th>
-			
-		</tr>
-		<tr>
-			<td><%= f.bstxt_field :company_name %></td>
-			<td><%= f.bstxt_field :attention %></td>
-			<td><%= f.bstxt_field :address_line1 %></td>
-			<td><%= f.bstxt_field :address_line2 %></td>
-			<td><%= bscountry_select('address', 'country_code', {selected: f.object.country_code}, {class: 'country-input'}) %></td>
-			
-		</tr>
-	</table>
-	<table class='table table-striped'>
-		<tr>
-			<th>Zip code</th>
-			<th>City</th>
-			<th>Phone</th>
-			<th>Email</th>
-		</tr>
-		<tr>
-			<td><%= f.bstxt_field :zip_code, {class: 'zip-input'} %></td>
-			<td><%= f.bstxt_field :city, {class: 'city-input'} %></td>
-			<td><%= f.bstxt_field :phone_number %></td>
-			<td><%= f.bstxt_field :email %></td>
-		</tr>
-	</table>
+<div class='address-input-container'>
+	<div class='form-group'>
+		<label>Company / Recipient Name</label>
+		<%= f.bstxt_field :company_name %>
+	</div>
+ 	<div class='form-group'>
+		<label>Attention</label>
+		<%= f.bstxt_field :attention %>
+	</div>
+	<div class='form-group'>
+		<label>Address Line 1</label>
+		<%= f.bstxt_field :address_line1 %>
+	</div>
+	<div class='form-group'>
+		<label>Address Line 2</label>
+		<%= f.bstxt_field :address_line2 %>
+	</div>
+	<div class='form-group'>
+		<label>Country <span class='required'>*</span></label>
+		<%= bscountry_select('address', 'country_code', {selected: f.object.country_code}, {class: 'country-input'}) %>
+	</div>
+	<div class='form-group'>
+		<label>Zip Code <span class='required'>*</span></label>
+		<%= f.bstxt_field :zip_code, {class: 'zip-input'} %>
+	</div>
+	<div class='form-group'>
+		<label>City <span class='required'>*</span></label>
+		<%= f.bstxt_field :city, {class: 'city-input'} %>
+	</div>		
+	<div class='form-group'>
+		<label>Phone</label>
+		<%= f.bstxt_field :phone_number %>
+	</div>
+	<div class='form-group'>
+		<label>Email <span class='required'>*</span></label>
+		<%= f.bstxt_field :email %>
+	</div>
 </div>
