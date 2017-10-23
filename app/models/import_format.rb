@@ -179,7 +179,7 @@ class ImportFormat < ActiveRecord::Base
   def cols
     return attributes.except('id','created_at','updated_at', 'user_id',
                              'is_interline', 'interline_default_mail_advertising',
-                             'delimiter')
+                             'delimiter', 'cross_reference_flag')
   end
   
   private

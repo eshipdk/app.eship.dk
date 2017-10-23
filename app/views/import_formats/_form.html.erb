@@ -6,17 +6,21 @@
 		<th><label for='importer_default'>Default</label></th>
 		<th><label for='importer_interline'>Interline</label></th>
 		<th><label for='import_format_header_lines'>Number of header lines (skipped during import)</label></th>
-        <th>Field delimiter (1 character)</th>
+		<th>Field delimiter (1 character)</th>
+		<th>Cross reference</th>
 	</tr>
 	<tr>
-		<td><%= radio_button_tag 'importer', 'default', @format.importer == 'default' %></td>
-		<td><%= radio_button_tag 'importer', 'interline', @format.importer == 'interline' %></td>
-		<td>
-			<%= f.bstxt_field :header_lines, :style => 'max-width: 100px;' %>
-		</td>
-        <td>
-          <%= f.bstxt_field :delimiter %>
-        </td>
+	  <td><%= radio_button_tag 'importer', 'default', @format.importer == 'default' %></td>
+	  <td><%= radio_button_tag 'importer', 'interline', @format.importer == 'interline' %></td>
+	  <td>
+	    <%= f.bstxt_field :header_lines, :style => 'max-width: 100px;' %>
+	  </td>
+          <td>
+            <%= f.bstxt_field :delimiter %>
+          </td>
+	  <td>
+	    <%= f.bschckbx(:cross_reference_flag) %>
+	  </td>
 	</tr>
 </table>
 

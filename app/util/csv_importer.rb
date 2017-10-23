@@ -15,6 +15,8 @@ module CsvImporter
     end
     validation = validate_csv_values lines, user
 
+    # Parse shipments from csv
+    shipments = []
     if !validation['error']
       i = 0
       lines.each do |row|
@@ -29,24 +31,82 @@ module CsvImporter
           hash['description'] = ''
         else
           hash = default_csv_row_hash user, row
-        end
-  
-        create_shipment hash, user
+        end  
         
         if user.import_format.importer == 'interline'
           if interline_service == 'B'
             hash['return'] = 1
             hash['product_code'] = 'glsb'
             hash['recipient'], hash['sender'] = hash['sender'], hash['recipient']
-            create_shipment hash, user
           end
         end
+        shipments.push(create_shipment(hash, user))
         
       end
     end
+
+    # Cross-reference shipments
+    if user.import_format.cross_reference_flag
+      shipments = CsvImporter.cross_reference_shipments shipments
+    end
+    
+    # Submit shipments
+    CsvImporter.submit_shipments shipments
+    
     return validation
   end
-  
+
+  def self.cross_reference_shipments shipments
+    
+    by_ref = {}
+    unique_shipments = []
+
+    # Group shipments by reference. Shipments with no
+    # reference are automatically unique
+    shipments.each do |s|
+      ref = s.reference
+      if ref.to_s.strip != ''
+        if by_ref.key? ref
+          by_ref[ref].push(s)
+        else
+          by_ref[ref] = [s]
+        end
+      else
+        unique_shipments.push(shipment)
+      end
+    end
+
+    # Reduce each group to a single shipment by
+    # moving all packages to one shipment and
+    # destroying the remaining shipments
+    by_ref.keys.each do |ref|
+      arr = by_ref[ref]
+      s1 = arr.shift
+      while (s2 = arr.shift)
+        s2.packages.each do |p|
+          p.shipment = s1
+          p.save
+        end
+        s2 = s2.reload
+        s2.destroy
+      end
+      unique_shipments.push(s1)
+    end
+    
+    return unique_shipments
+  end
+
+  def self.submit_shipments shipments
+    shipments.each do |shipment|
+      if shipment.price_configured?
+        Cargoflux.submit shipment
+      else
+        shipment.status = 'failed'
+        shipment.label_pending = true
+        shipment.save
+      end
+    end
+  end
   
   def self.validate_csv_values values, user
     if !user.import_format.complete?
@@ -224,15 +284,8 @@ module CsvImporter
     package.amount = hash['amount']
     package.shipment = shipment
     package.save
-    
-    if shipment.price_configured?
-      Cargoflux.submit shipment
-    else
-      shipment.status = 'failed'
-      shipment.label_pending = true
-      shipment.save
-    end
-    
+
+    return shipment    
   end
   
   def self.decode_content content
