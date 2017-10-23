@@ -432,3 +432,9 @@ table button.btn{
 
 .block-key-value-box .value{	
 }
+
+
+button.form-control{
+    height: 55px !important;
+    border-radius: 4px !important;
+}

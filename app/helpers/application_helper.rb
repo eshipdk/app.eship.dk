@@ -23,6 +23,10 @@ end
   def bstxt_field(object_name, method, options = {})
     text_field(object_name, method, append_form_control(options))
   end
+
+  def bspwd_field(object_name, method, options = {})
+    password_field(object_name, method, append_form_control(options))
+  end
   
   def bscountry_select(method, priority_countries = nil, options = {}, html_options = {})    
       country_select(method, priority_countries, options.merge(:include_blank => 'Select country...'), append_form_control(html_options))
