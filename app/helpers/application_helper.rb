@@ -96,21 +96,21 @@ end
   # Content box helpers..    
   def cbox(&block)
     html = "<div class='content-box'>"
-    html << capture(&block)
+    html << capture(&block).to_s
     html << '</div>'
     raw html    
   end
   
   def cbox_header(title, &links_block)
       html = "<div class='content-box-header'><span class='title'>#{title}</span><span class='pull-right'>"
-      html << capture(&links_block)
+      html << capture(&links_block).to_s
       html << '</span></div>'
       raw html
   end
   
   def cbox_subheader(title, &links_block)
       html = "<div class='content-box-subheader'><span class='title'>#{title}</span><span class='pull-right'>"
-      html << capture(&links_block)
+      html << capture(&links_block).to_s
       html << '</span></div>'
       raw html
   end
@@ -122,7 +122,7 @@ end
   
   def tbl(clickable, &block)
     html = "<table class='table table-hover #{clickable ? 'table-hover-pointer' : ''} table-condensed'>"
-    html << capture(&block)
+    html << capture(&block).to_s
     html << "</table>"
     raw html
   end
@@ -134,7 +134,7 @@ end
   
   def row_link(url, &block)
     html = "<tr onclick='window.location=\"#{url}\"' class='link'>"
-    html << capture(&block)
+    html << capture(&block).to_s
     html << "</tr>"
     raw html
   end
@@ -162,7 +162,7 @@ end
   
   def block_kv_pair(key, &valueblock)
     html = "<div class=block-key-value-box><div class='key'>#{key}</div><div class='value'>"
-    html << capture(&valueblock)
+    html << capture(&valueblock).to_s
     html << '</div></div>'
     raw html
   end
