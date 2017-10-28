@@ -212,6 +212,10 @@ module Economic
     return false
   end
 
+  def self.get_product_data product_number, ast = AST, agt = AGT
+    get BASE_ENDPOINT + "products/#{product_number}", ast, agt
+  end
+
   def get_invoice_draft_data id, ast = AST, agt = AGT
      get(BASE_ENDPOINT + "invoices/drafts/#{id}", ast, agt)
   end
@@ -275,15 +279,52 @@ module Economic
      JSON.parse http.request(request).body
   end
 
-  def self.data_import_qty data
+  
+  def self.data_import_product_data data
     lines = data['lines']
     lines.each do |line|
       product_code = line['product']['productNumber']
-      if product_code == 'eship_dataimport'
-        return line['quantity'].to_i
+      if product_code.start_with? 'eship_dataimport'
+        return Economic.parse_import_product_data line
       end
     end
-    return 0
+    return nil
+  end
+
+  def self.parse_import_product_data line
+
+    # If the product code is exactly eship_dataimport we apply default config. I.e.
+    # the dataimport product with defualt dimensions and extracting qty from the qty field.
+    # Otherwise we lookup the description of the product through the API and attempt to
+    # parse it as JSON. If it is properly formated we use it, otherwise we just apply the
+    # defualt configuration as above.
+    
+    if line['product']['productNumber'] != 'eship_dataimport'
+      product_data = Economic.get_product_data line['product']['productNumber']
+      desc = product_data['description']
+      if desc.start_with? '{' and desc.end_with? '}'
+        return JSON.parse desc
+      end      
+    end
+
+    package = Economic.default_package
+    package['amount'] = line['quantity'].to_i
+    return {
+      'product' => 'cfdataimport',
+      'packages' => [
+        package
+      ]
+    }    
+  end
+
+  def self.default_package
+    {
+      'width' => 1,
+      'height' => 1,
+      'length' => 1,
+      'weight' => 1,
+      'amount' => 1
+    }
   end
 
   def self.book_by_invoice_data user, data, draft_id = false
@@ -298,13 +339,13 @@ module Economic
       return [:error, res]
     end        
 
-    qty = Economic.data_import_qty data
-    if qty < 1
+    product_data = Economic.data_import_product_data data
+    if not product_data
       return false
     end
         
     begin
-      product = user.find_product 'cfdataimport'
+      product = user.find_product product_data['product']
     rescue => ex
       res = 'User does not have access to dataimport product'
       return [:error, res]
@@ -341,15 +382,16 @@ module Economic
     end
     shipment.save
     
-    
-    package = Package.new
-    package.width = 1
-    package.length = 1
-    package.height = 1
-    package.weight = 1
-    package.amount = qty
-    package.shipment = shipment
-    package.save
+    product_data['packages'].each do |pdata|
+      package = Package.new
+      package.width = pdata['width']
+      package.length = pdata['length']
+      package.height = pdata['height']
+      package.weight = pdata['weight']
+      package.amount = pdata['amount']
+      package.shipment = shipment
+      package.save
+    end    
     
     # Label customers will edit their bookings directly in CF.
     # Shipment customers will do it in eship.
@@ -402,7 +444,7 @@ module Economic
     lines = data['lines']
     new_lines = []
     lines.each do |line|     
-      if line['product']['productNumber'] == 'eship_dataimport'
+      if line['product']['productNumber'].start_with? 'eship_dataimport'
 
       else
         new_lines.push line
