@@ -91,13 +91,13 @@
 		<% i_package += 1 %>
 		<tr id='package-row-<%= i_package %>'>
 			<td>
-				<%= fp.bsnum_field :length %>
+				<%= fp.bsnum_field :length, :onchange => 'getPrice()' %>
 			</td>
 			<td>
-				<%= fp.bsnum_field :width %>
+				<%= fp.bsnum_field :width, :onchange => 'getPrice()' %>
 			</td>
 			<td>
-				<%= fp.bsnum_field :height %>
+				<%= fp.bsnum_field :height, :onchange => 'getPrice()' %>
 			</td>
 			<td>
 				<%= fp.bsnum_field :weight, :step => 'any', :onchange => 'getPrice()' %>
@@ -156,7 +156,15 @@
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 	</div>
 </div>
+<div clasS='row'>
+  <div class='col-xs-6'>
+    <a href='#import-configuration' onclick="$(this).hide(); $('#import-configuration').show(); return false;">Show import configuration</a>
+    <textarea id='import-configuration' style='display:none; width: 100%; height: 50px;'>
+    </textarea>
+  </div>
+</div>
 <% end %>
+
 
 
 
@@ -164,8 +172,10 @@
 <script type='text/javascript'>
 
 
+
 	function getPrice(){		
-		var countryFrom = $('#sender_country_code').val();
+                updateImportConfiguration();
+	        var countryFrom = $('#sender_country_code').val();
 		var countryTo = $('#recipient_country_code').val();		
 		
 		if(!countryFrom){
@@ -253,7 +263,7 @@
 	end
 	%>
 	var PRODUCT_VALUES = JSON.parse('<%= product_values.to_json.html_safe %>');
-    var CUSTOMER_TYPE = '<%= current_user.customer_type %>';
+        var CUSTOMER_TYPE = '<%= current_user.customer_type %>';
 	
 
 	function setDestinationCountry(productId){
@@ -306,7 +316,8 @@
 	
 	
 	$(document).ready(function(){	
-		$('#sender_country_code').on('change', getPrice);
+                $('#sender_country_code').on('change', getPrice);
+                $('#shipment_product_id').on('change', getPrice);
 		destCountrySelector = $('#recipient_country_code');
 		destCountrySelector.on('change', getPrice);		
 		if(destCountrySelector.val() == ""){ //Only set default values if this is a new shipment
@@ -317,7 +328,23 @@
 		}
 		getPrice();
 	});
-	
+
+
+    function updateImportConfiguration(){
+       hash = {};
+       hash['product'] = PRODUCT_VALUES[$('#shipment_product_id').val()]['product_code'];
+       hash['packages'] = [];
+       var package_fields = ['length', 'width', 'height', 'weight', 'amount'];	
+       for(var i=0; i<nPackages; i++){
+          hash['packages'].push({});
+          for(var j=0; j<package_fields.length; j++){
+	        var f = package_fields[j];
+		hash['packages'][i][f] = $('#shipment_packages_attributes_' + (i == 0 ? 0 : i + 1) + '_' + f).val();
+          }
+       }
+       str = JSON.stringify(hash);
+       $('#import-configuration').html(str);       
+     }
 </script>
 <% end %>
 
