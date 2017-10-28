@@ -8,7 +8,7 @@ Bundler.require(*Rails.groups)
 
 module EShip
   HOST_ADDRESS = 'https://app.eship.dk'
-  WEBMASTER_MAIL = 'rune@runekoknielsen.dk'
+  WEBMASTER_MAIL = 'tech@eship.dk'
   EPAY_MERCHANT_NUMBER = '6512100'
 
   class Application < Rails::Application
