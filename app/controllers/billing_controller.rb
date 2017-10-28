@@ -111,6 +111,12 @@ class BillingController < ApplicationController
     end
     redirect_to :back
   end
+
+  def send_invoice_email
+    invoice = Invoice.find params[:id]
+    invoice.send_email
+    redirect_to :back
+  end
   
   def overview
      # Bad in-memory ordering. Todo: put uninvoiced shipment count in database

@@ -124,6 +124,7 @@ Rails.application.routes.draw do
   post 'billing/invoice/:id/submit', to:'billing#submit_invoice', as: 'submit_invoice'
   post 'billing/invoice/:id/capture', to: 'billing#capture_invoice', as: 'capture_invoice' 
   post 'billing/invoice/:id/identify', to: 'billing#identify_economic_id', as: 'identify_economic_id'
+  post 'billing/invoice/:id/send_email', to: 'billing#send_invoice_email', as: 'send_invoice_email'
   get 'billing', to: 'billing#overview', as: 'billing_overview'
 
 

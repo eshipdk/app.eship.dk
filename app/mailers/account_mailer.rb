@@ -18,6 +18,6 @@ class AccountMailer < ApplicationMailer
   
   def send_invoice_mail invoice
     @invoice = invoice
-    mail(to: invoice.user.email, subject: "Fakturanr. #{invoice.pretty_id} - #{invoice.created_at.strftime('%d.%m.%y')} - eShip ApS")
+    mail(to: invoice.user.billing_email, subject: "Fakturanr. #{invoice.pretty_id} - #{invoice.created_at.strftime('%d.%m.%y')} - eShip ApS")
   end
 end

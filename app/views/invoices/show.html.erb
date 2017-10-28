@@ -63,10 +63,10 @@
 	    data: @invoice.sent_to_economic ? { confirm: 'This invoice has already been sent to economic once. Would you like to send this invoice to economic again?' } : {}%>
         <% end %>
       </th>
-      <th>Captured online?
-	<% if @invoice.capturable? %>
-	<%= link_to 'Capture now', capture_invoice_path(@invoice), method: :post %>
-	<% end %>	
+      <th>
+	Email sent to user?
+      </th>
+      <th>Captured online?	
       </th>
       <th>Netto</th>
       <th>Gross</th>
@@ -79,7 +79,20 @@
   <tbody>
     <tr>
       <td><%= @invoice.sent_to_economic ? "Yes" : "No" %>
-      <td><%= @invoice.captured_online ? "Yes" : "No" %></td>
+      <td>
+	<% if @invoice.sent_to_economic %>
+	Yes <%= link_to 'Resend', send_invoice_email_path(@invoice), method: :post %>
+	<% else %>
+	No
+	<% end %>
+      </td>
+      <td>
+	<% if @invoice.capturable? %>
+	No
+	<%= link_to 'Capture now', capture_invoice_path(@invoice), method: :post %>
+	<% else %>
+	Yes
+	<% end %>	
       <td><%= currency @invoice.amount %></td>
       <td><%= currency @invoice.gross_amount %></td>
       <td><%= currency @invoice.cost %></td>

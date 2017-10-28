@@ -482,6 +482,12 @@ class User < ActiveRecord::Base
     return h
   end
 
+  def billing_email
+    if contact_address and contact_address.email.to_s.include? '@'
+      return contact_address.email
+    end
+    return email
+  end
   
   
   # BEGIN AFFILIATE
