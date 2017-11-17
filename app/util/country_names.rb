@@ -236,6 +236,9 @@ module CountryNames
       "Østrig"=>"AT",
       "Ålandsøerne"=>"AT"
     }
+    if not name
+      return ''
+    end
     name = name.capitalize
     if danish.key? name
       return danish[name]
