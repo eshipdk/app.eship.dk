@@ -30,8 +30,8 @@ module Economic
     customer['name']
   end  
   
-  def get_customer_data id
-    return get(BASE_ENDPOINT + "customers/#{id}")
+  def get_customer_data id, ast = AST, agt = AGT
+    return get(BASE_ENDPOINT + "customers/#{id}", ast, agt)
   end
   
   def update_user_address user
@@ -357,7 +357,7 @@ module Economic
     end
 
     customer_id = data['customer']['customerNumber']
-    customer_data = Economic.get_customer_data customer_id
+    customer_data = Economic.get_customer_data customer_id, Economic.AST_Customer, user.economic_api_key
     
     sender = user.default_address
     
