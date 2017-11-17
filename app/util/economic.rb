@@ -280,18 +280,18 @@ module Economic
   end
 
   
-  def self.data_import_product_data data
+  def self.data_import_product_data data, user
     lines = data['lines']
     lines.each do |line|
       product_code = line['product']['productNumber']
       if product_code.start_with? 'eship_dataimport'
-        return Economic.parse_import_product_data line
+        return Economic.parse_import_product_data line, user
       end
     end
     return nil
   end
 
-  def self.parse_import_product_data line
+  def self.parse_import_product_data line, user
 
     # If the product code is exactly eship_dataimport we apply default config. I.e.
     # the dataimport product with defualt dimensions and extracting qty from the qty field.
@@ -300,7 +300,7 @@ module Economic
     # defualt configuration as above.
     
     if line['product']['productNumber'] != 'eship_dataimport'
-      product_data = Economic.get_product_data line['product']['productNumber']
+      product_data = Economic.get_product_data line['product']['productNumber'], Economic.AST_Customer, user.economic_api_key
       desc = product_data['description']
       if desc.start_with? '{' and desc.end_with? '}'
         return JSON.parse desc
@@ -339,7 +339,7 @@ module Economic
       return [:error, res]
     end        
 
-    product_data = Economic.data_import_product_data data
+    product_data = Economic.data_import_product_data data, user
     if not product_data
       return false
     end
