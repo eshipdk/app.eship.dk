@@ -71,7 +71,15 @@ class ApplicationController < ActionController::Base
 
     @current_user = User.authenticate_api(@api_params['api_key'])
     if @current_user
-      return true
+      if @current_user.verify_epay_subscription
+        return true
+      else
+        if !silent
+          api_error('Invalid/missing payment subscription. Please log in to the web interface.', 401)
+        else
+          return false
+        end
+      end
     else
       if !silent
         api_error('Invalid/missing API-key', 401)

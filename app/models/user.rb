@@ -47,6 +47,9 @@ class User < ActiveRecord::Base
 
   def self.authenticate_api(key="")
     user = User.find_by_eship_api_key(key)
+    if not (user and user.verify_epay_subscription)
+      return false
+    end
     return user
   end
 
