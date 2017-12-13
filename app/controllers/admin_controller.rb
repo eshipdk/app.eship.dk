@@ -54,7 +54,73 @@ class AdminController < ApplicationController
   
   
   def verify_billable_shipments
+
+    uploaded_file = params[:file]
+    spreadsheet = Roo::Spreadsheet.open(uploaded_file.tempfile.path)    
     
+        
+    @charges = []
+    header = spreadsheet.row(1).map{|x| x == nil ? '' : x.downcase}
+    required_headers = ['id', 'total sales price']
+    required_headers.each do |h|
+      if not header.include?(h)
+        flash[:error] = "File misses column: #{h}"
+        redirect_to :back
+        return
+      end
+    end
+
+    @total_actual_cost = 0
+    @n_known_shipments = 0
+    @n_unknown_shipments = 0
+    @total_expected_cost = 0
+    @total_price = 0
+    @warnings = 0
+    @rows = []
+    (2..spreadsheet.last_row - 1).each do |i|    
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+      id = row['id']
+      actual_cost = row['total sales price']
+      @total_actual_cost += actual_cost
+      begin
+        shipment = Shipment.where(:cargoflux_shipment_id => id).first!
+        warning = false
+        @n_known_shipments += 1
+        if shipment.value_determined
+          cost = shipment.cost + shipment.final_diesel_fee
+          price = shipment.final_price + shipment.final_diesel_fee
+          balance = price - actual_cost
+          expected_balance = price - cost
+          
+          if expected_balance - balance > 0.1 * expected_balance
+            warning = 'High cost divergence'
+            @warnings += 1
+          end
+          
+        else
+          cost = 0
+          price = 0
+          warning = 'Value not determined - not billed'
+          @warnings += 1
+        end
+
+        @total_expected_cost += cost
+        @total_price += price
+        
+        
+      rescue ActiveRecord::RecordNotFound
+        @n_unknown_shipments += 1
+        @warnings += 1
+        cost = 0
+        price = 0
+        
+        warning = 'Unknown shipment'
+      end
+      @rows << {:id => id, :actual_cost => actual_cost, :expected_cost => cost, :price => price, :expected_balance => price - cost, :actual_balance => price - actual_cost, :warning => warning}
+      
+    end
+
+    return
     begin
       uploaded_file = params[:file]
       file_content = uploaded_file.read
@@ -67,8 +133,11 @@ class AdminController < ApplicationController
     end
     
     ids = []
+    prices = []
     lines.each do |line|
       id = line[0]
+      price = line[21]
+      raise price.to_s
       if id
         ids << line[0]
       end
@@ -80,6 +149,8 @@ class AdminController < ApplicationController
     @unknown = ids.reject{|x| known_ids.include? x}
     @incomplete = all_shipments.where.not(:shipping_state => 3)
   end
+
+  
   
   def update_shipping_states
     Shipment.update_pending_shipping_states

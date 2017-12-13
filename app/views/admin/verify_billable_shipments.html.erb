@@ -1,5 +1,78 @@
+<%= cbox do-%>
+<%= cbox_header('Results') do-%>
 
-<h2 class="sub-header">Result</h2>
+<% end %>
+
+<div class='row'>
+  <div class='col-xs-4'>
+    <%= kv_box({
+	'Unknown shipments' => @n_unknown_shipments,
+    'Known shipments' => @n_known_shipments,
+    'Warnings' => @warnings,
+    'Expected cost' => currency(@total_expected_cost),
+    'Actual cost' => currency(@total_actual_cost),
+    'Price' => currency(@total_price),
+    'Expected balance' => currency(@total_price - @total_expected_cost),
+    'Actual balance' => currency(@total_price - @total_actual_cost),
+    'Divergence' => currency(@total_expected_cost - @total_actual_cost)
+	}, false)
+	%>
+  </div>
+</div>
+
+<% end %>
+
+<%= cbox do-%>
+<%= cbox_subheader('Shipments') do-%>
+
+<% end %>
+
+<%= tbl true do-%>
+<thead>
+  <tr>
+    <th>ID</th>
+    <th>Warning</th>
+    <th>Expected cost</th>
+    <th>Actual cost</th>
+    <th>Price</th>
+    <th>Expected balance</th>
+    <th>Actual balance</th>
+    <th>Divergence</th>
+  </tr>
+</thead>
+<tbody>
+  <% @rows.each do |row| %>
+  <tr <% if row[:warning] %>class='alert-danger'<% end %>>
+    <td><%= row[:id] %></td>
+    <td><%= row[:warning] ? row[:warning] : '' %></td>
+    <td><%= currency row[:expected_cost] %></td>
+    <td><%= currency row[:actual_cost] %></td>
+    <td><%= currency row[:price] %></td>
+    <td><%= currency row[:expected_balance] %></td>
+    <td><%= currency row[:actual_balance] %></td>
+    <td><%= currency row[:expected_cost] - row[:actual_cost]%></td>
+  </tr>
+  <% end %>
+</tbody>
+<tfoot>
+  <tr>
+    <td/>
+    <td/>
+    <td><%= currency @total_expected_cost %></td>
+    <td><%= currency @total_actual_cost %></td>
+    <td><%= currency @total_price %></td>
+    <td><%= currency @total_price - @total_expected_cost %></td>
+    <td><%= currency @total_price - @total_actual_cost %></td>
+    <td><%= currency @total_expected_cost - @total_actual_cost%></td>
+  </tr>
+</tfoot>
+<% end %>
+
+<% end %>
+
+
+
+<% if false %>
 <div class="table-responsive">
 	<table class="table table-striped">
 		<tr>
@@ -43,3 +116,4 @@
 		<% end %>
 	</table>
 </div>
+<% end %>
