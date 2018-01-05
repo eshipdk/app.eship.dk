@@ -17,7 +17,7 @@
   </thead>
   <tbody>
     <% @shipments.each do |shipment| %>
-    <%= row_link(shipment_path(shipment)) do-%>
+    <%= row_link(@admin ? admin_shipment_path(shipment) : shipment_path(shipment)) do-%>
       <td><%= link_to shipment.pretty_id, @admin ? admin_shipment_path(shipment) : shipment_path(shipment) %></td>
       <td><%= shipment.reference %></td>
       <td><%= print_datetime shipment.created_at %></td>
