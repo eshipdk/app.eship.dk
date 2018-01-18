@@ -231,7 +231,7 @@ class ApiController < ApplicationController
 ###################################################
 ### POSTNORD API 
 ###################################################  
-  def pn_servicepoint_by_address
+  def pn_servicepoints_by_address
     url = 'https://api2.postnord.com/rest/businesslocation/v1/servicepoint/findNearestByAddress.json?apikey=e882a3b4126a72f01d95be8411d43938'
     @api_params.each do |k,v|
       if k != 'api_key'
@@ -245,6 +245,25 @@ class ApiController < ApplicationController
     render :text => http.request(request).body,  :content_type => 'application/json'
   end
 
+###################################################
+### GLS API
+###################################################  
+  def gls_servicepoints_by_address
+    client = Savon.client(wsdl: 'https://www.gls.dk/webservices_v4/wsShopFinder.asmx?WSDL')
+    params = {}
+    @api_params.each do |k,v|
+      if k != 'api_key'
+        params[k] = v
+      end
+    end
+    response = client.call(:search_nearest_parcel_shops, message: params)
+    
+    render :text => response.body[:search_nearest_parcel_shops_response
+                                 ][:search_nearest_parcel_shops_result
+                                  ][:parcelshops][:pakkeshop_data].to_json, :content_type => 'application/json'
+  end
+
+  
 ###################################################
 ### ECONOMIC WEBHOOKS
 ###################################################
