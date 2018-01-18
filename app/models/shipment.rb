@@ -75,10 +75,47 @@ class Shipment < ActiveRecord::Base
   end
   
   def update_shipping_state
+    self.update_shipping_state_and_prices
+  end
+
+  def update_shipping_state_and_prices
     if status != 'complete' or ['delivered', 'cancelled'].include? shipping_state
       return
     end
-    update_attribute(:shipping_state, (Cargoflux.fetch_state self))
+    # If the customer is a shipping customer, update the shipment
+    # prices from cargoflux
+    if self.user.customer_type == 'shipping'
+      cfdata = Cargoflux.fetch_company_data self
+      update_attribute(:shipping_state, cfdata['state'])
+      update_prices cfdata
+    else
+      update_attribute(:shipping_state, (Cargoflux.fetch_state self))
+    end
+  end
+
+  def update_prices cfdata = false
+    if self.user.customer_type != 'shipping'
+      return
+    end
+    if not cfdata
+      cfdata = Cargoflux.fetch_company_data self
+    end
+    if cfdata.key? 'price_lines'
+      cfdata['price_lines'].each do |row|
+        if row['line_description'] == 'Shipment charge'
+          if self.cost < row['line_cost_price'].to_f
+            oldcost = self.cost
+            self.cost = row['line_cost_price']
+            self.final_price = self.final_price + self.cost - oldcost
+          end
+        elsif row['line_description'] == 'Fuel charge'
+          if self.final_diesel_fee < row['line_sales_price'].to_f
+            self.final_diesel_fee = row['line_sales_price']
+          end
+        end
+      end
+      save
+    end
   end
   
   def update_booking_state     

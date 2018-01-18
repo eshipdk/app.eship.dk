@@ -2,7 +2,8 @@
 module Cargoflux
   
   API_ENDPOINT = 'https://api.cargoflux.com/api/v1/customers/shipments/'
-  
+  COMPANY_API_ENDPOINT = 'https://api.cargoflux.com/api/v1/companies/'
+  COMPANY_API_TOKEN = '2fc352526bf0b161740773d3205e9c5a'
   
   def submit shipment
     if !shipment.can_submit
@@ -22,6 +23,24 @@ module Cargoflux
       shipment.cargoflux_shipment_id = response['unique_shipment_id']
     end
     shipment.save
+    return response
+  end
+
+  def fetch_company_data shipment
+    if shipment.cargoflux_shipment_id == nil
+      return
+    end
+    url = COMPANY_API_ENDPOINT + 'shipments/' + shipment.cargoflux_shipment_id
+    endpoint = URI.parse(url)
+    http = Net::HTTP.new(endpoint.host, endpoint.port)
+    http.use_ssl = true
+    request = Net::HTTP::Get.new(endpoint.request_uri,
+                                 initheader = {'access_token' =>
+                                               COMPANY_API_TOKEN})
+    response = JSON.parse http.request(request).body
+    if response['state'] == 'delivered_at_destination'
+      response['state'] = 'delivered'
+    end
     return response
   end
   
