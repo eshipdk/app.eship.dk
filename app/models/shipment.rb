@@ -69,7 +69,11 @@ class Shipment < ActiveRecord::Base
     end
     if pretty_id[0,1] == 'e'
       id = pretty_id[1..-1].to_i
-      return self.find(id)
+      begin
+        return self.find(id)
+      rescue ActiveRecord::RecordNotFound
+        return nil
+      end
     end
     return find_by_cargoflux_shipment_id(pretty_id)
   end
