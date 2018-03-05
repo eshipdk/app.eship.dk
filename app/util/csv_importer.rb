@@ -39,8 +39,8 @@ module CsvImporter
           if interline_service == 'B'
             hash['return'] = 1
             hash['recipient'], hash['sender'] = hash['sender'], hash['recipient']
-          end
-          shipments.push(create_shipment(hash, user))
+            shipments.push(create_shipment(hash, user))
+          end         
         end
 
         
@@ -147,6 +147,7 @@ module CsvImporter
       label_action = 'email'
     when 'B'
       product_code = 'glsb'
+      is_return = 1
     when 'M'
       product_code = 'OC_glsproc'
     when 'R'
