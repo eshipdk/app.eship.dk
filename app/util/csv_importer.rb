@@ -37,6 +37,7 @@ module CsvImporter
         
         if user.import_format.importer == 'interline'
           if interline_service == 'B'
+            hash['product_code'] = 'glsb'
             hash['return'] = 1
             hash['recipient'], hash['sender'] = hash['sender'], hash['recipient']
             shipments.push(create_shipment(hash, user))
