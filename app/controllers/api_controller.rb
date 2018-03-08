@@ -84,8 +84,8 @@ class ApiController < ApplicationController
     render :text => response.to_json, :content_type => 'application/json'
   end
 
-  def shipment_info
-    
+
+  def get_shipment
     shipment = @current_user.shipments
     query = ''
     if @api_params.key? 'shipment_id' and @api_params.key? 'reference'
@@ -97,6 +97,27 @@ class ApiController < ApplicationController
     else
       shipment = nil
     end
+    return shipment
+  end
+
+  def mark_shipment_printed
+
+    shipment = get_shipment
+
+    if shipment == nil
+      api_error 'Shipment not found'
+    else
+      shipment.label_pending = false
+      shipment.label_printed_at = DateTime.now
+      shipment.save!
+      render :text => {'result' => 'ok'}.to_json, :content_type => 'application/json'
+    end
+    
+  end
+
+  def shipment_info
+    
+    shipment = get_shipment
 
     if shipment == nil
       result = {'found' => false}
@@ -114,6 +135,7 @@ class ApiController < ApplicationController
         result['document_url'] = shipment.document_url
         result['tracking_url'] = shipment.tracking_url
         result['shipping_state'] = shipment.shipping_state
+        result['printed_at'] = shipment.label_printed_at
       end
     end
     render :text => result.to_json,  :content_type => 'application/json'
@@ -139,6 +161,7 @@ class ApiController < ApplicationController
           recently_registered.push shipment
         end
         shipment.label_pending = false
+        shipment.label_printed_at = DateTime.now
         shipment.save!
       end
     end
