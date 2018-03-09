@@ -167,7 +167,7 @@ class ApiController < ApplicationController
       
 
 
-      result = all.first.clone
+      result = all.last.clone
       result['found'] = true      
       result['all'] = all      
     end
