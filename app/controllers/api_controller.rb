@@ -85,7 +85,7 @@ class ApiController < ApplicationController
   end
 
 
-  def get_shipment
+  def _get_shipment
     shipment = @current_user.shipments
     query = ''
     if @api_params.key? 'shipment_id' and @api_params.key? 'reference'
@@ -93,7 +93,15 @@ class ApiController < ApplicationController
     elsif @api_params.key? 'shipment_id'
       shipment = shipment.find_by_pretty_id(@api_params['shipment_id'])
     elsif @api_params.key? 'reference'
-      shipment = shipment.where(['reference LIKE ?', @api_params['reference']]).last
+      shipment = shipment.where(['reference LIKE ?', @api_params['reference']])
+      if shipment.length == 0
+        shipment = nil
+      elsif
+        shipment.length == 1
+        shipment = shipment.last
+      else
+        shipment = shipment.to_a
+      end       
     else
       shipment = nil
     end
@@ -102,41 +110,66 @@ class ApiController < ApplicationController
 
   def mark_shipment_printed
 
-    shipment = get_shipment
-
+    shipment = _get_shipment
+    
     if shipment == nil
       api_error 'Shipment not found'
     else
-      shipment.label_pending = false
-      shipment.label_printed_at = DateTime.now
-      shipment.save!
+      if shipment.kind_of?(Array)
+        shipments = shipment
+      else
+        shipments = [shipment]
+      end
+      shipments.each do |s|
+        _mark_printed s
+      end
+     
       render :text => {'result' => 'ok'}.to_json, :content_type => 'application/json'
     end
     
   end
 
+  def _mark_printed s
+    s.label_pending = false
+    s.label_printed_at = DateTime.now
+    s.save!
+  end
+
+  def _shipment_result s
+    res = {
+      'id' => s.pretty_id,
+      'status' => s.status}
+    case s.status
+    when 'failed'
+      res['error'] = s.api_response_error_msg
+    when 'complete'
+      res['document_url'] = s.document_url
+      res['tracking_url'] = s.tracking_url
+      res['shipping_state'] = s.shipping_state
+      res['printed_at'] = s.label_printed_at
+    end
+    return res
+  end
+
   def shipment_info
     
-    shipment = get_shipment
+    shipment = _get_shipment
 
     if shipment == nil
       result = {'found' => false}
     else
-      result = {
-          'found' => true,
-          'id'  => shipment.pretty_id,
-          'status' => shipment.status
-        }
-
-      case shipment.status
-      when 'failed'
-        result['error'] = shipment.api_response_error_msg
-      when 'complete'
-        result['document_url'] = shipment.document_url
-        result['tracking_url'] = shipment.tracking_url
-        result['shipping_state'] = shipment.shipping_state
-        result['printed_at'] = shipment.label_printed_at
+      if shipment.kind_of?(Array)
+        shipments = shipment
+      else
+        shipments = [shipment]
       end
+      all = shipments.map{ |s| _shipment_result s}
+      
+
+
+      result = all.first.clone
+      result['found'] = true      
+      result['all'] = all      
     end
     render :text => result.to_json,  :content_type => 'application/json'
   end
