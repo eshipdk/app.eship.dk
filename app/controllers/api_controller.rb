@@ -284,6 +284,20 @@ class ApiController < ApplicationController
     render :text => response.to_json, :content_type => 'application/json'
   end
 
+  ###################################################
+### ESHIP REQUEST API
+###################################################  
+  def is_code_pickup_point
+    shipment_code = @api_params['code']
+    check = false
+   
+    if( ['glspoc', 'OC_pnmc', 'glsp', 'OC_nord_pnmc', 'OC_daop'].include? shipment_code)
+      check = true
+    
+    return check
+    
+  end
+  
 ###################################################
 ### POSTNORD API 
 ###################################################  
@@ -319,7 +333,6 @@ class ApiController < ApplicationController
                                   ][:parcelshops][:pakkeshop_data].to_json, :content_type => 'application/json'
   end
 
-  
 ###################################################
 ### ECONOMIC WEBHOOKS
 ###################################################

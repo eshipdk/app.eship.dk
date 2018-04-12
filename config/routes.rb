@@ -90,6 +90,7 @@ Rails.application.routes.draw do
   post 'api/validate_key', to: 'api#validate_key'
   post 'api/shipment_info', to: 'api#shipment_info'
   post 'api/client_version', to: 'api#client_version'
+  post 'api/is_code_pickup_point', to: 'api#is_code_pickup_point'
   post 'api/pn/servicepoints', to: 'api#pn_servicepoints_by_address'
   post 'api/gls/servicepoints', to: 'api#gls_servicepoints_by_address'
   post 'api/get_price', to: 'api#get_price'
