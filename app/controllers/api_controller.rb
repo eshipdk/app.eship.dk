@@ -145,6 +145,7 @@ class ApiController < ApplicationController
     when 'complete'
       res['document_url'] = s.document_url
       res['tracking_url'] = s.tracking_url
+      res['tracking_url'] = s.awb
       res['shipping_state'] = s.shipping_state
       res['printed_at'] = s.label_printed_at
     end
