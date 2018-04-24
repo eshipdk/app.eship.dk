@@ -197,106 +197,108 @@ class User < ActiveRecord::Base
   end
   
   def do_invoice
-    
-    shipments = uninvoiced_shipments
-    n = shipments.count
 
-    invoice = Invoice.new()
-    invoice.user = self
-    invoice.n_shipments = n
+    ActiveRecord::Base.transaction do
+      shipments = uninvoiced_shipments
+      n = shipments.count
 
-    # Shipments
-    product_taxed = {'diesel_fee' => true}
-    product_groups = {}
-    shipments.each do |shipment|
-      product_code = shipment.product.product_code
-      if not product_groups.key?(product_code)
-        product_groups[product_code] = {'shipments' => [shipment], 'product' => shipment.product}
-        product_taxed[product_code] = shipment.product.taxed
-      else
-        product_groups[product_code]['shipments'].push(shipment)
+      invoice = Invoice.new()
+      invoice.user = self
+      invoice.n_shipments = n
+
+      # Shipments
+      product_taxed = {'diesel_fee' => true}
+      product_groups = {}
+      shipments.each do |shipment|
+        product_code = shipment.product.product_code
+        if not product_groups.key?(product_code)
+          product_groups[product_code] = {'shipments' => [shipment], 'product' => shipment.product}
+          product_taxed[product_code] = shipment.product.taxed
+        else
+          product_groups[product_code]['shipments'].push(shipment)
+        end
       end
-    end
 
-    group_rows = {}
-    product_groups.each do |product_code, group|
-      product = group['product']
-      group_shipments = group['shipments']
-      if billing_type == 'advanced'
-        group_rows[product_code] = (product.price_scheme self).generate_invoice_rows group_shipments
-      elsif billing_type == 'flat_price'
+      group_rows = {}
+      product_groups.each do |product_code, group|
+        product = group['product']
+        group_shipments = group['shipments']
+        if billing_type == 'advanced'
+          group_rows[product_code] = (product.price_scheme self).generate_invoice_rows group_shipments
+        elsif billing_type == 'flat_price'
+          row = InvoiceRow.new
+          row.amount = 0
+          row.description = "#{product.name}: Label Fee"
+          qty = 0
+          group_shipments.each do |shipment|
+            row.amount += shipment.final_price
+            qty += shipment.get_label_qty
+          end
+          row.qty = qty
+          row.cost = 0
+          row.unit_price = row.amount / row.qty
+          row.product_code = 'label_fee'
+          group_rows[product_code] = [row]
+        end
+      end
+      
+      # Additional charges
+      charges = uninvoiced_additional_charges
+      charges.each do |charge|
+        if not group_rows.key?charge.product_code
+          group_rows[charge.product_code] = []
+          product_taxed[charge.product_code] = true
+        end
         row = InvoiceRow.new
-        row.amount = 0
-        row.description = "#{product.name}: Label Fee"
-        qty = 0
-        group_shipments.each do |shipment|
-          row.amount += shipment.final_price
-          qty += shipment.get_label_qty
-        end
-        row.qty = qty
-        row.cost = 0
-        row.unit_price = row.amount / row.qty
-        row.product_code = 'label_fee'
-        group_rows[product_code] = [row]
+        row.amount = charge.price
+        row.cost = charge.cost
+        row.qty = 1
+        row.product_code = charge.product_code
+        row.unit_price = row.amount
+        row.description = charge.description      
+        group_rows[charge.product_code].push(row)
       end
-    end
-    
-    # Additional charges
-    charges = uninvoiced_additional_charges
-    charges.each do |charge|
-      if not group_rows.key?charge.product_code
-        group_rows[charge.product_code] = []
-        product_taxed[charge.product_code] = true
+
+      if affiliate_user
+        invoice.affiliate = affiliate_user
       end
-      row = InvoiceRow.new
-      row.amount = charge.price
-      row.cost = charge.cost
-      row.qty = 1
-      row.product_code = charge.product_code
-      row.unit_price = row.amount
-      row.description = charge.description      
-      group_rows[charge.product_code].push(row)
-    end
 
-    if affiliate_user
-      invoice.affiliate = affiliate_user
-    end
-
-    invoice.save
-    amount = 0
-    tax_amount = 0
-    cost = 0
-    group_rows.each do |product_code, rows|
-      rows.each do |row|
-        row.invoice = invoice
-        row.save
-        amount += row.amount
-        cost += row.cost
-        if product_taxed[row.product_code]
-          tax_amount += row.amount * 0.25
+      invoice.save
+      amount = 0
+      tax_amount = 0
+      cost = 0
+      group_rows.each do |product_code, rows|
+        rows.each do |row|
+          row.invoice = invoice
+          row.save
+          amount += row.amount
+          cost += row.cost
+          if product_taxed[row.product_code]
+            tax_amount += row.amount * 0.25
+          end
         end
       end
-    end
-    invoice.amount = amount
-    invoice.cost = cost
-    invoice.gross_amount = amount + tax_amount
+      invoice.amount = amount
+      invoice.cost = cost
+      invoice.gross_amount = amount + tax_amount
 
-    # Commissions
-    invoice.compute_commissions
+      # Commissions
+      invoice.compute_commissions
 
-    invoice.save
+      invoice.save
 
-    shipments.each do |shipment|
-      shipment.invoiced = true
-      shipment.invoice = invoice
-      shipment.save
+      shipments.each do |shipment|
+        shipment.invoiced = true
+        shipment.invoice = invoice
+        shipment.save
+      end
+      
+      charges.each do |charge|
+        charge.invoice = invoice
+        charge.save
+      end
+      return invoice
     end
-    
-    charges.each do |charge|
-      charge.invoice = invoice
-      charge.save
-    end
-    return invoice
  end
 
 
