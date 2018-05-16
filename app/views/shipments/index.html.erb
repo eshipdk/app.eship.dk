@@ -47,8 +47,8 @@
 		  	  <%= cell_safe shipment.recipient.company_name, maxw %>
 		  	  <%= cell_safe print_datetime(shipment.created_at), 150 %>
 		      <%= cell_safe shipment.product.name, maxw %>		      
-		      <td><%= shipment.status.capitalize %></td>
-		      <td><%= shipment.shipping_state.capitalize %></td>		      
+		      <td><%= shipment.status.to_s.capitalize %></td>
+		      <td><%= shipment.shipping_state.to_s.capitalize %></td>		      
 	    	<% end %>
 	    <% end %>
 	</tbody>	

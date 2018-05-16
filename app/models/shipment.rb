@@ -365,7 +365,7 @@ class Shipment < ActiveRecord::Base
   def get_label_qty
     qty = 0
     packages.each do |package|
-      qty += package.amount
+      qty += package.amount.to_i
     end
     return qty
   end
