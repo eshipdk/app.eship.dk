@@ -1,8 +1,8 @@
 
 default: &default
   adapter: mysql2
-  user: root
-  password:
+  username: roradmin
+  password: prod123
   database: ror_eship
   pool: 5
   timeout: 5000
@@ -11,8 +11,8 @@ default: &default
 
 development:
   adapter: mysql2
-  user: root
-  password:
+  username: test-app
+  password: test123
   database: test_eship
   pool: 5
   timeout: 5000
