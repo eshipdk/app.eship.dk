@@ -79,7 +79,10 @@
 						:value => row.markup, :id => "markup-#{i}", :onchange => "updatePrice(this);", :class => 'input-markup')%>
 					</td>
 					<td>
-							<%= bstxt_field("pricing_scheme[rows_attributes][#{i}]", 'price', 
+						<%= bstxt_field("pricing_scheme_price[rows_attributes][#{i}]", 'edit_price', 
+							:value => row.cost_break.value + row.markup, :onchange => "updateFinalPrice(this);", :class => 'input-price-showing')%>
+							
+							<%= hidden_field("pricing_scheme[rows_attributes][#{i}]", 'price', 
 							:value => row.cost_break.value + row.markup, :disabled => true, :class => 'input-price')%>
 					</td>
 					<td>
@@ -139,6 +142,16 @@
 		var costField = row.find('.input-cost');		
 		var markupField = row.find('.input-markup');			
 		row.find('.input-price').val(parseFloat(costField.val()) + parseFloat(markupField.val()));
+		row.find('.input-price-showing').val(parseFloat(costField.val()) + parseFloat(markupField.val()));
+	}
+	
+	function updateFinalPrice(caller){
+		var row = $(caller).parents().eq(1);
+		var costField = row.find('.input-cost');		
+		var priceFieldEdit = row.find('.input-price-showing');	
+		var priceField = row.find('.input-price-showing');			
+		row.find('.input-markup').val(parseFloat(priceFieldEdit.val()) - parseFloat(costField.val()));
+		row.find('.input-price').val(parseFloat(priceFieldEdit.val()));
 	}
 </script>
 
