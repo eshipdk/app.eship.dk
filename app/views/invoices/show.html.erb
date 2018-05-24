@@ -68,6 +68,9 @@
       </th>
       <th>Captured online?	
       </th>
+      <th>
+	Paid?
+      </th>
       <th>Netto</th>
       <th>Gross</th>
       <th>Cost</th>
@@ -87,12 +90,19 @@
 	<% end %>
       </td>
       <td>
+	<% if @invoice.user.can_pay_online %>
 	<% if @invoice.capturable? %>
 	No
 	<%= link_to 'Capture now', capture_invoice_path(@invoice), method: :post %>
 	<% else %>
-	Yes
-	<% end %>	
+	<% end %>
+	<% else %>
+	-
+	<% end %>
+      </td>
+      <td>
+	<%= @invoice.paid ? "Yes" : "No" %>
+      </td>
       <td><%= currency @invoice.amount %></td>
       <td><%= currency @invoice.gross_amount %></td>
       <td><%= currency @invoice.cost %></td>

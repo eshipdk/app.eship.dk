@@ -118,7 +118,11 @@
                                     <% end %>
 								</td>
 								<td>
-									<%= invoice.captured_online ? "Yes" : "No" %>
+								  <% if @user.can_pay_online %>
+								  <%= invoice.captured_online ? "Yes" : "No" %>
+								  <% else %>
+								  -
+								  <% end %>
 									<% if invoice.capturable? %>
 									<%= link_to 'Capture now', capture_invoice_path(invoice), method: :post %>
 									<% end %>	
