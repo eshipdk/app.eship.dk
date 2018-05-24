@@ -359,6 +359,7 @@ class User < ActiveRecord::Base
         SystemMailer.economic_autosubmit_failed(invoice, issue).deliver_now
       end
       with(res) do
+        invoice.reload
         if invoice.can_capture_online
           match(Epay.capture_invoice(invoice)) do
             with(_[:error, issue]) do
