@@ -312,12 +312,16 @@ module CsvImporter
       dir = "/var/ftp_upload/#{user.ftp_upload_user}"  
       filenames = Dir.glob("#{dir}/*.csv") # only consider csv files!
       filenames.each do |filename|
+        inner_filename = filename
+        locked_filename = "#{filename}.lock"
         begin
           age = (Time.now - File.stat(filename).mtime).to_i
           if age > 5 # Wait at least 5 seconds to ensure upload is finished
-            content = decode_content IO.binread(filename)
+            File.rename(filename, locked_filename)
+            inner_filename = locked_filename
+            content = decode_content IO.binread(inner_filename)
             import_csv content, user
-            File.delete(filename)
+            File.delete(inner_filename)
           end
         rescue => e
           if e.to_s == 'CsvImportException'
@@ -329,7 +333,7 @@ module CsvImporter
           issue = "#{estr}: #{e.backtrace.join("\n")}"
           Rails.logger.warn issue
           SystemMailer.ftp_upload_import_failed(filename, issue).deliver_now
-          File.rename filename, "#{filename}.fail-backup"
+          File.rename inner_filename, "#{filename}.fail-backup"
           File.open("#{filename}.error", 'w+') do |f|
             f.write(estr)
           end
