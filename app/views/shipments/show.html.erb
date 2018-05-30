@@ -30,7 +30,7 @@
 	</div>
   	<div class='col-xs-4'>  		  	
         <%
-  		 label_action = @shipment.label_action_title	 
+  		 label_action = @shipment.label_action_title.to_s
   		 if @shipment.can_print  		 	
   		 	label_action += ' -'
 	        if @shipment.label_action == 'print'
