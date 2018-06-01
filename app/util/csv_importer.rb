@@ -307,13 +307,17 @@ module CsvImporter
   end
       
   def self.import_ftp_uploads
-    
+
+    pid = Process.pid
     User.where(:enable_ftp_upload => true).each do |user|      
       dir = "/var/ftp_upload/#{user.ftp_upload_user}"  
       filenames = Dir.glob("#{dir}/*.csv") # only consider csv files!
       filenames.each do |filename|
+        # If the file is present in the lists in multiple threads there will be a race condition
+        # s.t. only the first process lock it will get to process it. Thread safety is
+        # provided assuming atomicity of file renaming which should be guaranteed by OS.
         inner_filename = filename
-        locked_filename = "#{filename}.lock"
+        locked_filename = "#{filename}.lock_#{pid}"
         begin
           age = (Time.now - File.stat(filename).mtime).to_i
           if age > 5 # Wait at least 5 seconds to ensure upload is finished
