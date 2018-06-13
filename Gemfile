@@ -45,7 +45,7 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'mysql2'
+gem 'mysql2', '~> 0.4.9'
 gem 'coffee-script-source', '1.8.0'
 gem 'bcrypt-ruby', '3.0.0', :require => 'bcrypt' 
 gem 'country_select'
@@ -53,8 +53,10 @@ gem 'will_paginate'
 gem 'pattern-match'
 gem 'activerecord-session_store'
 gem 'savon'
-gem 'roo'
+gem 'roo', '~> 2.7.0'
+gem 'zip-zip'
 gem 'axlsx'
 gem 'axlsx_rails'
 gem 'responders'
 gem 'mail-logger'
+gem 'rails-erd'

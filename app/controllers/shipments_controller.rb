@@ -149,13 +149,31 @@ class ShipmentsController < ApplicationController
   def upload_csv
     begin
       uploaded_file = params[:file]
-      file_content = uploaded_file.read
-    
-      file_content = CsvImporter.decode_content file_content       
-   
-      res = CsvImporter.import_csv file_content, @current_user
+      
+      fname = uploaded_file.original_filename.downcase
+      ext = /\.([a-zA-Z]*)$/.match(fname).to_s
+      case ext
+      when '.csv'
+        file_content = uploaded_file.read
+        file_content = CsvImporter.decode_content file_content
+      when '.xlsx'
+        sheet = Roo::Spreadsheet.open(uploaded_file.tempfile.path)
+        file_content = sheet.to_csv(false, @current_user.import_format.delimiter)        
+      else
+        raise "Unsupported file extension: #{ext}. Supported formats are: .csv and .xlsx"
+      end
+      
+      
+      
+
+      
+      begin
+        res = CsvImporter.import_csv file_content, @current_user
+      rescue CsvImportException => e
+        res = {'error' => true, 'msg' => e.issue}
+      end
     rescue => e
-      res = {'error' => true, 'msg' => e.issue}
+      res = {'error' => true, 'msg' =>  "#{e.message}"}
     end
     if res['error']
       flash[:error] = res['msg']
