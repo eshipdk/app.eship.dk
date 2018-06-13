@@ -147,14 +147,14 @@ class ShipmentsController < ApplicationController
 
 
   def upload_csv
-    uploaded_file = params[:file]
-    file_content = uploaded_file.read
-    
-    file_content = CsvImporter.decode_content file_content       
-    
     begin
+      uploaded_file = params[:file]
+      file_content = uploaded_file.read
+    
+      file_content = CsvImporter.decode_content file_content       
+   
       res = CsvImporter.import_csv file_content, @current_user
-    rescue CsvImportException => e
+    rescue => e
       res = {'error' => true, 'msg' => e.issue}
     end
     if res['error']
