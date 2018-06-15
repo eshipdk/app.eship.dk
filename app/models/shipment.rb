@@ -105,16 +105,47 @@ class Shipment < ActiveRecord::Base
       cfdata = Cargoflux.fetch_company_data self
     end
     if cfdata.key? 'price_lines'
+      do_save = false
       cfdata['price_lines'].each do |row|
         if row['line_description'] == 'Shipment charge'
+          if invoiced
+            next
+          end
           if self.cost < row['line_cost_price'].to_f
             oldcost = self.cost
             self.cost = row['line_cost_price']
             self.final_price = self.final_price + self.cost - oldcost
+            do_save = true
           end
         elsif row['line_description'] == 'Fuel charge'
+          if invoiced
+            next
+          end
           if self.final_diesel_fee < row['line_sales_price'].to_f
             self.final_diesel_fee = row['line_sales_price']
+            do_save = true
+          end        
+        else # Additional charges
+          # In case of an additional charge, we check if an existing charge
+          # with the same description exists for this shipment.
+          
+          desc = row['line_description']
+          if self.additional_charges.where('description like ?', "%#{desc}").exists?
+            Rails.logger.warn "Skipping charge #{desc} for shipment #{pretty_id}"
+          else
+            Rails.logger.warn "Adding charge #{desc} to shipment #{pretty_id}"
+
+            charge = AdditionalCharge.new
+            charge.user_id = self.user.id
+            charge.cost = row['line_cost_price']
+            charge.price = row['line_cost_price'].to_f * 1.05
+            charge.description = desc
+            charge.product_code = 'service_charge'
+            charge.shipment_id = self.id
+            charge.save
+            
+            
+            do_save = true
           end
         end
       end
@@ -436,8 +467,9 @@ class Shipment < ActiveRecord::Base
   def self.update_pending_shipping_states
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"
     
-    from_time = DateTime.now() - 360.days
-    pending_shipments = Shipment.where(['shipping_state in (1, 2, 5) AND created_at > ?', from_time])
+    from_time_shipping = DateTime.now() - 0.days
+    from_time_label = DateTime.now() - 14.days
+    pending_shipments = Shipment.joins(:user).where(['shipping_state in (1, 2, 5) AND ((billing_type = 2 AND shipments.created_at > ?) OR (shipments.created_at > ?))', from_time_shipping, from_time_label])    
     
     Rails.logger.warn "Number of shipments to update: #{pending_shipments.length}"
     for shipment in pending_shipments
@@ -460,6 +492,16 @@ class Shipment < ActiveRecord::Base
       shipment.update_booking_state
     end
     Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_pending_booking_states"
+  end
+
+
+  def self.update_shipments_from_export
+    Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_shipments_from_export"
+
+
+    Cargoflux.update_shipments
+    
+    Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_shipments_from_export"
   end
   
 end
