@@ -2,6 +2,7 @@
 include Reporting
 require 'csv'
 require 'roo'
+include Cargoflux
 include CsvImporter
 class AdminController < ApplicationController
   before_filter :authenticate_admin
@@ -43,7 +44,8 @@ class AdminController < ApplicationController
   def show_shipment
     @shipment = Shipment.find params[:id]
     @disable_actions = true
-    @shipment.update_shipping_state
+    @shipment.update_prices
+    #@shipment.update_shipping_state
     render 'shipments/show'
   end
   
@@ -158,7 +160,9 @@ class AdminController < ApplicationController
   end
   
   def update_booking_states
-    Shipment.update_pending_booking_states
+    resp = Cargoflux.update_shipments
+    flash[:error] = resp
+    #Shipment.update_pending_booking_states
     redirect_to :back
   end
   

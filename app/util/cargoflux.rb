@@ -154,5 +154,64 @@ module Cargoflux
     end
     return data
   end
+
+
+  def update_shipments
+    url = COMPANY_API_ENDPOINT + 'shipment_exports.xml'#?since=2018-06-14+13%3A45%3A00+%2B0100'
+    endpoint = URI.parse(url)
+    http = Net::HTTP.new(endpoint.host, endpoint.port)
+    http.use_ssl = true
+    request = Net::HTTP::Post.new(endpoint.request_uri,
+                                 initheader = {'access_token' =>
+                                               COMPANY_API_TOKEN})
+
+    r = Hash.from_xml http.request(request).body
+   # r2 = r['ShipmentLists']['ShipmentList'][8]
+   # r3 = r;
+   # r = {}
+   # r['OLD'] = r3;
+   # r['ShipmentList'] = r2;
+   # return r.to_json
+    us = r['ShipmentList']['UpdatedShipments']
+    ns = r['ShipmentList']['NewShipments']
+
+    as = []
+    if not us['Shipment'].nil?      
+      as.concat(us['Shipment'])
+    end
+    if not ns['Shipment'].nil?
+      as.concat(ns['Shipment'])
+    end
+    
+    if as.count == 0
+      Rails.logger.warn 'Pulled empty export feed!'
+    else
+
+      as.each do |hs|
+        s = Shipment.where(cargoflux_shipment_id: hs['ShipmentId']).first
+        if s.nil?
+          Rails.logger.warn "Could not find shipment with id #{hs['ShipmentId']}."
+          next
+        end
+        
+        
+        # Update state
+        if hs['State'] == 'delivered_at_destination'
+          hs['State'] = 'delivered'
+        end
+        if hs['State'] != s.shipping_state
+          Rails.logger.warn "Update shipping state of #{s.pretty_id} to #{hs['State']}"
+          s.update_attribute(:shipping_state, hs['State'])
+        end
+
+
+        # Update prices
+        s.update_prices hs
+        
+      end
+    end    
+
+    return r.to_json
+  end
   
 end
