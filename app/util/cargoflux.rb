@@ -184,7 +184,7 @@ module Cargoflux
     end
     
     if as.count == 0
-      Rails.logger.warn 'Pulled empty export feed!'
+      Rails.logger.info 'Pulled empty export feed!'
     else
 
       as.each do |hs|

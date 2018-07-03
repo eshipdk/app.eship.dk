@@ -496,12 +496,12 @@ class Shipment < ActiveRecord::Base
 
 
   def self.update_shipments_from_export
-    Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_shipments_from_export"
+    Rails.logger.info "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_shipments_from_export"
 
 
     Cargoflux.update_shipments
     
-    Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_shipments_from_export"
+    Rails.logger.info "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_shipments_from_export"
   end
   
 end
