@@ -234,6 +234,9 @@ class User < ActiveRecord::Base
             row.amount += shipment.final_price
             qty += shipment.get_label_qty
           end
+          if row.amount == 0
+            next
+          end
           row.qty = qty
           row.cost = 0
           row.unit_price = row.amount / row.qty
