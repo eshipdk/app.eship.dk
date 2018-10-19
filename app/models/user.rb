@@ -533,6 +533,22 @@ class User < ActiveRecord::Base
   end
   
 
-  
+
+  def self.update_prices_from_cargoflux
+
+    Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: User.update_prices_from_cargoflux"
+
+    User.all.each do |user|
+      user.products.each do |product|
+        scheme = product.price_scheme user
+        if scheme.cargoflux_prices_enabled?
+          scheme.use_cargoflux_prices()
+        end
+      end
+    end
+
+    Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: User.update_prices_from_cargoflux"
+
+  end
   
 end

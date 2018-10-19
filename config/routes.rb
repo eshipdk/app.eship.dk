@@ -15,6 +15,7 @@ Rails.application.routes.draw do
         get :edit_price_scheme
         patch :update_price_scheme
         patch :default_price_scheme
+        patch :cargoflux_price_scheme
       end
       
       get :epay_subscribe
@@ -144,6 +145,7 @@ Rails.application.routes.draw do
   post 'admin/tools/approve_additional_charges', to: 'admin#approve_additional_charges', as: 'admin_approve_additional_charges'
   post 'admin/tools/import_ftp_uploads', to: 'admin#import_ftp_uploads', as: 'admin_import_ftp_uploads'
   post 'admin/tools/apply_subscription_fees', to: 'admin#apply_subscription_fees', as: 'admin_apply_subscription_fees'
+  post 'admin/tools/update_cargoflux_prices', to: 'admin#update_cargoflux_prices', as: 'admin_update_cargoflux_prices'
   
   #Affiliate
   get 'affiliate/dashboard', to: 'affiliate#dashboard', as: 'affiliate_dashboard'

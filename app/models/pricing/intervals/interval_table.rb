@@ -100,9 +100,10 @@ class IntervalTable < PricingScheme
   
   
   def handle_price_update params
-    dfe = params.require(:pricing_scheme).permit(:diesel_fee_dk, :diesel_fee_inter)
+    dfe = params.require(:pricing_scheme).permit(:diesel_fee_dk, :diesel_fee_inter, :cargoflux_prices)
     set_extras_val(:diesel_fee_dk, dfe.key?(:diesel_fee_dk))
     set_extras_val(:diesel_fee_inter, dfe.key?(:diesel_fee_inter))
+    set_extras_val(:cargoflux_prices, dfe.key?(:cargoflux_prices))
     begin
       validate_available_intervals(get_attrs(params))
     rescue ActionController::ParameterMissing
@@ -356,6 +357,40 @@ class IntervalTable < PricingScheme
       row_dup.save
     end
     return res
+  end
+
+
+
+  def use_cargoflux_prices
+    mrows = get_markup_rows
+    mrows.each do |mrow|
+      cbreak = mrow.cost_break
+
+      p = Package.new
+      p.length = 1
+      p.width = 1
+      p.height = 1
+      p.weight = cbreak.weight_from + (cbreak.weight_to - cbreak.weight_from) / 2
+      p.amount = 1
+
+      pcode = self.product_code
+      product = Product.find_by(product_code: pcode)
+
+      s = Shipment.new
+      s.product = product
+      s.user = self.user        
+      s.sender = Address.new
+      s.sender.country_code = 'DK'
+      s.recipient = Address.new
+      s.recipient.country_code = cbreak.country_code
+      s.packages = [p]
+
+      price, issue = Cargoflux.price_lookup s
+      if not issue
+        mrow.markup = price - cbreak.value
+        mrow.save
+      end
+    end
   end
   
 end

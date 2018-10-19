@@ -1,6 +1,9 @@
 <h2 class='page-header'>Edit price scheme (<%= @user.name %>, <%= @product.name %>)
 	<span class='pull-right'>
-		<%= link_to 'Reset to default', product_default_price_scheme_path(@user, @product), method: :patch,
+	  <%= link_to 'Set to Cargoflux', product_cargoflux_price_scheme_path(@user, @product), method: :patch,
+				data: { confirm: 'Are you sure you want to set prices to Cargoflux values?' },
+	      class: 'btn btn-default'%>
+	  <%= link_to 'Reset to default', product_default_price_scheme_path(@user, @product), method: :patch,
 				data: { confirm: 'Are you sure you want to reset prices to default values?' },
 				class: 'btn btn-default'%>
 	</span>
@@ -15,15 +18,19 @@
 				<tr>
 					<th><label for='pricing_scheme_dk_diesel_fee'>Enable diesel fee (DK)</label></th>
 					<th><label for='pricing_scheme_dk_diesel_fee'>Enable diesel fee (International)</label></th>
+					<th><label for='pricing_scheme_cargoflux'>Enable Cargoflux prices</label></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td>
-						<%= bschckbx('pricing_scheme[diesel_fee_dk]', 1, @scheme.diesel_fee_dk_enabled?) %>
+					  <%= bschckbx('pricing_scheme[diesel_fee_dk]', 1, @scheme.diesel_fee_dk_enabled?) %>
 					</td>
 					<td>
-						<%= bschckbx('pricing_scheme[diesel_fee_inter]', 1, @scheme.diesel_fee_inter_enabled?) %>
+					  <%= bschckbx('pricing_scheme[diesel_fee_inter]', 1, @scheme.diesel_fee_inter_enabled?) %>
+					</td>
+					<td>
+					  <%= bschckbx('pricing_scheme[cargoflux_prices]', 1, @scheme.cargoflux_prices_enabled?) %>
 					</td>
 				</tr>
 			</tbody>			

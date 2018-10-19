@@ -247,4 +247,8 @@ class AdminController < ApplicationController
     redirect_to :back
   end
 
+  def update_cargoflux_prices
+    User.update_prices_from_cargoflux
+    redirect_to :back
+  end
 end

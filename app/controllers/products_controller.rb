@@ -107,7 +107,26 @@ class ProductsController < ApplicationController
       redirect_to :controller => :users, :action => :edit_products
       return
     end
-   redirect_to :back
+    redirect_to :back
+  end
+
+  def cargoflux_price_scheme
+    product = Product.find params[:product_id]
+    user = User.find params[:id]
+    if not user.holds_product product
+      flash[:error] = 'User ' + user.name + ' can not access product ' + product.name
+      redirect_to :action => :index
+      return
+    end
+    begin
+      scheme = product.price_scheme user
+      scheme.use_cargoflux_prices
+    rescue PriceConfigException => e
+      flash[:error] = e.issue
+      redirect_to :controller => :users, :action => :edit_products
+      return
+    end    
+    redirect_to :back
   end
   
   def edit_price_scheme

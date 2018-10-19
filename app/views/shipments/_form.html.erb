@@ -194,7 +194,7 @@
 			data['packages'].push({});									
 			for(var j=0; j<package_fields.length; j++){
 				var f = package_fields[j];
-				data['packages'][i][f] = $('#shipment_packages_attributes_' + (i == 0 ? 0 : i + 1) + '_' + f).val();
+				data['packages'][i][f] = $('#shipment_packages_attributes_' + i + '_' + f).val();
 			}			
 		}
 	 	$.ajax({
@@ -339,7 +339,7 @@
           hash['packages'].push({});
           for(var j=0; j<package_fields.length; j++){
 	        var f = package_fields[j];
-		hash['packages'][i][f] = $('#shipment_packages_attributes_' + (i == 0 ? 0 : i + 1) + '_' + f).val();
+		hash['packages'][i][f] = $('#shipment_packages_attributes_' + i + '_' + f).val();
           }
        }
        str = JSON.stringify(hash);

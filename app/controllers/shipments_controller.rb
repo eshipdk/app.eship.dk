@@ -293,15 +293,27 @@ class ShipmentsController < ApplicationController
     packages = []
     params['packages'].each do |pdata|
       p = Package.new
-      p.length = pdata['length']
-      p.width = pdata['width']
-      p.height = pdata['height']
-      p.weight = pdata['weight'].to_i           
+      p.length = pdata['length'].to_i
+      p.width = pdata['width'].to_i
+      p.height = pdata['height'].to_i
+      p.weight = pdata['weight'].to_f           
       p.amount = pdata['amount'].to_i
       packages.push p
     end
        
     product = Product.find params['product_id']
+    
+    s = Shipment.new
+    s.product = product
+    s.user = @current_user
+    s.sender = Address.new
+    s.sender.country_code = params['countryFrom']
+    s.recipient = Address.new
+    s.recipient.country_code = params['countryTo']
+    s.packages = packages
+    
+    #price, issue = Cargoflux.price_lookup s
+    
     price, issue = PriceEstimation.estimate_price @current_user, product, packages, params['countryFrom'], params['countryTo']   
     response = {:price => price, :issue => issue}
     render :text => response.to_json, :content_type => 'application/json'

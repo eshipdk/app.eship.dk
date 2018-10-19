@@ -121,9 +121,23 @@ class PricingScheme < ActiveRecord::Base
     val == nil ? false : val
   end
 
+  def cargoflux_prices_enabled?
+    val = get_extras_val :cargoflux_prices
+    val == nil ? false : val
+  end
+
   # assumes to be called by a price scheme to get related cost scheme  
   def get_cost_scheme
     PricingScheme.where(:type => type, :pricing_type => PricingScheme.pricing_types[:cost]).first
+  end
+
+  # Attempts to update the customer prices to those set in cargoflux
+  def use_cargoflux_prices
+    raise self.to_s + 'Cargoflux pricing fetching not implemented'
+  end
+
+  def product_code
+    return /^(.*)Pricing$/.match(self.class.name).captures[0].downcase
   end
   
 end

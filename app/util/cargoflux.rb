@@ -214,4 +214,32 @@ module Cargoflux
     return r.to_json
   end
   
+  def price_lookup shipment
+    
+    url = API_ENDPOINT + 'prices.json'
+    endpoint = URI.parse(url)
+    http = Net::HTTP.new(endpoint.host, endpoint.port)
+    http.use_ssl = true
+    request = Net::HTTP::Post.new(endpoint.request_uri,
+                                  initheader = {'Content-Type' =>
+                                                'application/json'})
+    data = request_payload shipment
+    data['package_dimensions'] = data['shipment']['package_dimensions']
+    request.body = data.to_json
+    data = JSON.parse http.request(request).body
+
+    data.each do |prod|
+      if prod['product_code'] == shipment.product.product_code
+        price = prod['price_amount']
+        if price
+          return prod['price_amount'].to_f, false
+        end
+        return nil, 'No price available'
+      end
+    end
+    return nil, 'Product not found'
+    
+
+  end
+  
 end
