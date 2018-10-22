@@ -386,8 +386,10 @@ class IntervalTable < PricingScheme
       s.packages = [p]
 
       price, issue = Cargoflux.price_lookup s
+      # subtract diesel fee percentages
+      p_fee = cbreak.country_code == 'DK' ? get_diesel_fee_dk : get_diesel_fee_inter
       if not issue
-        mrow.markup = price - cbreak.value
+        mrow.markup = (price / (1 + p_fee * 0.01))  - cbreak.value
         mrow.save
       end
     end
