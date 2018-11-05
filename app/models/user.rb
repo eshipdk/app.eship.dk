@@ -274,8 +274,8 @@ class User < ActiveRecord::Base
         rows.each do |row|
           row.invoice = invoice
           row.save
-          amount += row.amount
-          cost += row.cost
+          amount += row.amount.to_f
+          cost += row.cost.to_f
           if product_taxed[row.product_code]
             tax_amount += row.amount * 0.25
           end
