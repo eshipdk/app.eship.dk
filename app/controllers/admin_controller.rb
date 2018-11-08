@@ -185,7 +185,7 @@ class AdminController < ApplicationController
         
     @charges = []
     header = spreadsheet.row(1).map{|x| x == nil ? '' : x.downcase}
-    required_headers = ['awb', 'beskrivelse', 'beløb']
+    required_headers = ['reference', 'beskrivelse', 'beløb']
     required_headers.each do |h|
       if not header.include?(h)
         flash[:error] = "File misses column: #{h}"
@@ -195,8 +195,9 @@ class AdminController < ApplicationController
     end
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      awb = row['awb']      
-      if awb
+      cfid = row['reference']
+      if cfid
+        cfid = cfid[3..-1]
         service = row['beskrivelse']
         cost = row['beløb']
         price = row['pris']
@@ -204,11 +205,11 @@ class AdminController < ApplicationController
           price = cost
         end
         begin
-          shipment = Shipment.where(awb: awb).first!
+          shipment = Shipment.where(cargoflux_shipment_id: cfid).first!
         rescue ActiveRecord::RecordNotFound
-            flash[:error] = "Shipment with awb #{awb} does not exist!"
-            redirect_to :back
-            return
+          flash[:error] = "Shipment with awb #{awb} does not exist!"
+          redirect_to :back
+          return
         end
         user = shipment.user
         @charges.push(ChargeDraft.new(shipment, user, cost, price, service))
