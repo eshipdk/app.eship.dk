@@ -108,15 +108,37 @@ class Shipment < ActiveRecord::Base
       do_save = false
       cfdata['price_lines'].each do |row|
         if row['line_description'] == 'Shipment charge'
-          if invoiced
-            next
-          end
           if self.cost < row['line_cost_price'].to_f
-            oldcost = self.cost
-            self.cost = row['line_cost_price']
-            self.final_price = self.final_price + self.cost - oldcost
-            do_save = true
+            if invoiced
+              # Post invoice price correction as additional charge. Includes
+              # fuel charge
+              desc = "Cost correction #{self.pretty_id}"
+              if self.additional_charges.where('description like ?', "%#{desc}").exists?
+                Rails.logger.warn "Skipping charge #{desc} for shipment #{pretty_id}"
+              else
+                Rails.logger.warn "Adding charge #{desc} to shipment #{pretty_id}"
+
+                charge = AdditionalCharge.new
+                charge.user_id = self.user.id
+                charge.cost = row['line_cost_price'].to_f - self.cost
+                charge.price = (row['line_cost_price'].to_f - self.cost) * 1.15
+                charge.description = desc
+                charge.product_code = 'cost_correction'
+                charge.shipment_id = self.id
+                charge.save
+                
+                
+                do_save = true
+              end
+            else
+              oldcost = self.cost
+              self.cost = row['line_cost_price']
+              self.final_price = self.final_price + self.cost - oldcost
+              do_save = true
+            end
+
           end
+
         elsif row['line_description'] == 'Fuel charge'
           if invoiced
             next
