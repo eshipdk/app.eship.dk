@@ -198,7 +198,9 @@ class AdminController < ApplicationController
       awb = row['awb']
       cfid = row['reference']
       if cfid or awb
-        cfid = cfid[3..-1]
+        if cfid
+          cfid = cfid[3..-1]
+        end
         service = row['beskrivelse']
         cost = row['beløb']
         price = row['pris']
