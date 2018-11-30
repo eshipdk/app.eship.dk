@@ -14,7 +14,7 @@ module Cargoflux
 
     shipment.api_response = response.to_json.to_s
 
-    if response['status'] == 'failed'
+    if response['status'] != 'created'
       shipment.status = :failed
       shipment.label_pending = true
     else

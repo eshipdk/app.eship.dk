@@ -305,9 +305,9 @@ class Shipment < ActiveRecord::Base
       if hash['status'] == 'failed'
         return hash['errors'][0]['description']
       end
-    rescue
-      return api_response
+    rescue         
     end
+    return api_response
   end
 
     
