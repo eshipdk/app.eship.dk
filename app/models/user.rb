@@ -463,7 +463,7 @@ class User < ActiveRecord::Base
   end
   
   def monthly_free_labels_remaining
-    monthly_free_labels - monthly_free_labels_expended    
+    monthly_free_labels.to_i - monthly_free_labels_expended.to_i
   end
     
   
