@@ -9,7 +9,7 @@ module CsvImporter
 
     delimiter = user.import_format.delimiter
     begin
-      lines = CSV.parse content, {:col_sep => delimiter, :skip_blanks => true}
+      lines = CSV.parse (content.gsub(/\r\n?/, "\n")), {:col_sep => delimiter, :skip_blanks => true}
     rescue StandardError => e
       raise CsvImportException.new(e.to_s)
     end
