@@ -1,3 +1,4 @@
+include Currency
 module ApplicationHelper
   
 class ActionView::Helpers::FormBuilder
@@ -30,6 +31,10 @@ end
   
   def bscountry_select(method, priority_countries = nil, options = {}, html_options = {})    
       country_select(method, priority_countries, options.merge(:include_blank => 'Select country...'), append_form_control(html_options))
+  end
+
+  def bscurrency_select(method, selected=nil, options = {})
+    return bssel(method, options_for_select(Currency.get_options, selected), options)
   end
   
   def bssel(name, option_tags = nil, options = {})

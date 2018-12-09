@@ -15,6 +15,7 @@ module CsvImporter
     end
     validation = validate_csv_values lines, user
 
+
     # Parse shipments from csv
     shipments = []
     if !validation['error']
@@ -52,6 +53,7 @@ module CsvImporter
     if user.import_format.cross_reference_flag
       shipments = CsvImporter.cross_reference_shipments shipments
     end
+
     
     # Submit shipments
     CsvImporter.submit_shipments shipments
@@ -210,6 +212,9 @@ module CsvImporter
       'amount' => ( row_val user, row, 'amount' ),
       'reference' => ( row_val user, row, 'reference' ),
       'parcelshop_id' => ( row_val user, row, 'parcelshop_id' ),
+      'customs_amount' => ( row_val user, row, 'customs_amount' ),
+      'customs_currency' => (row_val user, row, 'customs_currency' ),
+      'customs_code' => ( row_val user, row, 'customs_code' ),
       'sender'=>{
         'company_name'=>(  row_val user, row, 'sender_company_name'),
         'attention'=>( row_val user, row, 'sender_attention'),
@@ -255,6 +260,10 @@ module CsvImporter
     shipment.parcelshop_id = hash['parcelshop_id']
     shipment.return = hash['return'] == 1 || hash['return'] == '1'
     shipment.label_action = hash['label_action']
+
+    shipment.customs_amount = hash['customs_amount'] ? hash['customs_amount'].to_f : nil
+    shipment.customs_currency = hash['customs_currency']
+    shipment.customs_code = hash['customs_code']
     
   
     emptySender = true

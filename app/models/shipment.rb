@@ -62,6 +62,11 @@ class Shipment < ActiveRecord::Base
   scope :filter_recipient_name, ->(recipient_name){
     return self.joins(:recipient).where('company_name LIKE ?', "%#{recipient_name}%")
   }
+
+
+  def dutiable
+    return (customs_amount != nil and customs_amount > 0)
+  end
   
   def self.find_by_pretty_id pretty_id
     if(pretty_id == '' || pretty_id == nil) 

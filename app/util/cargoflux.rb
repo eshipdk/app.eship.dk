@@ -132,6 +132,15 @@ module Cargoflux
     if shipment.delivery_instructions and shipment.delivery_instructions != ''
       data['shipment']['delivery_instructions'] = shipment.delivery_instructions
     end
+
+    if shipment.dutiable
+      data['shipment']['dutiable'] = true
+      data['shipment']['customs_amount'] = shipment.customs_amount.to_s
+      data['shipment']['customs_currency'] = shipment.customs_currency.upcase
+      data['shipment']['customs_code'] = shipment.customs_code
+    else
+      data['shipment']['dutiable'] = false
+    end
     
     package_dimensions = []
     shipment.packages.each do |package|

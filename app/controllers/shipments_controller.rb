@@ -164,8 +164,7 @@ class ShipmentsController < ApplicationController
       end
       
       
-      
-
+     
       
       begin
         res = CsvImporter.import_csv file_content, @current_user
@@ -327,7 +326,8 @@ class ShipmentsController < ApplicationController
                                      :package_length, :package_width,
                                      :package_height, :package_weight,
                                      :description, :amount, :reference,
-                                     :parcelshop_id, :label_action, :remarks, :delivery_instructions).merge(
+                                     :parcelshop_id, :label_action, :remarks, :delivery_instructions,
+                                     :customs_amount, :customs_currency, :customs_code).merge(
           {'packages_attributes' => params.require(:shipment).require(:packages_attributes)})
   end
 

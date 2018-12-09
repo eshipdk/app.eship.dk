@@ -71,6 +71,26 @@
 <% end %>
 
 <%= cbox do-%>
+<%= cbox_header('Customs') do-%><% end %>
+<div class='row'>
+	<div class='col-xs-4'>
+		<label for='shipment_customs_amount'>
+		  Customs amount (blank or 0 if not dutiable)
+		</label>
+		<%= f.bsnum_field :customs_amount %>
+	</div>
+	<div class='col-xs-4'>
+		<label for='shipment_customs_currency'>Customs Currency (ISO-4217)</label>
+		<%= bscurrency_select('shipment[customs_currency]', f.object.customs_currency.to_s.upcase) %>
+	</div>
+	<div class='col-xs-4'>
+		<label for='shipment_customs_code'>Customs Code</label>
+		<%= f.bstxt_field :customs_code %>
+	</div>
+</div>
+<% end %>
+
+<%= cbox do-%>
 <%= cbox_header('Packages') do-%>
 
 <%end %>

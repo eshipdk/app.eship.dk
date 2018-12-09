@@ -45,7 +45,8 @@ class ImportFormatsController < ApplicationController
               :recipient_zip_code, :recipient_city, :recipient_country_code,
               :recipient_phone_number, :recipient_email, :description,
               :amount, :reference, :parcelshop_id, :label_action, :remarks, :delivery_instructions,
-              :header_lines, :delimiter, :cross_reference_flag
+              :header_lines, :delimiter, :cross_reference_flag,
+              :customs_amount, :customs_currency, :customs_code
               )
   end
 

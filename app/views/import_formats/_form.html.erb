@@ -51,6 +51,23 @@
 			<td class='<%= input_field_class :description %>'><%= f.bstxt_field :description, :class => 'form-control' %></td>
 		</tr>
 	</table>
+
+
+	<h4 class='sub-header'>Customs</h4>
+	<table class='table table-striped'>
+		<tr>
+			<th>Customs amount</th>
+			<th>Customs currency</th>
+			<th>Customs code</th>
+		</tr>
+		<tr>
+			<td class='<%= input_field_class :customs_amount %>'>
+			  <%= f.bstxt_field :customs_amount, :class => 'form-control' %>
+			</td>
+			<td  class='<%= input_field_class :customs_currency %>'><%= f.bstxt_field :customs_currency, :class => 'form-control'  %></td>
+			<td class='<%= input_field_class :customs_code %>'><%= f.bstxt_field :customs_code , :class => 'form-control' %></td>		
+		</tr>
+	</table>
 	
 	<h4 class='sub-header'>Package</h4>
 	<table class='table table-striped'>

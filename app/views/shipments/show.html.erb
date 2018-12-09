@@ -72,7 +72,33 @@
 <% if @shipment.status == 'response_pending'%>
 	<script type='text/javascript'>var autoReload = true;</script>
 <% end %>
-  
+
+
+<% if @shipment.dutiable %>
+<%= cbox do-%>
+<%= cbox_header('Customs') do-%>
+<% end %>
+
+<table class='table'>
+  <thead>
+    <tr>
+      <th>Amount</th><th>Currency</th><th>Code</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= @shipment.customs_amount %></td>
+      <td><%= @shipment.customs_currency %></td>
+      <td><%= @shipment.customs_code %></td>
+    </tr>
+  </tbody>
+</table>
+
+<% end %>
+<% end %>
+
+
+
  <%= cbox do-%>
  <%= cbox_header('Packages') do-%>
  
