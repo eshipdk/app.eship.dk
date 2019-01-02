@@ -418,7 +418,7 @@ class User < ActiveRecord::Base
     
     if t.day == 1
       customers_monthly = User.customer.monthly
-      customers.monthly.each do |customer|
+      customers_monthly.each do |customer|
         if customer.balance_price > 0
           Rails.logger.warn "Automatically invoicing customer #{customer.email}. Reason: monthly"
           customer.invoice_and_submit
