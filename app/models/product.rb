@@ -4,13 +4,14 @@ class Product < ActiveRecord::Base
 
   def cost_scheme
     c = pricing_scheme_class
-  
+    
     cost_scheme = c.where(:pricing_type => PricingScheme.pricing_types[:cost]).first
     if cost_scheme == nil
       cost_scheme = c.new
       cost_scheme.pricing_type = :cost
       cost_scheme.save
     end
+    cost_scheme._product_code = product_code
     return cost_scheme
   end
   
@@ -24,6 +25,7 @@ class Product < ActiveRecord::Base
       default_scheme.save
     end
     default_scheme.cost_scheme = cost_scheme
+    default_scheme._product_code = product_code
     return default_scheme
   end
   
@@ -42,6 +44,7 @@ class Product < ActiveRecord::Base
       price_scheme.save
     end
     price_scheme.cost_scheme = cost_scheme
+    price_scheme._product_code = product_code
     return price_scheme
   end
   

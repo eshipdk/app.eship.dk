@@ -8,7 +8,7 @@ class PricingScheme < ActiveRecord::Base
   #Only schemes of type price should reference a user
   enum pricing_type: [:cost, :price, :default_price]
   
-  attr_accessor :cost_scheme
+  attr_accessor :cost_scheme, :_product_code
   
   
   def cost_template

@@ -373,7 +373,7 @@ class IntervalTable < PricingScheme
       p.weight = cbreak.weight_from + (cbreak.weight_to - cbreak.weight_from) / 2
       p.amount = 1
 
-      pcode = self.product_code
+      pcode = self._product_code
       product = Product.find_by(product_code: pcode)
 
       s = Shipment.new
