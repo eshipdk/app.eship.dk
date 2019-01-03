@@ -291,7 +291,7 @@ class ApiController < ApplicationController
   def is_code_pickup_point
     shipment_code = @api_params['code']
 
-    result = ['glspoc', 'OC_pnmc', 'glsp', 'OC_nord_pnmc', 'OC_daop'].include? shipment_code
+    result = ['glspoc', 'OC_pnmc', 'glsp', 'OC_nord_pnmc', 'OC_daop', 'nord_pnmc','pnmcoc'].include? shipment_code
     
     render :text => {'result' => result}.to_json, :content_type => 'application/json'
 
