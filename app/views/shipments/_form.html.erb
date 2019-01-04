@@ -127,6 +127,26 @@
 			</td>
 		</tr>
 		<% end %>
+		<% if i_package == 0 %>
+		<% i_package += 1 %>
+		<tr id="package-row-1">
+			<td>
+				<input onchange="getPrice()" class="form-control" type="number" name="shipment[packages_attributes][0][length]" id="shipment_packages_attributes_0_length">
+			</td>
+			<td>
+				<input onchange="getPrice()" class="form-control" type="number" name="shipment[packages_attributes][0][width]" id="shipment_packages_attributes_0_width">
+			</td>
+			<td>
+				<input onchange="getPrice()" class="form-control" type="number" name="shipment[packages_attributes][0][height]" id="shipment_packages_attributes_0_height">
+			</td>
+			<td>
+				<input step="any" onchange="getPrice()" class="form-control" type="number" name="shipment[packages_attributes][0][weight]" id="shipment_packages_attributes_0_weight">
+			</td>
+			<td>
+				<input onchange="getPrice()" class="form-control" type="number" value="1" name="shipment[packages_attributes][0][amount]" id="shipment_packages_attributes_0_amount">
+			</td>
+		</tr>
+		<% end %>
 	</tbody>
 <tfoot>
 	<tr>
