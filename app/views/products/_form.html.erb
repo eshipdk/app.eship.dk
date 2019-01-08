@@ -1,78 +1,95 @@
 <%= form_for @product do |f| %>
- 
-  <% if @product.errors.any? %>
-    <div id="error_explanation">
-      <h2>
-        <%= pluralize(@product.errors.count, "error") %> prohibited
-        this product from being saved:
-      </h2>
-      <ul>
-        <% @product.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
- 
- <div class='panel panel-default'>
- 	<div class='panel-heading'>Configuration</div>
- 	<div class='panel-body'>
- 		<table class='table table-striped'>
- 			<thead>
- 				<tr>
-					<th>Name</th><th>Code</th><th>Taxed</th><th>Tracking url prefix (e.g. https://gls-group.eu/DK/da/find-pakke?match=)</th>
-				</tr>
- 			</thead>
-			<tbody>
-				<tr>
-					<td>
-						<%= f.bstxt_field :name%>
-					</td>
-					<td>
-						<%= f.bstxt_field :product_code%>
-					</td>
-					<td>
-						<%= f.bschckbx :taxed %>
-					</td>
-					<td>
-						<%= f.bstxt_field :tracking_url_prefix %>
-					</td>				
 
-				</tr>
-			</tbody>
-		</table>
-		<table class='table table-striped'>
-			<thead>
-				<tr>
-				  <th>Has Parcelshops</th><th>Parcelshop Discovery url</th>
-	              <th>Return Product</th>
-				  <th>Disabled</th>
-				  <th>Is import</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>
-						<%= f.bschckbx :has_parcelshops %>
-					</td>
-					<td>
-						<%= f.bstxt_field :find_parcelshop_url %>
-					</td>
-                    <td>
-                      <%= f.bssel :return_product_id, Product.options %>
-                    </td>
-                    <td>
-                    	<%= f.bschckbx :disabled %>
-                    </td>
-					<td>
-					  <%= f.bschckbx :is_import %>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
- 	</div>
- </div>
+<% if @product.errors.any? %>
+<div id="error_explanation">
+  <h2>
+    <%= pluralize(@product.errors.count, "error") %> prohibited
+    this product from being saved:
+  </h2>
+  <ul>
+    <% @product.errors.full_messages.each do |msg| %>
+    <li><%= msg %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
+
+<div class='panel panel-default'>
+  <div class='panel-heading'>Configuration</div>
+  <div class='panel-body'>
+    <table class='table table-striped'>
+      <thead>
+ 	<tr>
+	  <th>Name</th><th>Code</th><th>Taxed</th><th>Tracking url prefix (e.g. https://gls-group.eu/DK/da/find-pakke?match=)</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr>
+	  <td>
+	    <%= f.bstxt_field :name%>
+	  </td>
+	  <td>
+	    <%= f.bstxt_field :product_code%>
+	  </td>
+	  <td>
+	    <%= f.bschckbx :taxed %>
+	  </td>
+	  <td>
+	    <%= f.bstxt_field :tracking_url_prefix %>
+	  </td>				
+
+	</tr>
+      </tbody>
+    </table>
+    <table class='table table-striped'>
+      <thead>
+ 	<tr>
+	  <th>Transporter</th><th>Internal name</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr>
+	  <td>
+	    <%= f.bssel :transporter_id, Transporter.options %>
+	  </td>
+	  <td>
+	    <%= f.bstxt_field :internal_name%>
+	  </td>			
+	</tr>
+      </tbody>
+    </table>
+    <table class='table table-striped'>
+      <thead>
+	<tr>
+	  <th>Has Parcelshops</th><th>Parcelshop Discovery url</th>
+	  <th>Return Product</th>
+	  <th>Disabled</th>
+	  <th>Is import</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr>
+	  <td>
+	    <%= f.bschckbx :has_parcelshops %>
+	  </td>
+	  <td>
+	    <%= f.bstxt_field :find_parcelshop_url %>
+	  </td>
+          <td>
+            <%= f.bssel :return_product_id, Product.options %>
+          </td>
+          <td>
+            <%= f.bschckbx :disabled %>
+          </td>
+	  <td>
+	    <%= f.bschckbx :is_import %>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+  </div>
+</div>
 
 
 <% end %>

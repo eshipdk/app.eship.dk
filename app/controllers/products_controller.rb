@@ -3,6 +3,18 @@ class ProductsController < ApplicationController
 
   def index
     @products = Product.all.paginate(:page => params[:page], :per_page => DEFAULT_PER_PAGE).order(:disabled, :name)
+
+    if params[:transporter_id] && params[:transporter_id]!=''
+      @products = @products.where(['transporter_id = ?', params[:transporter_id]])
+    end
+    str_filters = ['internal_name', 'name', 'product_code']
+    str_filters.each do |str|
+      if params[str] && params[str]!=''
+        @products = @products.where([(str + ' LIKE ?'), "%#{params[str]}%"])
+      end
+    end
+
+#    raise @products.to_sql.to_s
   end
 
   def show
@@ -169,7 +181,8 @@ class ProductsController < ApplicationController
   def product_params
     params.require(:product).permit(:product_code, :name, :tracking_url_prefix,
                                     :taxed, :has_parcelshops, :disabled,
-                                    :find_parcelshop_url, :return_product_id, :is_import)
+                                    :find_parcelshop_url, :return_product_id, :is_import,
+                                    :transporter_id, :internal_name)
   end
 
 end

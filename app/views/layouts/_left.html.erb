@@ -17,6 +17,7 @@
 		<%= render :partial => 'layouts/left_link', :locals => {:regex => /^\/admin\/dashboard.*$/, :title => 'Dashboard', :path => admin_dashboard_path, :img => 'dashboard'}%>
 		<%= render :partial => 'layouts/left_link', :locals => {:regex => /^\/billing.*$/, :title => 'Billing', :path => billing_overview_path, :img => 'billing'}%>
 		<%= render :partial => 'layouts/left_link', :locals => {:regex => /^\/products.*$/, :title => 'Products', :path => products_path, :img => 'admin_products'} %>
+		<%= render :partial => 'layouts/left_link', :locals => {:regex => /^\/transporters.*$/, :title => 'Transporters', :path => transporters_path, :img => 'admin_products'} %>
 		<%= render :partial => 'layouts/left_link', :locals => {:regex => /^\/users.*$/, :title => 'Users', :path => users_path, :img => 'users'} %>
 		<%= render :partial => 'layouts/left_link', :locals => {:regex => /^\/admin\/tools.*$/, :title => 'Tools', :path => admin_tools_path, :img => 'tools'}%>
 	<% end %>

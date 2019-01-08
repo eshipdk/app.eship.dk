@@ -1,0 +1,21 @@
+<h1 class='page-header'>Transporters
+  <span class='pull-right'>
+    <a href='<%= url_for new_transporter_path %>' class='btn btn-primary' role='button'>New transporter</a>
+  </span>
+  <div class='clearfix'></div>
+</h1>
+
+<%= grid_before @transporters %>
+<table class='table table-striped'>
+  <tr>
+    <th>Name</th>
+    <th></th>
+  </tr>
+  <% @transporters.each do |transporter| %>
+  <tr>
+    <td><%= transporter.name %></td>
+    <td><%= link_to 'Edit', edit_transporter_path(transporter) %></td>
+  </tr>
+  <% end %>
+</table>
+<%= grid_after @transporters %>

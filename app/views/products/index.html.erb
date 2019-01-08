@@ -1,34 +1,52 @@
 <h1 class='page-header'>Products
-	<span class='pull-right'>
-		<a href='<%= url_for new_product_path %>' class='btn btn-primary' role='button'>New product</a>
-	</span>
-	<div class='clearfix'></div>
-	</h1>
+  <span class='pull-right'>
+    <a href='<%= url_for new_product_path %>' class='btn btn-primary' role='button'>New product</a>
+  </span>
+  <div class='clearfix'></div>
+</h1>
 
 <%= grid_before @products %>
-	<table class='table table-striped'>
-		<tr>
-			<th>Name</th>
-			<th>Code</th>
-			<th></th>
-			<th>Cost</th>
-			<th>Status</th>
-		</tr>
-		<% @products.each do |product| %>
-		<tr>
-			<td><%= product.name %></td>
-			<td><%= product.product_code %></td>
-			<td><%= link_to 'Edit', edit_product_path(product) %></td>
-			<td><%= link_to 'Configure cost', edit_cost_product_path(product) %></td>	
-			<td>
-				<% if product.disabled %>
-				<%= glyphicon 'minus-sign'%>
-				<% else %>
-				<%= glyphicon 'ok-sign' %>
-				<% end %>
-			</td>		
-		</tr>
-		<% end %>
-	</table>
+<%= form_tag({:action => 'index'}, {:method => :get}) do %>
+<table class='table table-striped'>
+  <thead>
+    <tr>
+      <th>Transporter</th>
+      <th>Internal Name</th>
+      <th>Name</th>
+      <th>Code</th>
+      <th/>
+      <th>Cost</th>
+      <th>Status</th>
+    </tr>
+    <tr class='model-filters'>
+      <td><%= bssel(:transporter_id, options_for_select(Transporter.options, params[:transporter_id])) %></td>
+      <td><input class='form-control' type='text' name='internal_name' value='<%= params[:internal_name] %>'/></td>
+      <td><input class='form-control' type='text' name='name' value='<%= params[:name] %>'/></td>
+      <td><input class='form-control' type='text' name='product_code' value='<%= params[:product_code] %>'/></td>
+      <td/>
+      <td/>
+      <td><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></td>
+    </tr>
+  </thead>
+  <tr>
+  </tr>
+  <% @products.each do |product| %>
+  <tr>
+    <td><%= product.transporter_name %></td>
+    <td><%= product.internal_name %></td>
+    <td><%= product.name %></td>
+    <td><%= product.product_code %></td>
+    <td><%= link_to 'Edit', edit_product_path(product) %></td>
+    <td><%= link_to 'Configure cost', edit_cost_product_path(product) %></td>	
+    <td>
+      <% if product.disabled %>
+      <%= glyphicon 'minus-sign'%>
+      <% else %>
+      <%= glyphicon 'ok-sign' %>
+      <% end %>
+    </td>		
+  </tr>
+  <% end %>
+</table>
+<% end %>
 <%= grid_after @products %>
-	

@@ -1,6 +1,7 @@
 class Product < ActiveRecord::Base
 
   belongs_to :return_product, :class_name => 'Product', :foreign_key => 'return_product_id'
+  belongs_to :transporter
 
   def cost_scheme
     c = pricing_scheme_class
@@ -67,6 +68,11 @@ class Product < ActiveRecord::Base
     "#{original_code.downcase.camelcase}Pricing"
   end
 
+
+  def transporter_name
+    transporter == nil ? '' : transporter.name
+  end
+  
   # Returns the class representing this product's pricing scheme.
   # The class name is the camel casing of the product code.
   # If the class does not exist already, an anonymous class

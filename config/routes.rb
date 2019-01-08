@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :transporters
+
   resources :shipments do
     member do
       post :submit
