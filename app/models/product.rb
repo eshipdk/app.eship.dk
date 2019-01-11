@@ -65,7 +65,7 @@ class Product < ActiveRecord::Base
   end
 
   def pricing_scheme_class_name
-    "#{original_code.downcase.camelcase}Pricing"
+    "#{original_code.gsub('-','_').downcase.camelcase}Pricing"
   end
 
 
