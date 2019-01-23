@@ -200,7 +200,7 @@ class UsersController < ApplicationController
                                      :enable_ftp_upload, :ftp_upload_user,
                                      :invoice_failed_bookings,
                                      :subscription_fee, :monthly_free_labels,
-                                     :economic_api_key)
+                                     :economic_api_key, :import_shipments_from_cf)
    p[:enable_ftp_upload] = p.key?(:enable_ftp_upload) and p[:enable_ftp_upload]
    p[:invoice_failed_bookings] = p.key?(:invoice_failed_bookings) and p[:invoice_failed_bookings]
    return p

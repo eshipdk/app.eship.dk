@@ -164,20 +164,22 @@
  </div>
 <div class='panel panel-default hide-affiliate'>
  	<div class='panel-heading'>
- 		FTP Upload Import
+ 		Import functions
  	</div>
  	<div class='panel-body'>
 		<table class='table table-striped'>
 	  		<thead>
 	  			<tr>
 					<th>Enable FTP upload import</th>
-					<th>FTP user</th>					
+					<th>FTP user</th>
+					<th>Import new bookings from CF</th>
 				</tr>
 	  		</thead>
 			<tbody>
 				<tr>					
 					<td><%= bschckbx 'user[enable_ftp_upload]', "1", @user.enable_ftp_upload %></td>
 					<td><%= f.bstxt_field :ftp_upload_user %></td>
+					<td><%= bschckbx 'user[import_shipments_from_cf', "1", @user.import_shipments_from_cf %></td>
 				</tr>
 			</tbody>
 		</table>
