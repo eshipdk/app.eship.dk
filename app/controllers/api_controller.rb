@@ -92,6 +92,16 @@ class ApiController < ApplicationController
       shipment = shipment.filter_pretty_id(@api_params['shipment_id']).where(['reference LIKE ?', @api_params['reference']]).last
     elsif @api_params.key? 'shipment_id'
       shipment = shipment.find_by_pretty_id(@api_params['shipment_id'])
+    elsif @api_params.key? 'date_from' and @api_params.key? 'date_to' and @api_params.key? 'reference'
+      shipment = shipment.where(['created_at > ? AND created_at < ? AND reference LIKE ?', @api_params['date_from'], @api_params['date_to'], @api_params['reference']])
+       if shipment.length == 0
+        shipment = nil
+      elsif
+        shipment.length == 1
+        shipment = shipment.last
+      else
+        shipment = shipment.to_a
+      end       
     elsif @api_params.key? 'reference'
       shipment = shipment.where(['reference LIKE ?', @api_params['reference']])
       if shipment.length == 0
