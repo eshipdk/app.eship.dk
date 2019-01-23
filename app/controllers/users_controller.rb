@@ -15,6 +15,10 @@ class UsersController < ApplicationController
     if params[:role] and params[:role] != ''
       @users = @users.where(:role => User.roles[params[:role]])
     end
+    if not params[:active] or params[:active] == ''
+      params[:active] = '1'
+    end
+    @users = @users.where(:active => params[:active])
   end
 
   def show
@@ -200,10 +204,13 @@ class UsersController < ApplicationController
                                      :enable_ftp_upload, :ftp_upload_user,
                                      :invoice_failed_bookings,
                                      :subscription_fee, :monthly_free_labels,
-                                     :economic_api_key, :import_shipments_from_cf)
-   p[:enable_ftp_upload] = p.key?(:enable_ftp_upload) and p[:enable_ftp_upload]
-   p[:invoice_failed_bookings] = p.key?(:invoice_failed_bookings) and p[:invoice_failed_bookings]
-   return p
+                                     :economic_api_key, :import_shipments_from_cf,
+                                     :active)
+    cb_keys = [:enable_ftp_upload, :invoice_failed_bookings, :import_shipments_from_cf, :active]
+    cb_keys.each do |key|
+      p[key] = p.key?(key) and p[key]
+    end
+    return p
   end
     
   def address_params

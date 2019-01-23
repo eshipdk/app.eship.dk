@@ -171,6 +171,23 @@ end
     html << '</div></div>'
     raw html
   end
-    
+
+
+  def bool_sign(bool)
+    if bool
+      glyphicon 'ok-sign'
+    else
+      glyphicon 'minus-sign'
+    end
+  end
+
+  def bool_select key, default = true, selected = nil
+    if default
+      opts = {"" => "", 'Yes' => 1, "No" => 0}
+    else
+      opts = {'Yes' => 1, "No" => 0}
+    end
+    bssel key, options_for_select(opts, selected)
+  end
   
 end

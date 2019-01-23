@@ -26,8 +26,12 @@ class ApplicationController < ActionController::Base
     if session[:user_id]
       # set current user object to @current_user object variable
       @current_user = User.find session[:user_id]
-      preload
-      return true
+      if @current_user.active
+        preload
+        return true
+      else
+        reset_session
+      end
     else
       redirect_to '/'
       return false

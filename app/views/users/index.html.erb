@@ -13,12 +13,14 @@
 	      <th>User</th>
 	      <th>Email</th>
 	      <th>Role</th>
-	      <th>Delete</th>
+	      <th>Active</th>
+	      <th></th>
 	    </tr>
 	    <tr class='model-filters'>
 	    	<td><input class='form-control' type='text' name='name' value='<%= params[:name] %>'/></td>
 	    	<td><input class='form-control' type='text' name='email' value='<%= params[:email] %>'/></td>
 	    	<td><%= bssel :role, options_for_select(User.role_options(false), params[:role]) %></td>
+		<td><%= bool_select :active, false, params[:active] %></td>
 	    	<td><button class="btn btn-lg btn-primary btn-block" type="submit">Filter</button></td>
 	    </tr>
   	</thead>
@@ -28,13 +30,8 @@
 		      <td><%= link_to user.name, user_path(user) %></td>
 		      <td><%= user.email %></td>
 		      <td><%= user.role %></td>
-		      <td>
-		        <% if user != @current_user %>
-		        <%= link_to 'Delete', user_path(user),
-		              method: :delete,
-		              data: { confirm: 'Are you sure?' } %>
-		        <% end %>
-		      </td>
+		      <td><%= bool_sign user.active  %></td>
+		      <td/>
 		    </tr>
 	    <% end %>
    	</tbody>
