@@ -70,6 +70,9 @@ class ApiController < ApplicationController
     
     if shipment.price_configured?
       Cargoflux.submit shipment
+      if shipment_params['return'] == 'both'
+          book_return_shipment shipment
+        end  
     else
       shipment.status = 'failed'
       shipment.save
@@ -413,4 +416,33 @@ class ApiController < ApplicationController
     end
   end
 
+ # Make an identical booking with return service
+  # and the addresses reversed
+  def book_return_shipment original_shipment
+    shipment = original_shipment.dup
+    if original_shipment.product.return_product
+      shipment.product = original_shipment.product.return_product
+    end
+    shipment.status = :initiated
+    shipment.cargoflux_shipment_id = nil
+    # Reverse addresses
+    shipment.recipient = original_shipment.sender
+    shipment.sender = original_shipment.recipient
+    
+    shipment.return = true
+    
+    packages = []
+    original_shipment.packages.each do |package|
+      packages.append package.dup
+    end
+    shipment.packages = packages
+    
+    shipment.save
+    if shipment.price_configured?
+      Cargoflux.submit shipment
+    else
+      shipment.status = :failed
+      shipment.save
+    end
+  end
 end
