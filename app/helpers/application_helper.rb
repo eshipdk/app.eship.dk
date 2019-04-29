@@ -116,29 +116,23 @@ module ApplicationHelper
   include BootstrapFields
   include CBox
   include KeyValueBox
-  # General bootstrap form builder
-  class ActionView
-    # -
-    class Helpers
-      # -
-      class FormBuilder
-        def bstxt_field(method, options = {})
-          text_field(method, append_form_control(options))
-        end
+  # General bootstrap form builder. Beware: these bootstrap fields in/out of forms are a mess. Do not change module structure.
+  class ActionView::Helpers::FormBuilder
+    def bstxt_field(method, options = {})
+      text_field(method, append_form_control(options))
+    end
 
-        def bsnum_field(method, options = {})
-          number_field(method, options.merge(class: 'form-control'))
-        end
+    def bsnum_field(method, options = {})
+      number_field(method, options.merge(class: 'form-control'))
+    end
 
-        def bssel(method, sel_options = {}, options = {}, html_options = {})
-          select(method, sel_options, options,
-                 html_options.merge(class: 'form-control'))
-        end
+    def bssel(method, sel_options = {}, options = {}, html_options = {})
+      select(method, sel_options, options,
+             html_options.merge(class: 'form-control'))
+    end
 
-        def bschckbx(method, options = {})
-          check_box(method, options.merge(class: 'form-control'))
-        end
-      end
+    def bschckbx(method, options = {})
+      check_box(method, options.merge(class: 'form-control'))
     end
   end
 
