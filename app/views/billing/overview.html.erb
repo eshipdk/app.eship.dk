@@ -1,3 +1,6 @@
+
+
+
 <h1 class='page-header'>Billing overview</h1>
 
 <div class='panel panel-default'>
@@ -33,4 +36,29 @@
 			</tbody>
 		</table>	
 	</div>
+</div>
+
+
+<div class='panel panel-default'>
+  <div class='panel-heading'>Unpaid Invoices</div>
+  <div class='panel-body'>
+    <table class='table table-striped'>
+      <thead>
+        <th>User</th>
+        <th>Invoice</th>
+        <th>Date</th>
+        <th>Netto</th>
+      </thead>
+      <tbody>
+        <% @unpaid_invoices.each do |invoice| %>
+        <tr <% if invoice.capturable? %>style="background-color:orange;"<% end %>>
+          <td><%= link_to invoice.user.name, user_path(invoice.user) %></td>
+          <td><%= link_to invoice.pretty_id, invoice_path(invoice) %></td>
+          <td><%= print_date invoice.created_at %></td>
+          <td><%= currency invoice.amount %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>

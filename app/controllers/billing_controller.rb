@@ -121,6 +121,8 @@ class BillingController < ApplicationController
   def overview
      # Bad in-memory ordering. Todo: put uninvoiced shipment count in database
     @users = User.customer.sort_by  {|user| user.n_uninvoiced_shipments}.reverse.find_all {|user| user.n_uninvoiced_shipments > 0}
+
+    @unpaid_invoices = Invoice.where(sent_to_economic: true, paid: false).order('created_at DESC')
   end
   
   def identify_economic_id
