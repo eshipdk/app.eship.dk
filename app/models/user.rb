@@ -451,7 +451,7 @@ class User < ActiveRecord::Base
       charge.user = customer
       charge.cost = 0
       charge.price = customer.subscription_fee
-      charge.description = "Subscription Fee #{Time.now.utc.strftime('%d.%m.%y')}"
+      charge.description = "Månedligt abonnement inkl. "+user.monthly_free_labels+" labels #{Time.now.utc.strftime('%d.%m.%y')}"
       charge.product_code = 'subscription_fee'      
       charge.save
       

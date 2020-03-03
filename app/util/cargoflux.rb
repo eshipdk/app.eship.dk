@@ -6,6 +6,9 @@ module Cargoflux
 
   def handle_submission_response(shipment, response)
     shipment.api_response = response.to_json.to_s
+    if response['unique_shipment_id'] != ""
+      shipment.cargoflux_shipment_id = response['unique_shipment_id']
+    end
     if response['status'] != 'created'
       shipment.status = :failed
       shipment.label_pending = true
