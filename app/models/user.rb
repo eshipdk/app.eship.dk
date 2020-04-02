@@ -339,8 +339,7 @@ class User < ActiveRecord::Base
     if product != nil
       return product
     end
-    return product_code
-      #raise 'Invalid product code: ' + product_code;
+      raise 'Invalid product code: ' + product_code;
   end
   
   def customer_type

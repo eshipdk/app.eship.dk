@@ -5,19 +5,20 @@ class ApiController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
 
-
-
   def product_codes
-    products = @current_user.products
-    ps = products.select(:product_code, :name).map { |p| {:product_code => p.product_code, :name => p.name}}
-    render :text => {'products' => ps}.to_json, :content_type => 'application/json'
+    products = Cargoflux.get_products(@current_user)
+    response = []
+    products.each do |p|
+      product = {"name" => p['product_name'], "product_code" => p['product_code']}
+      response.push product
+    end
+    render :text => {'products' => response}.to_json, :content_type => 'application/json'
   end
-
 
   def create_shipment
 
     shipment_params = @api_params['shipment']
-    
+
     begin
       product = @current_user.find_product shipment_params['product_code']
     rescue => ex
@@ -26,38 +27,38 @@ class ApiController < ApplicationController
     end
 
     sender = Address.new(shipment_params['sender'])
-    
+
     recipient = Address.new(shipment_params['recipient'])
-    
+
     if !sender.valid?
       api_error 'Invalid sender information: ' + sender.to_json
       return
     end
-    
+
     if !recipient.valid?
       api_error 'Invalid recipient information: ' + recipient.to_json
       return
     end
-    
+
     sender.save
     recipient.save
-    
-    
+
+
     shipment = Shipment.new
     shipment.user = @current_user
     shipment.product = product
     shipment.sender = sender
     shipment.recipient = recipient
-    
+
     shipment.return = shipment_params['return']
     shipment.reference = shipment_params['reference']
     shipment.description = shipment_params['description']
     shipment.delivery_instructions = shipment_params['delivery_instructions']
     shipment.parcelshop_id = shipment_params['parcelshop_id']
     shipment.callback_url = shipment_params['callback_url']
-   
+
     shipment.save
-    
+
     package = Package.new
     package.height = shipment_params['package_height']
     package.length = shipment_params['package_length']
@@ -66,18 +67,18 @@ class ApiController < ApplicationController
     package.amount = shipment_params['amount']
     package.shipment = shipment
     package.save
-    
-    
+
+    Cargoflux.submit shipment
+
     if shipment.price_configured?
-      Cargoflux.submit shipment
       if shipment_params['return'] == 'both'
-          book_return_shipment shipment
-        end  
+        book_return_shipment shipment
+      end
     else
-      shipment.status = 'failed'
+      ##shipment.status = 'failed'
       shipment.save
     end
-    
+
     shipment.reload
 
     response = {'shipment_id' => shipment.pretty_id, 'status' => shipment.status}
@@ -97,24 +98,22 @@ class ApiController < ApplicationController
       shipment = shipment.find_by_pretty_id(@api_params['shipment_id'])
     elsif @api_params.key? 'date_from' and @api_params.key? 'date_to' and @api_params.key? 'reference'
       shipment = shipment.where(['created_at > ? AND created_at < ? AND reference LIKE ?', @api_params['date_from'], @api_params['date_to'], @api_params['reference']])
-       if shipment.length == 0
+      if shipment.length == 0
         shipment = nil
-      elsif
-        shipment.length == 1
+      elsif shipment.length == 1
         shipment = shipment.last
       else
         shipment = shipment.to_a
-      end       
+      end
     elsif @api_params.key? 'reference'
       shipment = shipment.where(['reference LIKE ?', @api_params['reference']])
       if shipment.length == 0
         shipment = nil
-      elsif
-        shipment.length == 1
+      elsif shipment.length == 1
         shipment = shipment.last
       else
         shipment = shipment.to_a
-      end       
+      end
     else
       shipment = nil
     end
@@ -124,7 +123,7 @@ class ApiController < ApplicationController
   def mark_shipment_printed
 
     shipment = _get_shipment
-    
+
     if shipment == nil
       api_error 'Shipment not found'
     else
@@ -136,10 +135,10 @@ class ApiController < ApplicationController
       shipments.each do |s|
         _mark_printed s
       end
-     
+
       render :text => {'result' => 'ok'}.to_json, :content_type => 'application/json'
     end
-    
+
   end
 
   def _mark_printed s
@@ -150,8 +149,8 @@ class ApiController < ApplicationController
 
   def _shipment_result s
     res = {
-      'id' => s.pretty_id,
-      'status' => s.status}
+        'id' => s.pretty_id,
+        'status' => s.status}
     case s.status
     when 'failed'
       res['error'] = s.api_response_error_msg
@@ -166,7 +165,7 @@ class ApiController < ApplicationController
   end
 
   def shipment_info
-    
+
     shipment = _get_shipment
 
     if shipment == nil
@@ -177,23 +176,22 @@ class ApiController < ApplicationController
       else
         shipments = [shipment]
       end
-      all = shipments.map{ |s| _shipment_result s}
-      
+      all = shipments.map { |s| _shipment_result s }
 
 
       result = all.last.clone
-      result['found'] = true      
-      result['all'] = all      
+      result['found'] = true
+      result['all'] = all
     end
-    render :text => result.to_json,  :content_type => 'application/json'
+    render :text => result.to_json, :content_type => 'application/json'
   end
 
   def fresh_labels
 
     ready_shipments = @current_user.shipments.where(label_pending: true)
-      .where(status: Shipment.statuses[:complete])
-      .where(label_action: Shipment.label_actions[:print])
-      .limit(5)
+                          .where(status: Shipment.statuses[:complete])
+                          .where(label_action: Shipment.label_actions[:print])
+                          .limit(5)
 
 
     recently_registered = []
@@ -214,10 +212,10 @@ class ApiController < ApplicationController
     end
 
     render :text => {'labels' => recently_registered.map(&:document_url),
-                      'awbs' => recently_registered.map(&:awb),
-                      'ids' => recently_registered.map(&:cargoflux_shipment_id),
-                      'references' => recently_registered.map(&:reference),
-                      'returns' => recently_registered.map(&:return)}.to_json,  :content_type => 'application/json'
+                     'awbs' => recently_registered.map(&:awb),
+                     'ids' => recently_registered.map(&:cargoflux_shipment_id),
+                     'references' => recently_registered.map(&:reference),
+                     'returns' => recently_registered.map(&:return)}.to_json, :content_type => 'application/json'
   end
 
   def recent_failures
@@ -237,16 +235,16 @@ class ApiController < ApplicationController
       end
     end
 
-    render :text => {'shipments'=>shipments}.to_json,  :content_type => 'application/json'
+    render :text => {'shipments' => shipments}.to_json, :content_type => 'application/json'
 
   end
-  
+
   def validate_key
-    
-    render :text => {'valid' => (authenticate_api true)}.to_json,  :content_type => 'application/json'
-    
+
+    render :text => {'valid' => (authenticate_api true)}.to_json, :content_type => 'application/json'
+
   end
-  
+
   def client_version
     begin
       files = Dir["#{Rails.root}/public/client/*.*"]
@@ -254,7 +252,7 @@ class ApiController < ApplicationController
     rescue => ex
       version = '0.0'
     end
-    render :text => {'version' => version}.to_json,  :content_type => 'application/json'
+    render :text => {'version' => version}.to_json, :content_type => 'application/json'
   end
 
 
@@ -276,7 +274,7 @@ class ApiController < ApplicationController
     end
     api_success
   end
-  
+
   def get_price
     packages = []
     @api_params['packages'].each do |pdata|
@@ -284,38 +282,38 @@ class ApiController < ApplicationController
       p.length = pdata['length']
       p.width = pdata['width']
       p.height = pdata['height']
-      p.weight = pdata['weight'].to_i           
+      p.weight = pdata['weight'].to_i
       p.amount = pdata['amount'].to_i
       packages.push p
     end
-       
+
     response = {}
     params['product_ids'].each do |product_id|
       product = Product.find product_id
-      price, issue = PriceEstimation.estimate_price @current_user, product, packages, @api_params['countryFrom'], @api_params['countryTo']    
-      response[product_id]={:price => price, :issue => issue}
-    end           
+      price, issue = PriceEstimation.estimate_price @current_user, product, packages, @api_params['countryFrom'], @api_params['countryTo']
+      response[product_id] = {:price => price, :issue => issue}
+    end
     render :text => response.to_json, :content_type => 'application/json'
   end
 
   ###################################################
-### ESHIP REQUEST API
-###################################################  
+  ### ESHIP REQUEST API
+  ###################################################
   def is_code_pickup_point
     shipment_code = @api_params['code']
 
-    result = ['glspoc', 'OC_pnmc', 'glsp', 'OC_nord_pnmc', 'OC_daop', 'nord_pnmc','pnmcoc'].include? shipment_code
-    
+    result = ['glspoc', 'OC_pnmc', 'glsp', 'OC_nord_pnmc', 'OC_daop', 'nord_pnmc', 'pnmcoc'].include? shipment_code
+
     render :text => {'result' => result}.to_json, :content_type => 'application/json'
 
   end
-  
-###################################################
-### POSTNORD API 
-###################################################  
+
+  ###################################################
+  ### POSTNORD API
+  ###################################################
   def pn_servicepoints_by_address
     url = 'https://api2.postnord.com/rest/businesslocation/v1/servicepoint/findNearestByAddress.json?apikey=e882a3b4126a72f01d95be8411d43938'
-    @api_params.each do |k,v|
+    @api_params.each do |k, v|
       if k != 'api_key'
         url += "&#{k}=#{v}"
       end
@@ -324,37 +322,53 @@ class ApiController < ApplicationController
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     request = Net::HTTP::Get.new(url)
-    render :text => http.request(request).body,  :content_type => 'application/json'
+    render :text => http.request(request).body, :content_type => 'application/json'
   end
 
-###################################################
-### GLS API
-###################################################  
+  ###################################################
+  ### GLS API
+  ###################################################
   def gls_servicepoints_by_address
     client = Savon.client(wsdl: 'https://www.gls.dk/webservices_v4/wsShopFinder.asmx?WSDL')
     params = {}
-    @api_params.each do |k,v|
+    @api_params.each do |k, v|
       if k != 'api_key'
         params[k] = v
       end
     end
     response = client.call(:search_nearest_parcel_shops, message: params)
-    
+
     render :text => response.body[:search_nearest_parcel_shops_response
-                                 ][:search_nearest_parcel_shops_result
-                                  ][:parcelshops][:pakkeshop_data].to_json, :content_type => 'application/json'
+    ][:search_nearest_parcel_shops_result
+    ][:parcelshops][:pakkeshop_data].to_json, :content_type => 'application/json'
   end
 
-###################################################
-### ECONOMIC WEBHOOKS
-###################################################
+  ###################################################
+  ### DAO API
+  ###################################################
+  def dao_servicepoints_by_address
+    url = 'https://api.dao.as/DAOPakkeshop/FindPakkeshop.php?kundeid=1283&kode=wv1gzlzosi5h&format=json'
+    @api_params.each do |k, v|
+      if k != 'kode'
+        url += "&#{k}=#{v}"
+      end
+    end
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Get.new(url)
+    render :text => http.request(request).body, :content_type => 'application/json'
+  end
+
+  ###################################################
+  ### ECONOMIC WEBHOOKS
+  ###################################################
 
 
-  
   # Webhook for invoices caputred in economic
   def economic_invoice_captured
     Rails.logger.warn "#{Time.now.utc.iso8601} Invocie webhook called #{params.to_s}"
-    
+
     user = User.authenticate_api(params['api_key'])
     if not user
       res = 'Invalid/missing API-key'
@@ -362,14 +376,14 @@ class ApiController < ApplicationController
       render :text => res
       return
     end
-    
+
     if not params.key?('id')
       res = 'Missing invoice id'
       Rails.logger.warn res
       render :text => res
       return
     end
-    
+
     invoice_id = params['id']
     res = Economic.create_booking_from_invoice_captured user, invoice_id
     match(res) do
@@ -386,7 +400,7 @@ class ApiController < ApplicationController
 
   def economic_invoice_updated
     Rails.logger.warn "#{Time.now.utc.iso8601} Order webhook called #{params.to_s}"
-      
+
     user = User.authenticate_api(params['api_key'])
     if not user
       res = 'Invalid/missing API-key'
@@ -394,7 +408,7 @@ class ApiController < ApplicationController
       render :text => res
       return
     end
-    
+
     if not params.key?('id')
       res = 'Missing invoice id'
       Rails.logger.warn res
@@ -416,7 +430,7 @@ class ApiController < ApplicationController
     end
   end
 
- # Make an identical booking with return service
+  # Make an identical booking with return service
   # and the addresses reversed
   def book_return_shipment original_shipment
     shipment = original_shipment.dup
@@ -428,15 +442,15 @@ class ApiController < ApplicationController
     # Reverse addresses
     shipment.recipient = original_shipment.sender
     shipment.sender = original_shipment.recipient
-    
+
     shipment.return = true
-    
+
     packages = []
     original_shipment.packages.each do |package|
       packages.append package.dup
     end
     shipment.packages = packages
-    
+
     shipment.save
     if shipment.price_configured?
       Cargoflux.submit shipment

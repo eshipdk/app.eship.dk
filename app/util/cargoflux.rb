@@ -1,14 +1,15 @@
 # Utility for interaction with Cargoflux API
 module Cargoflux
-  API_ENDPOINT = 'https://api.cargoflux.com/api/v1/customers/shipments/'.freeze
+  API_ENDPOINT = 'https://api.cargoflux.com/api/v1/customers/'.freeze
   COMPANY_API_ENDPOINT = 'https://api.cargoflux.com/api/v1/companies/'.freeze
   COMPANY_API_TOKEN = '2fc352526bf0b161740773d3205e9c5a'.freeze
 
   def handle_submission_response(shipment, response)
     shipment.api_response = response.to_json.to_s
-    if response['status'] != 'created'
+    if response['status'] == 'failed'
       shipment.status = :failed
       shipment.label_pending = true
+      shipment.cargoflux_shipment_id = response['unique_shipment_id']
     else
       shipment.status = :response_pending
       shipment.request_id = response['request_id']
@@ -53,7 +54,7 @@ module Cargoflux
   def fetch_all(shipment)
     return if shipment.cargoflux_shipment_id.nil?
 
-    endpoint = URI.parse(API_ENDPOINT + shipment.cargoflux_shipment_id)
+    endpoint = URI.parse(API_ENDPOINT + "shipments/" + shipment.cargoflux_shipment_id)
     http = Net::HTTP.new(endpoint.host, endpoint.port)
     http.use_ssl = true
     request = Net::HTTP::Get.new(endpoint.request_uri, initheader = { 'access_token' => shipment.user.cargoflux_api_key })
@@ -66,7 +67,7 @@ module Cargoflux
   end
 
   def do_submit(shipment)
-    endpoint = URI.parse API_ENDPOINT
+    endpoint = URI.parse API_ENDPOINT + "shipments/"
 
     http = Net::HTTP.new(endpoint.host, endpoint.port)
     http.use_ssl = true
@@ -210,7 +211,7 @@ module Cargoflux
   end
 
   def price_lookup(shipment)
-    url = API_ENDPOINT + 'prices.json'
+    url = API_ENDPOINT + 'shipments/prices.json'
     endpoint = URI.parse(url)
     http = Net::HTTP.new(endpoint.host, endpoint.port)
     http.use_ssl = true
@@ -231,5 +232,10 @@ module Cargoflux
       return nil, 'No price available'
     end
     [nil, 'Product not found']
+  end
+
+  def get_products(user)
+    url = API_ENDPOINT + 'carrier_products'
+    return perform_https_get(url, user.cargoflux_api_key)
   end
 end

@@ -96,6 +96,7 @@ Rails.application.routes.draw do
   post 'api/is_code_pickup_point', to: 'api#is_code_pickup_point'
   post 'api/pn/servicepoints', to: 'api#pn_servicepoints_by_address'
   post 'api/gls/servicepoints', to: 'api#gls_servicepoints_by_address'
+  post 'api/dao/servicepoints', to: 'api#dao_servicepoints_by_address'
   post 'api/get_price', to: 'api#get_price'
   post 'api/economic_invoice_captured', to: 'api#economic_invoice_captured'
   post 'api/economic_invoice_updated', to: 'api#economic_invoice_updated'
