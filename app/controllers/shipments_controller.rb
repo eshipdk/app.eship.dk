@@ -240,7 +240,8 @@ class ShipmentsController < ApplicationController
         shipment.fetch_packages_from_cargoflux
         shipment.reload  
       end
-      
+
+      shipment.cargoflux_shipment_id = params['unique_shipment_id']
       shipment.status = 'complete'
       shipment.shipping_state = 'booked'
       shipment.awb = params['awb']

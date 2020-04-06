@@ -2,7 +2,7 @@ class CreateShipments < ActiveRecord::Migration
   def change
     create_table :shipments do |t|
       t.references :user, index: true, foreign_key: true
-      t.references :product, index: true, foreign_key: true
+      t.references :product, index: true
       t.string :request_id
       t.string :awb
       t.string :cargoflux_shipment_id

@@ -29,10 +29,10 @@
  			</thead>
 	 		<tbody>
 	 			<tr>
-		 			<td><%= f.bstxt_field :email %></td>
+		 			<td><%= f.bstxt_field :email, autocomplete: "off"  %></td>
 		 			<td><%= f.bssel :role, User.role_options %></td>
-		 			<td><%= f.password_field :password %></td>
-					<td><%= f.password_field :password_confirmation %></td>
+		 			<td><%= f.password_field :password, autocomplete: "new-password" %></td>
+					<td><%= f.password_field :password_confirmation, autocomplete: "new-password"  %></td>
 					<td>
 						<%= f.bssel :economic_customer_id, @economic_customers %>
 					</td>		 			

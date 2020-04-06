@@ -247,8 +247,19 @@ class AdminController < ApplicationController
   end
   
   def apply_subscription_fees
-    User.apply_subscription_fees
     redirect_to :back
+    affected_shipments = Shipment.where('awb IS NOT NULL').where('cargoflux_shipment_id IS NULL').where('created_at > ?', Time.now - 30.hours)
+    affected_shipments.each do |s|
+      open('affected_shipments', 'a') { |f|
+        f.puts s.id
+      }
+      resp = JSON.parse(s.api_response)
+      shipment_id = resp['unique_shipment_id']
+      s.cargoflux_shipment_id = shipment_id
+      s.save
+    end
+    #User.apply_subscription_fees
+    #redirect_to :back
   end
 
   def update_cargoflux_prices

@@ -116,7 +116,7 @@ module ApplicationHelper
   include BootstrapFields
   include CBox
   include KeyValueBox
-  # General bootstrap form builder. Beware: these bootstrap fields in/out of forms are a mess. Do not change module structure.
+  # General bootstrap form builder
   class ActionView::Helpers::FormBuilder
     def bstxt_field(method, options = {})
       text_field(method, append_form_control(options))

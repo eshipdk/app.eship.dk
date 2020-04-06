@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190118103859) do
+ActiveRecord::Schema.define(version: 20200403135514) do
 
   create_table "additional_charges", force: :cascade do |t|
     t.integer  "user_id",      limit: 4
@@ -342,6 +342,7 @@ ActiveRecord::Schema.define(version: 20190118103859) do
     t.integer  "monthly_free_labels_expended",     limit: 4,                            default: 0
     t.string   "economic_api_key",                 limit: 255
     t.boolean  "import_shipments_from_cf",                                              default: false
+    t.boolean  "active",                                                                default: true
   end
 
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree
@@ -365,3 +366,4 @@ ActiveRecord::Schema.define(version: 20190118103859) do
   add_foreign_key "user_settings", "users"
   add_foreign_key "users", "addresses"
 end
+
