@@ -1,7 +1,7 @@
 include Cargoflux
 include Taxing
 class Shipment < ActiveRecord::Base
-  
+
   belongs_to :user
   belongs_to :product
   belongs_to :invoice
@@ -10,16 +10,16 @@ class Shipment < ActiveRecord::Base
   belongs_to :recipient, :class_name => 'Address', :foreign_key => 'recipient_address_id', :dependent => :destroy
   has_many :packages, :dependent => :destroy
   accepts_nested_attributes_for :packages, :allow_destroy => true
-  
+
   #status label_ready has been deprecated. See label_pending bool
   #This status describes the state of the shipment booking itself
   enum status: [:initiated, :response_pending, :label_ready, :complete, :failed]
-  
+
   #The shiping state represents the state pulled from CF for a shipment that has been booked
   enum shipping_state: [:na, :booked, :in_transit, :delivered, :cancelled, :problem]
-  
+
   enum label_action: [:print, :email]
-  
+
   def pretty_id(id = self.id)
     #return "%09d" % id
     if cargoflux_shipment_id
@@ -27,24 +27,24 @@ class Shipment < ActiveRecord::Base
     end
     return 'e' + id.to_s
   end
-  
+
   def n_packages
-    packages.map {|p| p.amount}.sum
+    packages.map { |p| p.amount }.sum
   end
-  
-  scope :filter_pretty_id, ->(pretty_id){
-    if(pretty_id == '' || pretty_id == nil) 
+
+  scope :filter_pretty_id, ->(pretty_id) {
+    if (pretty_id == '' || pretty_id == nil)
       return self.all
     end
-    if pretty_id[0,1] == 'e'
+    if pretty_id[0, 1] == 'e'
       id = pretty_id[1..-1].to_i
       return self.where(id: id)
     end
     return self.where('cargoflux_shipment_id LIKE ?', "%#{pretty_id}%")
   }
-  
 
-  scope :filter_uninvoiced, ->(user){
+
+  scope :filter_uninvoiced, ->(user) {
     #Label customers pay for all bookings. Shipping customers only pay for
     #shipments after they have been delivered so that extra charges may be included.
     if user.customer_type == 'shipping'
@@ -53,13 +53,13 @@ class Shipment < ActiveRecord::Base
       if user.invoice_failed_bookings
         return self.where(['invoiced = ?', false])
       else
-        return self.complete.where(['invoiced = ?', false])  
+        return self.complete.where(['invoiced = ?', false])
       end
     end
     #self.complete.where(invoiced: false)
   }
-  
-  scope :filter_recipient_name, ->(recipient_name){
+
+  scope :filter_recipient_name, ->(recipient_name) {
     return self.joins(:recipient).where('company_name LIKE ?', "%#{recipient_name}%")
   }
 
@@ -67,12 +67,12 @@ class Shipment < ActiveRecord::Base
   def dutiable
     return (customs_amount != nil and customs_amount > 0)
   end
-  
+
   def self.find_by_pretty_id pretty_id
-    if(pretty_id == '' || pretty_id == nil) 
+    if (pretty_id == '' || pretty_id == nil)
       return nil
     end
-    if pretty_id[0,1] == 'e'
+    if pretty_id[0, 1] == 'e'
       id = pretty_id[1..-1].to_i
       begin
         return self.find(id)
@@ -82,7 +82,7 @@ class Shipment < ActiveRecord::Base
     end
     return find_by_cargoflux_shipment_id(pretty_id)
   end
-  
+
   def update_shipping_state
     self.update_shipping_state_and_prices
   end
@@ -94,9 +94,10 @@ class Shipment < ActiveRecord::Base
     # If the customer is a shipping customer, update the shipment
     # prices from cargoflux
     if self.user.customer_type == 'shipping'
-      cfdata = Cargoflux.fetch_company_data self
-      update_attribute(:shipping_state, cfdata['state'])
-      update_prices cfdata
+      ## cfdata = Cargoflux.fetch_company_data self
+      ## update_attribute(:shipping_state, cfdata['state'])
+      ## update_prices cfdata
+      update_attribute(:shipping_state, (Cargoflux.fetch_state self))
     else
       update_attribute(:shipping_state, (Cargoflux.fetch_state self))
     end
@@ -131,8 +132,8 @@ class Shipment < ActiveRecord::Base
                 charge.product_code = 'cost_correction'
                 charge.shipment_id = self.id
                 charge.save
-                
-                
+
+
                 do_save = true
               end
             else
@@ -151,11 +152,11 @@ class Shipment < ActiveRecord::Base
           if self.final_diesel_fee < row['line_sales_price'].to_f
             self.final_diesel_fee = row['line_sales_price']
             do_save = true
-          end        
+          end
         else # Additional charges
           # In case of an additional charge, we check if an existing charge
           # with the same description exists for this shipment.
-          
+
           desc = row['line_description']
           if self.additional_charges.where('description like ?', "%#{desc}").exists?
             Rails.logger.warn "Skipping charge #{desc} for shipment #{pretty_id}"
@@ -170,8 +171,8 @@ class Shipment < ActiveRecord::Base
             charge.product_code = 'service_charge'
             charge.shipment_id = self.id
             charge.save
-            
-            
+
+
             do_save = true
           end
         end
@@ -179,15 +180,15 @@ class Shipment < ActiveRecord::Base
       save
     end
   end
-  
-  def update_booking_state     
-    data = Cargoflux.fetch_all self    
+
+  def update_booking_state
+    data = Cargoflux.fetch_all self
     if data == nil
       return
     end
     cf_state = data['state']
     if cf_state == 'created'
-      return    
+      return
     elsif cf_state == 'booking_failed'
       update_attribute(:status, :failed)
     else
@@ -197,7 +198,7 @@ class Shipment < ActiveRecord::Base
       document_url = data['awb_link']
       determine_value
       save
-    end    
+    end
   end
 
   def address(type)
@@ -234,7 +235,7 @@ class Shipment < ActiveRecord::Base
   def can_delete
     (status == 'initiated' || status == 'failed')
   end
-  
+
   def label_pending?
     label_pending
   end
@@ -245,7 +246,7 @@ class Shipment < ActiveRecord::Base
     end
     if api_response != nil
       return (JSON.parse api_response)
-    end   
+    end
   end
 
   #Marks the shipment to have a pending label and registers when the label was pushed
@@ -253,42 +254,42 @@ class Shipment < ActiveRecord::Base
     self.label_pending = true
     self.label_pending_time = DateTime.now
   end
-  
+
   def recent_label_pending?
     label_pending and label_pending_time != nil and label_pending_time > (DateTime.now - 1.hours)
   end
 
-  
+
   def self.label_action_options
     {(self.label_action_title :print) => :print, (self.label_action_title :email) => :email}
   end
-  
+
   def self.booking_state_options required = true
-    opts = Shipment.statuses.map { |key, value| [key.humanize, key] } 
+    opts = Shipment.statuses.map { |key, value| [key.humanize, key] }
     if not required
       opts.unshift(['', ''])
     end
-    return opts  
+    return opts
   end
-  
+
   def self.shipping_state_options required = true
-    opts = Shipment.shipping_states.map { |key, value| [key.humanize, key] } 
+    opts = Shipment.shipping_states.map { |key, value| [key.humanize, key] }
     if not required
       opts.unshift(['', ''])
     end
-    return opts  
+    return opts
   end
-  
-  
+
+
   def self.label_action_title code
     case code.to_s
     when 'print'
-        'Print'
+      'Print'
     when 'email'
-        'Email'
+      'Email'
     end
   end
-  
+
   def label_action_title
     Shipment.label_action_title label_action
   end
@@ -310,12 +311,12 @@ class Shipment < ActiveRecord::Base
       if hash['status'] == 'failed'
         return hash['errors'][0]['description']
       end
-    rescue         
+    rescue
     end
     return api_response
   end
 
-    
+
   def tracking_url
     if product.tracking_url_prefix.blank?
       "about:blank"
@@ -323,7 +324,7 @@ class Shipment < ActiveRecord::Base
       product.tracking_url_prefix + awb
     end
   end
-  
+
   def calculate_cost
     issue = false
     case user.billing_type
@@ -339,9 +340,9 @@ class Shipment < ActiveRecord::Base
     end
     return cost, issue
   end
-  
+
   def get_cost
-    
+
     if not self.cost
       calculated, issue = calculate_cost
       if issue
@@ -354,7 +355,7 @@ class Shipment < ActiveRecord::Base
     end
     return self.cost, nil
   end
-  
+
   def calculate_price cache = true
     issue = false
     case user.billing_type
@@ -372,13 +373,13 @@ class Shipment < ActiveRecord::Base
     end
     return price, issue
   end
-  
+
   def get_price
     if not self.price
       calculated, issue = calculate_price
       if issue
         return nil, issue
-      else        
+      else
         self.price = calculated
         save
         return calculated, nil
@@ -386,7 +387,7 @@ class Shipment < ActiveRecord::Base
     end
     return self.price, nil
   end
-  
+
   def calculate_diesel_fee cache = true
     if user.billing_type != 'advanced'
       return 0
@@ -408,7 +409,7 @@ class Shipment < ActiveRecord::Base
     end
     return 0
   end
-  
+
   def get_weight
     weight = 0
     packages.each do |package|
@@ -427,7 +428,7 @@ class Shipment < ActiveRecord::Base
     end
     return qty
   end
-  
+
   def price_configured?
     begin
       user.billing_type == 'advanced' ? product.price_scheme(user).price_configured?(self) : true
@@ -435,11 +436,11 @@ class Shipment < ActiveRecord::Base
       false
     end
   end
-  
+
   def determine_value
     get_cost
     price, _ = calculate_price
-    
+
     if user.billing_type == 'flat_price' and user.monthly_free_labels_remaining > 0
       freebies = [get_label_qty, user.monthly_free_labels_remaining].min
       price -= freebies * user.unit_price
@@ -456,12 +457,12 @@ class Shipment < ActiveRecord::Base
       save
     end
   end
-  
+
   def has_package_prices
     return packages[0].price != nil
   end
-    
-    
+
+
   def fetch_packages_from_cargoflux
     # Updates the package configuration by pulling it from cargoflux
     data = Cargoflux.fetch_all self
@@ -474,11 +475,11 @@ class Shipment < ActiveRecord::Base
       p.length = d['length']
       p.width = d['width']
       p.height = d['height']
-      p.weight = d['weight'].to_i           
+      p.weight = d['weight'].to_i
       p.amount = d['amount'].to_i
       p.shipment = self
       p.save
-    end        
+    end
   end
 
 
@@ -490,29 +491,30 @@ class Shipment < ActiveRecord::Base
     end
     return code
   end
-  
+
   def self.update_pending_shipping_states
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_shipping_states"
-    
+
     from_time_shipping = DateTime.now() - 0.days
     from_time_label = DateTime.now() - 14.days
-    pending_shipments = Shipment.joins(:user).where(['shipping_state in (1, 2, 5) AND ((billing_type = 2 AND shipments.created_at > ?) OR (shipments.created_at > ?))', from_time_shipping, from_time_label])    
-    
+    ##pending_shipments = Shipment.joins(:user).where(['shipping_state in (1, 2, 5) AND ((billing_type = 2 AND shipments.created_at > ?) OR (shipments.created_at > ?))', from_time_shipping, from_time_label])
+    pending_shipments = Shipment.joins(:user).where(['shipping_state IN (1,2,5) AND shipments.created_at > ? OR shipping_state IS NULL AND shipments.created_at > ?', from_time_label, from_time_label])
+
     Rails.logger.warn "Number of shipments to update: #{pending_shipments.length}"
     for shipment in pending_shipments
-        begin
-          shipment.update_shipping_state
-        rescue => e
-          Rails.logger.warn "#{Time.now.utc.iso8601} EXCEPTION UPDATING SHIPMENT #{shipment.id}: #{e.to_s}"
-          issue = "#{e.to_s}: #{e.backtrace.join("\n")}"
-          Rails.logger.warn issue
-          SystemMailer.shipment_status_update_failed(shipment, issue).deliver_now
-        end
+      begin
+        shipment.update_shipping_state
+      rescue => e
+        Rails.logger.warn "#{Time.now.utc.iso8601} EXCEPTION UPDATING SHIPMENT #{shipment.id}: #{e.to_s}"
+        issue = "#{e.to_s}: #{e.backtrace.join("\n")}"
+        Rails.logger.warn issue
+        SystemMailer.shipment_status_update_failed(shipment, issue).deliver_now
+      end
     end
-    
+
     Rails.logger.warn "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_pending_shipping_states"
   end
-  
+
   def self.update_pending_booking_states
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_booking_states"
     Shipment.where(:status => 1).each do |shipment|
@@ -527,8 +529,8 @@ class Shipment < ActiveRecord::Base
 
 
     Cargoflux.update_shipments
-    
+
     Rails.logger.info "#{Time.now.utc.iso8601} TASK ENDED: Shipment.update_shipments_from_export"
   end
-  
+
 end

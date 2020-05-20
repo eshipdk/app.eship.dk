@@ -258,8 +258,8 @@ class ShipmentsController < ApplicationController
       logger.debug 'Autoprint'
       shipment.register_label_pending
     elsif shipment.label_action == 'email'
-      logger.debug 'Send email'
-      LabelMailer.label_email(shipment).deliver_now
+      #logger.debug 'Send email'
+      #LabelMailer.label_email(shipment).deliver_now
     end
     
     shipment.save

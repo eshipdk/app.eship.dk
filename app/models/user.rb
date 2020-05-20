@@ -345,7 +345,7 @@ class User < ActiveRecord::Base
         if (product_code == p['product_code'])
           product = Product.find_by(product_code: product_code)
           if product == nil
-            product = {"name" => p['product_name'], "product_code" => p['product_code']}
+            product = {"name" => p['product_name'], "product_code" => p['product_code'], "original_code" => p['product_code']}
             product = Product.new(product)
             product.save
           end

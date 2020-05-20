@@ -27,7 +27,6 @@ class ApiController < ApplicationController
     end
 
     sender = Address.new(shipment_params['sender'])
-
     recipient = Address.new(shipment_params['recipient'])
 
     if !sender.valid?
@@ -56,6 +55,10 @@ class ApiController < ApplicationController
     shipment.delivery_instructions = shipment_params['delivery_instructions']
     shipment.parcelshop_id = shipment_params['parcelshop_id']
     shipment.callback_url = shipment_params['callback_url']
+
+    if shipment_params['label_action'] == "email"
+      shipment.label_action = 1
+    end
 
     shipment.save
 

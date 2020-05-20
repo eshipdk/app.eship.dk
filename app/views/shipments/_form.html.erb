@@ -111,16 +111,16 @@
 		<% i_package += 1 %>
 		<tr id='package-row-<%= i_package %>'>
 			<td>
-				<%= fp.bsnum_field :length, :onchange => 'getPrice()' %>
+				<%= fp.bsnum_field :length, :value => '10' %>
 			</td>
 			<td>
-				<%= fp.bsnum_field :width, :onchange => 'getPrice()' %>
+				<%= fp.bsnum_field :width, :value => '10' %>
 			</td>
 			<td>
-				<%= fp.bsnum_field :height, :onchange => 'getPrice()' %>
+				<%= fp.bsnum_field :height, :value => '10' %>
 			</td>
 			<td>
-				<%= fp.bsnum_field :weight, :step => 'any', :onchange => 'getPrice()' %>
+				<%= fp.bsnum_field :weight, :step => 'any', :value => '1' %>
 			</td>
 			<td>
 				<%= fp.bsnum_field :amount, :onchange => 'getPrice()' %>
@@ -213,7 +213,8 @@
 
 
 
-	function getPrice(){		
+	function getPrice(){
+		return false;
                 updateImportConfiguration();
 	        var countryFrom = $('#sender_country_code').val();
 		var countryTo = $('#recipient_country_code').val();		
