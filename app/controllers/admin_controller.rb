@@ -160,9 +160,9 @@ class AdminController < ApplicationController
   end
   
   def update_booking_states
-    resp = Cargoflux.update_shipments
-    flash[:error] = resp
-    #Shipment.update_pending_booking_states
+    #resp = Cargoflux.update_shipments
+    ##flash[:error] = resp
+    Shipment.update_pending_booking_states
     redirect_to :back
   end
   

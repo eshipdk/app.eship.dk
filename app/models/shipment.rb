@@ -196,6 +196,9 @@ class Shipment < ActiveRecord::Base
       shipping_state = cf_state
       awb = data['awb']
       document_url = data['awb_link']
+      update_attribute(:shipping_state, shipping_state)
+      update_attribute(:document_url, document_url)
+      update_attribute(:awb, awb)
       determine_value
       save
     end

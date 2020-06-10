@@ -123,7 +123,7 @@
 				<%= fp.bsnum_field :weight, :step => 'any', :value => '1' %>
 			</td>
 			<td>
-				<%= fp.bsnum_field :amount, :onchange => 'getPrice()' %>
+				<%= fp.bsnum_field :amount %>
 			</td>
 		</tr>
 		<% end %>
@@ -131,19 +131,19 @@
 		<% i_package += 1 %>
 		<tr id="package-row-1">
 			<td>
-				<input onchange="getPrice()" class="form-control" type="number" name="shipment[packages_attributes][0][length]" id="shipment_packages_attributes_0_length">
+				<input class="form-control" type="number" name="shipment[packages_attributes][0][length]" id="shipment_packages_attributes_0_length">
 			</td>
 			<td>
-				<input onchange="getPrice()" class="form-control" type="number" name="shipment[packages_attributes][0][width]" id="shipment_packages_attributes_0_width">
+				<input class="form-control" type="number" name="shipment[packages_attributes][0][width]" id="shipment_packages_attributes_0_width">
 			</td>
 			<td>
-				<input onchange="getPrice()" class="form-control" type="number" name="shipment[packages_attributes][0][height]" id="shipment_packages_attributes_0_height">
+				<input class="form-control" type="number" name="shipment[packages_attributes][0][height]" id="shipment_packages_attributes_0_height">
 			</td>
 			<td>
-				<input step="any" onchange="getPrice()" class="form-control" type="number" name="shipment[packages_attributes][0][weight]" id="shipment_packages_attributes_0_weight">
+				<input step="any" class="form-control" type="number" name="shipment[packages_attributes][0][weight]" id="shipment_packages_attributes_0_weight">
 			</td>
 			<td>
-				<input onchange="getPrice()" class="form-control" type="number" value="1" name="shipment[packages_attributes][0][amount]" id="shipment_packages_attributes_0_amount">
+				<input class="form-control" type="number" value="1" name="shipment[packages_attributes][0][amount]" id="shipment_packages_attributes_0_amount">
 			</td>
 		</tr>
 		<% end %>
@@ -187,10 +187,12 @@
 <%= cbox do-%>
 <div class='row'>
 	<div class='col-xs-6'>
+		<div style='display:none'>
 		Your price
 		<span class='pull-right' id='price-container'>
 			<a href='javascript:getPrice();'>Get price..</a>
 		</span>
+</div>
 	</div>
 	<div class='col-xs-6'>
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
@@ -316,6 +318,7 @@
 	}
 	
 	function setPackageDimensions(productId){
+return false;
 		while(removePackage());
 		$('#shipment_packages_attributes_0_length').val(PRODUCT_VALUES[productId]['length']);
 		$('#shipment_packages_attributes_0_width').val(PRODUCT_VALUES[productId]['width']);
@@ -357,17 +360,17 @@
 	
 	
 	$(document).ready(function(){	
-                $('#sender_country_code').on('change', getPrice);
-                $('#shipment_product_id').on('change', getPrice);
+              //  $('#sender_country_code').on('change', getPrice);
+             //   $('#shipment_product_id').on('change', getPrice);
 		destCountrySelector = $('#recipient_country_code');
-		destCountrySelector.on('change', getPrice);		
+		//destCountrySelector.on('change', getPrice);		
 		if(destCountrySelector.val() == ""){ //Only set default values if this is a new shipment
 			productSelectUpdate($('#shipment_product_id').val());
 		}else{
 			setParcelshopStatus($('#shipment_product_id').val());
 			setAvailableCountries($('#shipment_product_id').val());
 		}
-		getPrice();
+	//	getPrice();
 	});
 
 
