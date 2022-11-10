@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200403135514) do
+ActiveRecord::Schema.define(version: 20200403135516) do
 
   create_table "additional_charges", force: :cascade do |t|
     t.integer  "user_id",      limit: 4
@@ -254,6 +254,8 @@ ActiveRecord::Schema.define(version: 20200403135514) do
     t.integer  "amount",                limit: 4,                              default: 1
     t.string   "reference",             limit: 255
     t.string   "parcelshop_id",         limit: 255
+    t.string   "addons",         limit: 255
+    t.string   "track_and_trace_url",         limit: 255
     t.string   "callback_url",          limit: 255
     t.boolean  "invoiced",                                                     default: false
     t.integer  "invoice_id",            limit: 4

@@ -60,6 +60,10 @@ class ApiController < ApplicationController
       shipment.label_action = 1
     end
 
+    if shipment_params.key?('addons')
+      shipment.addons = "flex_delivery_option"
+    end
+
     shipment.save
 
     package = Package.new
@@ -461,5 +465,15 @@ class ApiController < ApplicationController
       shipment.status = :failed
       shipment.save
     end
+  end
+
+  def update_pending_booking_states
+    Shipment.where(:status => 4).each do |shipment|
+      shipment.update_booking_state
+    end
+    Shipment.where(:status => 1).each do |shipment|
+      shipment.update_booking_state
+    end
+    render :text => 'ok'
   end
 end

@@ -246,6 +246,7 @@ class ShipmentsController < ApplicationController
       shipment.shipping_state = 'booked'
       shipment.awb = params['awb']
       shipment.document_url = params['awb_asset_url']
+      shipment.track_and_trace_url = params['track_and_trace_url']
       shipment.determine_value
     else
       shipment.status = 'failed'
@@ -327,7 +328,7 @@ class ShipmentsController < ApplicationController
                                      :package_length, :package_width,
                                      :package_height, :package_weight,
                                      :description, :amount, :reference,
-                                     :parcelshop_id, :label_action, :remarks, :delivery_instructions,
+                                     :parcelshop_id, :label_action, :remarks, :delivery_instructions, :addons,
                                      :customs_amount, :customs_currency, :customs_code).merge(
           {'packages_attributes' => params.require(:shipment).require(:packages_attributes)})
   end

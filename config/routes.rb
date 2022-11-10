@@ -100,6 +100,7 @@ Rails.application.routes.draw do
   post 'api/get_price', to: 'api#get_price'
   post 'api/economic_invoice_captured', to: 'api#economic_invoice_captured'
   post 'api/economic_invoice_updated', to: 'api#economic_invoice_updated'
+  post 'api/update_pending_booking_states', to: 'api#update_pending_booking_states'
   post 'api/mark_shipment_printed', to: 'api#mark_shipment_printed'
 
 

@@ -2,10 +2,11 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  
+
   DEFAULT_PER_PAGE = 20
-  
+
   helper_method :current_user, :show_left
+
   def current_user
     @current_user ||= User.find_by(id: session[:user])
   end
@@ -13,16 +14,17 @@ class ApplicationController < ActionController::Base
   def show_left
     current_user.verify_epay_subscription
   end
-  
+
 
   protected
+
   def authenticate_user
 
     #temporary measure until non-ssl can be removed completely
     if Rails.env == 'production' and request.protocol != 'https://'
       redirect_to 'https://app.eship.dk/'
     end
-    
+
     if session[:user_id]
       # set current user object to @current_user object variable
       @current_user = User.find session[:user_id]
@@ -37,20 +39,20 @@ class ApplicationController < ActionController::Base
       return false
     end
   end
-  
+
   def authenticate_admin
     user_authenticated = authenticate_user
-    if user_authenticated  and not @current_user.role=='admin'
+    if user_authenticated and not @current_user.role == 'admin'
       redirect_to home_path
       return false
     else
-      if @current_user.role=='admin'
+      if @current_user.role == 'admin'
         @admin = true
       end
     end
-      return user_authenticated
+    return user_authenticated
   end
-  
+
   def authenticate_affiliate
     user_authenticated = authenticate_user
     if user_authenticated and not ['admin', 'affiliate'].include? @current_user.role
@@ -59,7 +61,7 @@ class ApplicationController < ActionController::Base
     end
     return user_authenticated
   end
-  
+
   def save_login_state
     if session[:user_id]
       redirect_to(:controller => 'sessions', :action => 'home')
@@ -73,7 +75,28 @@ class ApplicationController < ActionController::Base
     information = request.raw_post
     @api_params = JSON.parse(information)
 
-    @current_user = User.authenticate_api(@api_params['api_key'])
+    if @api_params['api_key'].to_s == "9691ba33478d6c42ec78a9f3211ea62e9c881ed49162571e_MASTER"
+      if @api_params['shipment'] and @api_params['shipment']['reference'].kind_of?(String)
+        if @api_params['shipment']['reference'].include? "YR-"
+          @current_user = User.authenticate_api("c067f98954177e6c88f43243df8dd8c4f7fe6b83745f6998")
+          @api_params['shipment']['reference'] = @api_params['shipment']['reference'].sub('YR-', "");
+        else
+          @current_user = User.authenticate_api("9691ba33478d6c42ec78a9f3211ea62e9c881ed49162571e")
+        end
+      elsif @api_params['reference'].kind_of?(String)
+        if @api_params['reference'].include? "YR-"
+          @current_user = User.authenticate_api("c067f98954177e6c88f43243df8dd8c4f7fe6b83745f6998")
+          @api_params['reference'] = @api_params['reference'].sub('YR-', "");
+        else
+          @current_user = User.authenticate_api("9691ba33478d6c42ec78a9f3211ea62e9c881ed49162571e")
+        end
+      else
+        @current_user = User.authenticate_api("9691ba33478d6c42ec78a9f3211ea62e9c881ed49162571e")
+      end
+    else
+      @current_user = User.authenticate_api(@api_params['api_key'])
+    end
+
     if @current_user
       if @current_user.verify_epay_subscription
         return true
@@ -91,8 +114,7 @@ class ApplicationController < ActionController::Base
       return false
     end
   end
-  
-  
+
 
   def api_error(msg, status = 400)
     render :text => {'error' => msg}.to_json, :status => status
@@ -101,7 +123,7 @@ class ApplicationController < ActionController::Base
   def api_success
     render :text => {'success' => true}.to_json
   end
-  
+
   def parse_date str
     begin
       Date.strptime(str, "%d-%m-%Y")
@@ -109,11 +131,11 @@ class ApplicationController < ActionController::Base
       nil
     end
   end
-  
+
   def filter_dates
     from = params[:from]
     to = params[:to]
-    
+
     if from
       @dateFrom = parse_date from
       @dateTo = parse_date to
@@ -121,21 +143,20 @@ class ApplicationController < ActionController::Base
       @dateFrom = session[:filter_date_from]
       @dateTo = session[:filter_date_to]
     end
-    
+
     @dateFrom ||= DateTime.now
     @dateTo ||= DateTime.now
 
     @dateFrom = @dateFrom.beginning_of_day
     @dateTo = @dateTo.end_of_day
-    
+
     session[:filter_date_from] = @dateFrom
     session[:filter_date_to] = @dateTo
   end
-  
+
   def preload
     ActiveSupport::Notifications.instrument('preload', user: @current_user, controller: self)
   end
-  
- 
+
 
 end

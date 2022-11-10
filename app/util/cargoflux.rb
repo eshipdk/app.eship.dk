@@ -29,6 +29,7 @@ module Cargoflux
   def perform_https_get(url, token)
     endpoint = URI.parse(url)
     https = Net::HTTP.new(endpoint.host, endpoint.port)
+    https.verify_mode = OpenSSL::SSL::VERIFY_NONE
     https.use_ssl = true
     request = Net::HTTP::Get.new(endpoint.request_uri, 'access_token' => token)
     JSON.parse(https.request(request).body)
@@ -39,8 +40,7 @@ module Cargoflux
 
     url = COMPANY_API_ENDPOINT + 'shipments/' + shipment.cargoflux_shipment_id
     response = perform_https_get(url, COMPANY_API_TOKEN)
-    response['state'] = 'delivered' if
-      response['state'] == 'delivered_at_destination'
+    response['state'] = 'delivered' if response['state'] == 'delivered_at_destination'
     response
   end
 
@@ -56,8 +56,9 @@ module Cargoflux
 
     endpoint = URI.parse(API_ENDPOINT + "shipments/" + shipment.cargoflux_shipment_id)
     http = Net::HTTP.new(endpoint.host, endpoint.port)
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     http.use_ssl = true
-    request = Net::HTTP::Get.new(endpoint.request_uri, initheader = { 'access_token' => shipment.user.cargoflux_api_key })
+    request = Net::HTTP::Get.new(endpoint.request_uri, initheader = {'access_token' => shipment.user.cargoflux_api_key})
 
     response = JSON.parse http.request(request).body
     if response['state'] == 'delivered_at_destination'
@@ -70,16 +71,17 @@ module Cargoflux
     endpoint = URI.parse API_ENDPOINT + "shipments/"
 
     http = Net::HTTP.new(endpoint.host, endpoint.port)
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     http.use_ssl = true
 
     request = if shipment.must_retry?
                 Net::HTTP::Put.new(endpoint.request_uri,
-                                   initheader = { 'Content-Type' =>
-                                     'application/json' })
+                                   initheader = {'Content-Type' =>
+                                                     'application/json'})
               else
                 Net::HTTP::Post.new(endpoint.request_uri,
-                                    initheader = { 'Content-Type' =>
-                                      'application/json' })
+                                    initheader = {'Content-Type' =>
+                                                      'application/json'})
               end
     request.body = (request_payload shipment).to_json
     JSON.parse http.request(request).body
@@ -96,22 +98,22 @@ module Cargoflux
     end
 
     data =
-      {
-        'access_token' => shipment.user.cargoflux_api_key,
-        'callback_url' => EShip::HOST_ADDRESS + "/shipments/#{shipment.id}/callback",
-        'return_label' => shipment.return,
-        'shipment' => {
-          'product_code' => product_code,
-          'dutiable' => false,
-          'description' => shipment.description,
-          'reference' => shipment.reference,
-          'remarks' => shipment.remarks,
-          'shipping_date' => Time.now.strftime('%F'),
-          'parcelshop_id' => shipment.parcelshop_id
-        },
-        'sender' => shipment.sender.attributes,
-        'recipient' => shipment.recipient.attributes
-      }
+        {
+            'access_token' => shipment.user.cargoflux_api_key,
+            'callback_url' => EShip::HOST_ADDRESS + "/shipments/#{shipment.id}/callback",
+            'return_label' => shipment.return,
+            'shipment' => {
+                'product_code' => product_code,
+                'dutiable' => false,
+                'description' => shipment.description,
+                'reference' => shipment.reference,
+                'remarks' => shipment.remarks,
+                'shipping_date' => Time.now.strftime('%F'),
+                'parcelshop_id' => shipment.parcelshop_id
+            },
+            'sender' => shipment.sender.attributes,
+            'recipient' => shipment.recipient.attributes
+        }
     data['sender']['address_line3'] = ''
     data['recipient']['address_line3'] = ''
 
@@ -132,17 +134,32 @@ module Cargoflux
 
     if shipment.dutiable
       data['shipment']['dutiable'] = true
-      data['shipment']['customs_amount'] = shipment.customs_amount.to_s
+      data['shipment']['export_reason'] = "Commercial"
+      data['shipment']['export_reason_code'] = "commercial"
       data['shipment']['customs_currency'] = shipment.customs_currency.upcase
-      data['shipment']['customs_code'] = shipment.customs_code
     else
       data['shipment']['dutiable'] = false
+    end
+
+    if shipment.addons && (shipment.addons == 'flex_delivery_option')
+      data['shipment']['addons'] = {
+          'flex_delivery_option' => {
+              'flex_delivery_option' => true,
+          }
+      }
     end
 
     package_dimensions = []
     shipment.packages.each do |package|
       dimensions = package.dimensions
       dimensions['weight'] = [dimensions['weight'].to_f, 0.1].max.to_s
+      if shipment.dutiable
+        dimensions['customs_amount'] = shipment.customs_amount.to_s
+        dimensions['customs_code'] = shipment.customs_code
+        dimensions['manufacture_country_code'] = shipment.sender.country_code
+        dimensions['manufacture_country_name'] = ApplicationController.helpers.country_name(shipment.sender.country_code)
+        dimensions['description'] = shipment.description
+      end
       package_dimensions << dimensions
     end
     data['shipment']['package_dimensions'] = package_dimensions
@@ -165,10 +182,11 @@ module Cargoflux
     url = COMPANY_API_ENDPOINT + 'shipment_exports.xml' # ?since=2018-06-14+13%3A45%3A00+%2B0100'
     endpoint = URI.parse(url)
     http = Net::HTTP.new(endpoint.host, endpoint.port)
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     http.use_ssl = true
     request = Net::HTTP::Post.new(endpoint.request_uri,
-                                  initheader = { 'access_token' =>
-                                                COMPANY_API_TOKEN })
+                                  initheader = {'access_token' =>
+                                                    COMPANY_API_TOKEN})
 
     r = Hash.from_xml http.request(request).body
     # r2 = r['ShipmentLists']['ShipmentList'][8]
@@ -214,10 +232,11 @@ module Cargoflux
     url = API_ENDPOINT + 'shipments/prices.json'
     endpoint = URI.parse(url)
     http = Net::HTTP.new(endpoint.host, endpoint.port)
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     http.use_ssl = true
     request = Net::HTTP::Post.new(endpoint.request_uri,
-                                  initheader = { 'Content-Type' =>
-                                                'application/json' })
+                                  initheader = {'Content-Type' =>
+                                                    'application/json'})
     data = request_payload shipment
     data['package_dimensions'] = data['shipment']['package_dimensions']
     request.body = data.to_json

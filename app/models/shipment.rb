@@ -184,6 +184,7 @@ class Shipment < ActiveRecord::Base
   def update_booking_state
     data = Cargoflux.fetch_all self
     if data == nil
+      update_attribute(:status, :initiated)
       return
     end
     cf_state = data['state']
@@ -321,10 +322,14 @@ class Shipment < ActiveRecord::Base
 
 
   def tracking_url
-    if product.tracking_url_prefix.blank?
-      "about:blank"
+    if track_and_trace_url != ""
+      track_and_trace_url
     else
-      product.tracking_url_prefix + awb
+      if product.tracking_url_prefix.blank?
+        "about:blank"
+      else
+        product.tracking_url_prefix + awb
+      end
     end
   end
 
@@ -520,6 +525,9 @@ class Shipment < ActiveRecord::Base
 
   def self.update_pending_booking_states
     Rails.logger.warn "#{Time.now.utc.iso8601} RUNNING TASK: Shipment.update_pending_booking_states"
+    Shipment.where(:status => 4).each do |shipment|
+      shipment.update_booking_state
+    end
     Shipment.where(:status => 1).each do |shipment|
       shipment.update_booking_state
     end
